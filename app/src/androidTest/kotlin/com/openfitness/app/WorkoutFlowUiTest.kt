@@ -80,6 +80,11 @@ class WorkoutFlowUiTest {
         composeRule.onNodeWithTag("edit_set_reps").performTextReplacement("12")
         composeRule.onNodeWithTag("edit_set_confirm").performClick()
 
+        composeRule.waitUntil(timeoutMillis = 10_000) {
+            composeRule.onAllNodesWithText("55.0").fetchSemanticsNodes().isNotEmpty()
+        }
+    }
+
     @Test
     fun correctCompletedSet_appendsCorrectionInHistory() {
         composeRule.waitUntil(timeoutMillis = 15_000) {
@@ -107,7 +112,9 @@ class WorkoutFlowUiTest {
             composeRule.onAllNodesWithTag("session_summary").fetchSemanticsNodes().isNotEmpty()
         }
 
-        androidx.test.espresso.Espresso.pressBack()
+        composeRule.activityRule.scenario.onActivity { activity ->
+            activity.onBackPressedDispatcher.onBackPressed()
+        }
 
         composeRule.waitUntil(timeoutMillis = 10_000) {
             composeRule.onAllNodesWithTag("nav_history").fetchSemanticsNodes().isNotEmpty()
