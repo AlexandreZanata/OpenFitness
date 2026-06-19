@@ -1,0 +1,24 @@
+---
+description: Explicit, named, documented, and tested business rules
+alwaysApply: true
+---
+
+# Explicit and Named Business Rules
+
+Every business rule must be:
+
+- **Identified** — has a code or name (e.g., BR-001, `UniqueChipRule`)
+- **Documented** — written in business language before any code
+- **Tested** — covered by unit tests before implementation
+- **Centralized** — never duplicated across layers
+
+## Standard Documentation Format
+
+```
+GIVEN [context / current state]
+WHEN  [action or event]
+THEN  [expected outcome]
+AND   [side effects or events raised]
+```
+
+Implement rules once in the Domain layer. Application orchestrates; it does not re-implement domain rules.

@@ -1,0 +1,18 @@
+---
+description: Rules for LLM and AI agent integration within the application layer
+alwaysApply: true
+---
+
+# AI / Agent Integration
+
+When the system integrates LLMs or AI agents:
+
+- The AI agent operates **within** the Application layer — never accesses Domain or Infrastructure directly
+- AI is read-only — never writes directly to the database
+- Every AI-generated suggestion requires human confirmation before persistence
+- Agent access is restricted to the minimum required for the task (least privilege)
+- Every LLM call is logged: input, output, model, timestamp, triggering user
+- AI responses are always marked as suggestions — never as definitive truth
+- Personal and sensitive data is never sent to the LLM — only aggregated or anonymized data
+
+AI orchestration belongs in Application use cases behind explicit ports and policies.

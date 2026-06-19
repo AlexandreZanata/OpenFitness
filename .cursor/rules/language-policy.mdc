@@ -1,0 +1,21 @@
+---
+description: Mandatory English-only policy for all project artifacts and agent communication
+alwaysApply: true
+---
+
+# Language Policy
+
+All project artifacts and agent communication must be written **100% in English**.
+
+This applies without exception to:
+
+- Source code (identifiers, comments, docstrings, commit messages)
+- Documentation (README, ADRs, API specs, use cases, business rules)
+- Cursor rules, skills, and agent instructions
+- Test names, descriptions, and assertions
+- Error messages exposed to developers or end users
+- Domain glossary terms and ubiquitous language definitions
+
+**Do not** mix languages within the same artifact. If legacy content exists in another language, translate or align it to English when modifying that area.
+
+When the user communicates in another language, respond in English unless they explicitly request otherwise.

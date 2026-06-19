@@ -1,0 +1,18 @@
+---
+description: Immutable audit and history records — corrections via new entries only
+alwaysApply: true
+---
+
+# History Is Immutable
+
+Any historical record (audit, health, location, transactions) is never edited or removed.
+
+- Corrections are made by **new records** that reference the corrected record
+- Audit logs cover every write: who, when, what, before and after
+- Audit data has a defined retention policy that is enforced
+
+## Implementation Guidance
+
+- Prefer append-only storage for audit trails
+- Use soft-delete only when legally required; prefer anonymization over deletion
+- Expose history as a read-only query surface

@@ -1,0 +1,16 @@
+---
+description: Immutable domain events for cross-context communication
+alwaysApply: true
+---
+
+# Domain Events
+
+Business facts are communicated via immutable events:
+
+- An event represents something that **already happened** — names are always past tense (`AnimalRegistered`, `OwnershipTransferred`)
+- Events are raised by the entity or aggregate itself, never directly by the Application layer
+- Events are the mechanism for cross-context communication — never direct calls between bounded contexts
+- Every event carries: unique identifier, timestamp, origin (context/tenant), and relevant payload
+- Events are immutable and traceable — never edited or deleted
+
+Application layer may collect and dispatch events after aggregate persistence; it does not fabricate domain facts.

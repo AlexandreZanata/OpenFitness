@@ -1,0 +1,18 @@
+---
+description: Ubiquitous language — domain glossary and naming consistency
+alwaysApply: true
+---
+
+# Minimum Project Glossary
+
+Every project maintains a glossary of domain terms. This ensures ubiquitous language across engineering, business, and AI agents.
+
+The glossary defines:
+
+- Business terms and their precise definitions
+- Enums and their possible values
+- Acronyms and abbreviations used in code
+
+Code that uses a domain term must use **exactly** the same name as the glossary — no translations, ad-hoc abbreviations, or creative synonyms.
+
+When introducing a new domain term, add it to the glossary before using it in code.

@@ -1,0 +1,15 @@
+---
+description: Security and compliance as functional requirements from day one
+alwaysApply: true
+---
+
+# Security as a Requirement, Not a Feature
+
+- Strong authentication (MFA) for elevated-privilege roles
+- Session TTL defined per role — admin sessions expire faster
+- Rate limiting per user and per IP on every public API
+- Sensitive data encrypted at rest and in transit
+- All external communication uses TLS — no exceptions
+- Data protection compliance (LGPD, GDPR, etc.) is a functional requirement from the start: consent, portability, erasure, anonymization
+
+Security controls are designed with the use case and permission matrix — not bolted on afterward.

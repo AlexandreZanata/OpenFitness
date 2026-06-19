@@ -1,0 +1,27 @@
+---
+description: Agent core contract — foundational principles and project readiness checklist
+alwaysApply: true
+---
+
+# Agent Core Principles
+
+Fundamental software architecture and engineering principles. Stack-agnostic. Applicable to any project, language, or platform.
+
+**Contract:** This document is the binding contract for any coding agent on this project. When existing code conflicts with these rules, **these rules prevail**. Ask before implementing when required foundations are missing — never assume.
+
+## New Project Checklist
+
+Before writing the first line of code, confirm:
+
+- [ ] Layers are defined with documented responsibilities
+- [ ] Core entities and aggregates are identified
+- [ ] Value Objects are listed with their invariants
+- [ ] Business rules are written in GIVEN/WHEN/THEN language
+- [ ] State machines are documented with valid transitions
+- [ ] Access roles and the permission matrix are defined
+- [ ] Domain events are cataloged
+- [ ] Use cases are documented with actor, flow, and preconditions
+- [ ] API contract is drafted
+- [ ] Domain glossary exists
+
+If any item is blank, **ask the user before implementing**.

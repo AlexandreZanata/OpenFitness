@@ -1,0 +1,91 @@
+---
+description: Git commit message conventions — format, scope, and agent commit workflow
+alwaysApply: true
+---
+
+# Commit Conventions
+
+All commit messages must be written in **English** (see Language Policy).
+
+## Format
+
+Use [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+<type>(<scope>): <subject>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Type (required)
+
+| Type       | When to use |
+|------------|-------------|
+| `feat`     | New feature or user-visible capability |
+| `fix`      | Bug fix |
+| `refactor` | Code change that neither fixes a bug nor adds a feature |
+| `test`     | Adding or updating tests only |
+| `docs`     | Documentation only |
+| `chore`    | Tooling, deps, CI — no production code behavior change |
+| `perf`     | Performance improvement |
+| `build`    | Build system or external dependency changes |
+| `ci`       | CI/CD pipeline changes |
+| `revert`   | Reverts a previous commit |
+
+### Scope (recommended)
+
+Short, lowercase layer or module name aligned with architecture:
+
+`domain`, `application`, `infrastructure`, `api`, `ui`, `auth`, `db`, `deps`, `ci`
+
+Omit scope only when the change is truly cross-cutting.
+
+### Subject (required)
+
+- Imperative mood: "add handler" not "added handler"
+- Lowercase, no trailing period
+- Max 72 characters
+- Describe **why** or **what** at a glance — not implementation details
+
+```
+feat(domain): enforce unique chip invariant on registration
+fix(api): return structured error for invalid state transition
+test(domain): cover OwnershipTransferred event emission
+```
+
+## Body (when needed)
+
+Use the body for:
+
+- Business rule or use case reference (e.g., `BR-001`, `UC-RegisterAnimal`)
+- Breaking changes
+- Non-obvious rationale
+
+Wrap at 72 characters. Separate subject from body with a blank line.
+
+## Footer
+
+- `BREAKING CHANGE: <description>` for breaking API or contract changes
+- `Refs: #<issue>` when linked to a tracker issue
+
+## Agent Commit Workflow
+
+- **Only commit when the user explicitly asks** — never commit proactively
+- Never commit secrets (`.env`, credentials, keys, tokens)
+- Never skip hooks (`--no-verify`) unless the user explicitly requests it
+- Never force-push to `main`/`master`
+- Prefer focused commits: one logical change per commit
+- Run `git status`, `git diff`, and `git log` before committing to match project style
+- If a pre-commit hook fails, fix the issue and create a **new** commit — do not amend a failed commit
+
+## Anti-Patterns
+
+```
+❌ fixed stuff
+❌ WIP
+❌ feat: mudanças no domínio
+❌ update files
+❌ feat(domain): refactored the entire codebase and also fixed unrelated bug
+```

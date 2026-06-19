@@ -1,0 +1,18 @@
+---
+description: Explicit API contracts — versioning, auth, errors, and domain-driven resources
+alwaysApply: true
+---
+
+# Explicit API Contracts
+
+- Every API has explicit versioning from day one (`/v1/`, `/v2/`)
+- Authentication and tenant identification are mandatory on every request
+- Error responses follow a single structured pattern — never ad-hoc strings
+- Pagination, sorting, and filtering follow a uniform convention
+- Endpoints reflect the domain — not the database. Resources are named by business concepts
+
+## Error Response Shape
+
+Use a consistent envelope: error code, human-readable message, optional field-level details, correlation ID.
+
+Resource names, DTOs, and OpenAPI descriptions must align with the domain glossary.

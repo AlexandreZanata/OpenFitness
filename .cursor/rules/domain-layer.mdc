@@ -1,0 +1,18 @@
+---
+description: Domain layer as the core — rich models, no external dependencies
+alwaysApply: true
+---
+
+# Domain Layer Is the Core
+
+- All business rules live in the Domain layer
+- Domain imports nothing from frameworks, ORMs, HTTP libraries, or any external dependency
+- Entities, Aggregates, and Value Objects are rich objects with behavior — not anemic data structures
+- Each Aggregate has a root (Aggregate Root) that controls the lifecycle of the whole
+- Value Objects are immutable and self-validate on creation; invalid values fail at construction time
+
+## Anti-Patterns to Avoid
+
+- Putting business logic in controllers, handlers, or repositories
+- Leaking persistence concerns (ORM annotations, SQL) into entities
+- Mutable Value Objects or entities without invariant enforcement

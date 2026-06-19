@@ -1,0 +1,22 @@
+---
+description: Test-driven development and the testing pyramid
+alwaysApply: true
+---
+
+# Test-Driven Development (TDD)
+
+Respect the testing pyramid:
+
+```
+E2E (5%)           → full end-to-end flows
+Integration (20%)  → use cases + infrastructure
+Unit (75%)         → domain layer (entities, rules, state machines)
+```
+
+- Domain tests are written **before** implementation
+- Standard test format: GIVEN / WHEN / THEN
+- Minimum Domain layer coverage: 90%+
+- A test must fail for exactly one reason
+- Unit tests do not depend on real databases, network, or filesystem
+
+Red → Green → Refactor. Do not skip the failing test step.

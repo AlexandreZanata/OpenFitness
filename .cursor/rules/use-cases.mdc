@@ -1,0 +1,17 @@
+---
+description: Use cases documented before code — actor, flows, rules, and events
+alwaysApply: true
+---
+
+# Use Cases Documented Before Code
+
+Each use case defines:
+
+- **Actor** — who executes it
+- **Preconditions** — what must be true beforehand
+- **Main flow** — step-by-step happy path
+- **Alternative flows** — variations and exceptions
+- **Applied rules** — which business rules are enforced
+- **Events raised** — what happens after execution
+
+A use case that is not documented must not be implemented. Document first, then write failing tests, then implement.

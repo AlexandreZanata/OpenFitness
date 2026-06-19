@@ -1,0 +1,22 @@
+---
+description: Explicit state machines for entities that change state over time
+alwaysApply: true
+---
+
+# Explicit State Machines
+
+Any entity that changes state over time must have a documented state machine:
+
+- Possible states are enumerated and finite
+- Valid transitions are declared explicitly (from → to, trigger, permitted role)
+- Invalid transitions raise domain exceptions — never fail silently
+- Terminal states allow no further transitions
+
+The state machine lives in the Domain layer. No outer layer decides the next state directly.
+
+## Example Transition Declaration
+
+| From      | To        | Trigger        | Permitted Role |
+|-----------|-----------|----------------|----------------|
+| `Draft`   | `Active`  | `Publish`      | `Admin`        |
+| `Active`  | `Closed`  | `Close`        | `Admin`        |

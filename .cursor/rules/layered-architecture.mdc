@@ -1,0 +1,25 @@
+---
+description: Layered architecture with unidirectional dependencies and isolated responsibilities
+alwaysApply: true
+---
+
+# Layered Architecture
+
+Code is always organized in layers with isolated responsibilities and unidirectional dependencies:
+
+```
+INTERFACES      → delivery (HTTP, WebSocket, CLI, mobile, UI)
+APPLICATION     → orchestration (use cases, commands, queries, handlers)
+DOMAIN          → pure business rules (entities, aggregates, events)
+INFRASTRUCTURE  → external implementations (database, cache, APIs, queues)
+```
+
+## Absolute Rule
+
+Inner layers **never** depend on outer layers.
+
+- Domain does not know about databases
+- Application does not know about HTTP
+- Interface does not contain business logic
+
+Dependencies flow inward only: Interfaces → Application → Domain ← Infrastructure (Infrastructure implements Domain/Application ports).

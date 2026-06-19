@@ -1,0 +1,16 @@
+---
+description: RBAC + ABAC access control with tenant isolation
+alwaysApply: true
+---
+
+# Access Control (RBAC + ABAC)
+
+- Roles are defined in the domain with business semantics (`Auditor`, `Tutor`, `Admin`) — not generic strings
+- The permission matrix is explicitly documented per action × role
+- Beyond role (RBAC), access may depend on contextual attributes (ABAC): e.g., a clinic only sees an animal currently under its care
+- Authorization is verified in the Application layer **before** any domain operation
+- In multi-tenant systems, tenant isolation is verified on **every** request — no exceptions
+
+## Permission Matrix
+
+Document every protected action with required role(s) and attribute conditions before implementation.
