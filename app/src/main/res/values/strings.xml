@@ -1,5 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">OpenFitness</string>
-    <string name="app_placeholder">OpenFitness — implementation in progress</string>
+
+    <string name="nav_exercises">Exercises</string>
+    <string name="nav_workout">Workout</string>
+    <string name="nav_history">History</string>
+    <string name="nav_records">Records</string>
+
+    <string name="exercise_library_title">Exercises</string>
+    <string name="exercise_library_empty">No exercises found</string>
+    <string name="exercise_library_add">Add exercise</string>
+    <string name="exercise_library_search">Search exercises</string>
+    <string name="exercise_name_label">Exercise name</string>
+    <string name="edit_exercise_title">Edit exercise</string>
+
+    <string name="templates_title">Workout</string>
+    <string name="templates_empty">No templates yet</string>
+    <string name="templates_add">New template</string>
+    <string name="templates_quick_start">Quick start</string>
+    <string name="templates_exercise_count">%1$d exercises</string>
+    <string name="template_name_label">Template name</string>
+    <string name="edit_template_title">Edit template</string>
+
+    <string name="active_session_title">Active session</string>
+    <string name="active_session_weight">Weight (kg)</string>
+    <string name="active_session_reps">Reps</string>
+    <string name="active_session_log_set">Log set</string>
+    <string name="active_session_finish">Finish workout</string>
+    <string name="active_session_finish_confirm_title">Finish this workout?</string>
+    <string name="active_session_complete_title">Workout complete</string>
+    <string name="active_session_rest_timer">Rest: %1$ds</string>
+    <string name="active_session_set_line">Set %1$d — %2$.1f kg × %3$d</string>
+    <string name="edit_set_title">Edit set</string>
+
+    <string name="history_title">History</string>
+    <string name="history_empty_title">No workouts yet</string>
+    <string name="history_empty_cta">Start a workout</string>
+    <string name="history_last_workout">Last workout: %1$s</string>
+    <string name="history_session_line">%1$s — %2$d sets</string>
+    <string name="correct_record_title">Correct entry</string>
+    <string name="correct_record_reason">Reason</string>
+
+    <string name="personal_records_title">Personal records</string>
+    <string name="personal_records_empty">No personal records yet</string>
+    <string name="personal_record_line">%1$s — %2$s: %3$.1f</string>
+    <string name="pr_new_badge">New PR!</string>
+
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_retry">Retry</string>
+
+    <string name="error_validation">Please check your input and try again.</string>
+    <string name="error_not_found">Item not found.</string>
+    <string name="error_storage">Could not save data. Try again.</string>
+    <string name="error_session_in_progress">A workout is already in progress.</string>
+    <string name="error_duplicate_exercise_name">An exercise named %1$s already exists.</string>
+    <string name="error_invalid_state">Cannot change from %1$s to %2$s.</string>
+    <string name="error_session_completed">Completed workouts cannot be edited directly.</string>
+
+    <string name="muscle_group_chest">Chest</string>
+    <string name="muscle_group_back">Back</string>
+    <string name="muscle_group_shoulders">Shoulders</string>
+    <string name="muscle_group_biceps">Biceps</string>
+    <string name="muscle_group_triceps">Triceps</string>
+    <string name="muscle_group_legs">Legs</string>
+    <string name="muscle_group_core">Core</string>
+    <string name="muscle_group_full_body">Full body</string>
+    <string name="muscle_group_cardio">Cardio</string>
+
+    <string name="equipment_barbell">Barbell</string>
+    <string name="equipment_dumbbell">Dumbbell</string>
+    <string name="equipment_machine">Machine</string>
+    <string name="equipment_cable">Cable</string>
+    <string name="equipment_bodyweight">Bodyweight</string>
+    <string name="equipment_other">Other</string>
 </resources>

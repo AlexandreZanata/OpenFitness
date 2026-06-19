@@ -11,6 +11,13 @@ import com.openfitness.domain.valueobject.RepCount
 import com.openfitness.domain.valueobject.TemplateId
 import com.openfitness.domain.valueobject.Weight
 import java.time.Instant
+import kotlinx.coroutines.flow.Flow
+
+class ListWorkoutTemplatesUseCase(
+    private val repo: WorkoutTemplateRepository,
+) {
+    operator fun invoke(): Flow<List<WorkoutTemplate>> = repo.observeAll()
+}
 
 class CreateWorkoutTemplateUseCase(
     private val repo: WorkoutTemplateRepository,

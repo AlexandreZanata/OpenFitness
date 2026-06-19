@@ -59,6 +59,10 @@ interface CatalogSeeder {
     suspend fun isSeeded(): Boolean
 }
 
+interface UserPreferencesRepository {
+    fun observeRestTimerSeconds(): Flow<Int>
+}
+
 interface TransactionRunner {
     suspend fun <T> run(block: suspend () -> T): T
 }

@@ -17,15 +17,17 @@ import com.openfitness.data.repository.ExerciseRepositoryImpl
 import com.openfitness.data.repository.PersonalRecordRepositoryImpl
 import com.openfitness.data.repository.RecordCorrectionRepositoryImpl
 import com.openfitness.data.repository.SetLogRepositoryImpl
+import com.openfitness.data.repository.UserPreferencesRepositoryImpl
 import com.openfitness.data.repository.WorkoutSessionRepositoryImpl
 import com.openfitness.data.repository.WorkoutTemplateRepositoryImpl
+import com.openfitness.domain.repository.UserPreferencesRepository
 import com.openfitness.domain.repository.CatalogSeeder
 import com.openfitness.domain.repository.ExerciseRepository
 import com.openfitness.domain.repository.PersonalRecordRepository
 import com.openfitness.domain.repository.RecordCorrectionRepository
 import com.openfitness.domain.repository.SetLogRepository
-import com.openfitness.domain.repository.WorkoutSessionRepository
 import com.openfitness.domain.repository.TransactionRunner
+import com.openfitness.domain.repository.WorkoutSessionRepository
 import com.openfitness.domain.repository.WorkoutTemplateRepository
 import dagger.Binds
 import dagger.Module
@@ -87,4 +89,7 @@ abstract class RepositoryModule {
 
     @Binds @Singleton
     abstract fun bindTransactionRunner(impl: RoomTransactionRunner): TransactionRunner
+
+    @Binds @Singleton
+    abstract fun bindUserPreferencesRepository(impl: UserPreferencesRepositoryImpl): UserPreferencesRepository
 }
