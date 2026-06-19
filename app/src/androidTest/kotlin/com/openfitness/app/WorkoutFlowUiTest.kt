@@ -80,8 +80,63 @@ class WorkoutFlowUiTest {
         composeRule.onNodeWithTag("edit_set_reps").performTextReplacement("12")
         composeRule.onNodeWithTag("edit_set_confirm").performClick()
 
+    @Test
+    fun correctCompletedSet_appendsCorrectionInHistory() {
+        composeRule.waitUntil(timeoutMillis = 15_000) {
+            composeRule.onAllNodesWithTag("start_quick_workout").fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeRule.onNodeWithTag("start_quick_workout").performClick()
+
         composeRule.waitUntil(timeoutMillis = 10_000) {
-            composeRule.onAllNodesWithText("55.0").fetchSemanticsNodes().isNotEmpty()
+            composeRule.onAllNodesWithTag("weight_input").fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeRule.onNodeWithTag("weight_input").performTextInput("50")
+        composeRule.onNodeWithTag("reps_input").performTextInput("10")
+        composeRule.onNodeWithTag("log_set_button").performClick()
+
+        composeRule.waitUntil(timeoutMillis = 10_000) {
+            composeRule.onAllNodesWithTag("set_log_item").fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeRule.onNodeWithTag("finish_workout_button").performClick()
+        composeRule.onNodeWithTag("confirm_finish_button").performClick()
+
+        composeRule.waitUntil(timeoutMillis = 10_000) {
+            composeRule.onAllNodesWithTag("session_summary").fetchSemanticsNodes().isNotEmpty()
+        }
+
+        androidx.test.espresso.Espresso.pressBack()
+
+        composeRule.waitUntil(timeoutMillis = 10_000) {
+            composeRule.onAllNodesWithTag("nav_history").fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeRule.onNodeWithTag("nav_history").performClick()
+
+        composeRule.waitUntil(timeoutMillis = 10_000) {
+            composeRule.onAllNodesWithTag("history_session_item").fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeRule.onNodeWithTag("history_session_item").performClick()
+
+        composeRule.waitUntil(timeoutMillis = 10_000) {
+            composeRule.onAllNodesWithTag("history_session_detail").fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeRule.onNodeWithTag("correct_set_button").performClick()
+
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            composeRule.onAllNodesWithTag("correct_record_confirm").fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeRule.onNodeWithTag("correct_record_weight").performTextReplacement("55")
+        composeRule.onNodeWithTag("correct_record_reps").performTextReplacement("12")
+        composeRule.onNodeWithTag("correct_record_confirm").performClick()
+
+        composeRule.waitUntil(timeoutMillis = 10_000) {
+            composeRule.onAllNodesWithTag("history_correction_item").fetchSemanticsNodes().isNotEmpty()
         }
     }
 }

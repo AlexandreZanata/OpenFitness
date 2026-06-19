@@ -11,6 +11,7 @@ import com.openfitness.application.usecase.preferences.ObserveRestTimerUseCase
 import com.openfitness.application.usecase.session.CompleteWorkoutSessionUseCase
 import com.openfitness.application.usecase.session.CorrectCompletedSetUseCase
 import com.openfitness.application.usecase.session.EditSetUseCase
+import com.openfitness.application.usecase.session.GetRecordCorrectionsUseCase
 import com.openfitness.application.usecase.session.GetWorkoutSessionUseCase
 import com.openfitness.application.usecase.session.LogSetUseCase
 import com.openfitness.application.usecase.session.StartWorkoutSessionUseCase
@@ -87,6 +88,10 @@ object UseCaseModule {
     @Provides @Singleton
     fun provideGetWorkoutSessionUseCase(repo: WorkoutSessionRepository): GetWorkoutSessionUseCase =
         GetWorkoutSessionUseCase(repo)
+
+    @Provides @Singleton
+    fun provideGetRecordCorrectionsUseCase(repo: RecordCorrectionRepository): GetRecordCorrectionsUseCase =
+        GetRecordCorrectionsUseCase(repo)
 
     @Provides @Singleton
     fun provideLogSetUseCase(

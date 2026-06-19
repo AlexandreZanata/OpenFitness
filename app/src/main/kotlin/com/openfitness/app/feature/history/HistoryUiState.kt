@@ -11,6 +11,26 @@ data class HistorySessionUiModel(
     val totalSets: Int,
 )
 
+data class HistoryCorrectionUiModel(
+    val weightKg: Double?,
+    val reps: Int?,
+    val reason: String?,
+)
+
+data class HistorySetLogUiModel(
+    val id: SetLogId,
+    val setNumber: Int,
+    val weightKg: Double?,
+    val reps: Int?,
+    val corrections: List<HistoryCorrectionUiModel>,
+)
+
+data class HistorySessionDetailUiModel(
+    val id: SessionId,
+    val completedAt: Instant?,
+    val setLogs: List<HistorySetLogUiModel>,
+)
+
 data class HistoryUiState(
     val sessions: List<HistorySessionUiModel> = emptyList(),
     val lastWorkoutLabel: String? = null,
@@ -18,6 +38,8 @@ data class HistoryUiState(
     val isEmpty: Boolean = false,
     val error: AppError? = null,
     val selectedSessionId: SessionId? = null,
+    val selectedSessionDetail: HistorySessionDetailUiModel? = null,
+    val isLoadingDetail: Boolean = false,
     val showCorrectDialog: Boolean = false,
     val correctingSetLogId: SetLogId? = null,
 )

@@ -5,8 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.openfitness.application.error.AppError
 import com.openfitness.application.error.UseCaseResult
 import com.openfitness.application.usecase.session.CorrectCompletedSetUseCase
+import com.openfitness.application.usecase.session.GetRecordCorrectionsUseCase
 import com.openfitness.application.usecase.session.GetWorkoutSessionUseCase
 import com.openfitness.application.usecase.history.ViewWorkoutHistoryUseCase
+import com.openfitness.domain.model.RecordCorrection
+import com.openfitness.domain.model.SetLog
+import com.openfitness.domain.valueobject.SessionId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -21,6 +25,7 @@ import kotlinx.coroutines.launch
 class HistoryViewModel @Inject constructor(
     private val viewWorkoutHistoryUseCase: ViewWorkoutHistoryUseCase,
     private val getWorkoutSessionUseCase: GetWorkoutSessionUseCase,
+    private val getRecordCorrectionsUseCase: GetRecordCorrectionsUseCase,
     private val correctCompletedSetUseCase: CorrectCompletedSetUseCase,
 ) : ViewModel() {
 
@@ -62,8 +67,14 @@ class HistoryViewModel @Inject constructor(
     fun onEvent(event: HistoryEvent) {
         when (event) {
             HistoryEvent.Retry -> _uiState.update { it.copy(isLoading = true, error = null) }
-            is HistoryEvent.SelectSession -> _uiState.update { it.copy(selectedSessionId = event.sessionId) }
-            HistoryEvent.DismissDetail -> _uiState.update { it.copy(selectedSessionId = null) }
+            is HistoryEvent.SelectSession -> loadSessionDetail(event.sessionId)
+            HistoryEvent.DismissDetail -> _uiState.update {
+                it.copy(
+                    selectedSessionId = null,
+                    selectedSessionDetail = null,
+                    isLoadingDetail = false,
+                )
+            }
             is HistoryEvent.ShowCorrectDialog -> _uiState.update {
                 it.copy(showCorrectDialog = true, correctingSetLogId = event.setLogId)
             }
@@ -71,6 +82,38 @@ class HistoryViewModel @Inject constructor(
                 it.copy(showCorrectDialog = false, correctingSetLogId = null)
             }
             is HistoryEvent.ConfirmCorrection -> correctSet(event)
+        }
+    }
+
+    private fun loadSessionDetail(sessionId: SessionId) {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    selectedSessionId = sessionId,
+                    selectedSessionDetail = null,
+                    isLoadingDetail = true,
+                    error = null,
+                )
+            }
+            val session = getWorkoutSessionUseCase(sessionId)
+            if (session == null) {
+                _uiState.update {
+                    it.copy(
+                        isLoadingDetail = false,
+                        error = AppError.NotFound,
+                        selectedSessionId = null,
+                    )
+                }
+                return@launch
+            }
+            val corrections = getRecordCorrectionsUseCase(sessionId)
+            val detail = toSessionDetail(session.id, session.setLogs, corrections, session.completedAt)
+            _uiState.update {
+                it.copy(
+                    selectedSessionDetail = detail,
+                    isLoadingDetail = false,
+                )
+            }
         }
     }
 
@@ -87,11 +130,42 @@ class HistoryViewModel @Inject constructor(
                     reason = event.reason,
                 )
             ) {
-                is UseCaseResult.Success -> _uiState.update {
-                    it.copy(showCorrectDialog = false, correctingSetLogId = null, error = null)
+                is UseCaseResult.Success -> {
+                    _uiState.update {
+                        it.copy(showCorrectDialog = false, correctingSetLogId = null, error = null)
+                    }
+                    loadSessionDetail(sessionId)
                 }
                 is UseCaseResult.Failure -> _uiState.update { it.copy(error = result.error) }
             }
         }
+    }
+
+    private fun toSessionDetail(
+        sessionId: SessionId,
+        setLogs: List<SetLog>,
+        corrections: List<RecordCorrection>,
+        completedAt: java.time.Instant?,
+    ): HistorySessionDetailUiModel {
+        val correctionsBySet = corrections.groupBy { it.originalSetLogId }
+        return HistorySessionDetailUiModel(
+            id = sessionId,
+            completedAt = completedAt,
+            setLogs = setLogs.sortedBy { it.setNumber }.map { setLog ->
+                HistorySetLogUiModel(
+                    id = setLog.id,
+                    setNumber = setLog.setNumber,
+                    weightKg = setLog.weight?.kilograms,
+                    reps = setLog.reps?.value,
+                    corrections = correctionsBySet[setLog.id].orEmpty().map { correction ->
+                        HistoryCorrectionUiModel(
+                            weightKg = correction.correctedWeight?.kilograms,
+                            reps = correction.correctedReps?.value,
+                            reason = correction.reason,
+                        )
+                    },
+                )
+            },
+        )
     }
 }
