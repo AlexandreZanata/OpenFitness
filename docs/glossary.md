@@ -15,6 +15,7 @@ Ubiquitous language for OpenFitness. Code, documentation, and UI i18n keys must 
 | **Personal Record (PR)** | The best performance logged for an exercise on a given metric (max weight, max reps at weight). Updated only when a session completes. |
 | **Rest Timer** | Countdown between sets during an active session. UI concern; duration preference stored in DataStore. |
 | **Workout History** | Append-only record of completed sessions. Never edited or deleted — corrections are new entries. |
+| **Record Correction** | Append-only entry that references an original completed set log with corrected weight/reps. Implements BR-009 without mutating history. |
 
 ## Identifiers
 

@@ -13,6 +13,8 @@ Explicit, named, testable business rules. Each rule is documented in business la
 | BR-005 | [PR only on session completion](BR-005-pr-only-on-session-completion.md) | PersonalRecord |
 | BR-006 | [Immutable workout history](BR-006-immutable-workout-history.md) | WorkoutSession, SetLog, PersonalRecord |
 | BR-007 | [Bundled exercise immutability](BR-007-bundled-exercise-immutability.md) | Exercise |
+| BR-008 | [Set editable in progress only](BR-008-set-editable-in-progress-only.md) | WorkoutSession, SetLog |
+| BR-009 | [Correction via new record](BR-009-correction-via-new-record.md) | RecordCorrection |
 
 ## Standard Format
 

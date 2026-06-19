@@ -15,5 +15,23 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Run unit tests
-        run: ./gradlew test --no-daemon
+      - name: Run unit tests and domain coverage gate
+        run: ./gradlew test :domain:jacocoTestCoverageVerification --no-daemon
+      - name: Archive domain JaCoCo report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: domain-jacoco-report
+          path: domain/build/reports/jacoco/test/
+          retention-days: 30
+
+  release-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Build release APK and verify size limit
+        run: ./gradlew :app:assembleRelease :app:verifyReleaseApkSize --no-daemon

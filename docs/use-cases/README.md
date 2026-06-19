@@ -13,6 +13,10 @@ Product flows documented before implementation. **Undocumented use cases must no
 | UC-005 | [Complete Workout Session](UC-005-complete-workout-session.md) | User |
 | UC-006 | [View Workout History](UC-006-view-workout-history.md) | User |
 | UC-007 | [View Personal Records](UC-007-view-personal-records.md) | User |
+| UC-008 | [Edit Set During Session](UC-008-edit-set-during-session.md) | User |
+| UC-009 | [Edit Workout Template](UC-009-edit-workout-template.md) | User |
+| UC-010 | [Edit Custom Exercise](UC-010-edit-custom-exercise.md) | User |
+| UC-011 | [Correct Completed Set](UC-011-correct-completed-set.md) | User |
 
 ## Template
 
@@ -29,3 +33,7 @@ Each use case file contains: Actor, Preconditions, Main flow, Alternative flows,
 | UC-005 | `CompleteWorkoutSessionUseCase` |
 | UC-006 | `ViewWorkoutHistoryUseCase` |
 | UC-007 | `ViewPersonalRecordsUseCase` |
+| UC-008 | `EditSetUseCase` |
+| UC-009 | `UpdateWorkoutTemplateUseCase` |
+| UC-010 | `UpdateCustomExerciseUseCase` |
+| UC-011 | `CorrectCompletedSetUseCase` |
