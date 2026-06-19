@@ -70,10 +70,14 @@ dependencies {
     ksp(libs.hilt.work.compiler)
 
     testImplementation(libs.junit.jupiter)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation("org.json:json:20240303")
     testImplementation(libs.kxml2)
     testImplementation("com.squareup.okhttp3:mockwebserver:${libs.versions.okhttp.get()}")
 
     androidTestImplementation("androidx.test:core:1.6.1")
+    androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.room.testing)
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Bench Press",
+    "primaryMuscleGroup": "CHEST",
+    "equipmentType": "BARBELL"
+  },
+  {
+    "name": "Squat",
+    "primaryMuscleGroup": "LEGS",
+    "equipmentType": "BARBELL"
+  },
+  {
+    "name": "Deadlift",
+    "primaryMuscleGroup": "BACK",
+    "equipmentType": "BARBELL"
+  },
+  {
+    "name": "Pull Up",
+    "primaryMuscleGroup": "BACK",
+    "equipmentType": "BODYWEIGHT"
+  },
+  {
+    "name": "Overhead Press",
+    "primaryMuscleGroup": "SHOULDERS",
+    "equipmentType": "BARBELL"
+  }
+]

@@ -102,6 +102,20 @@ PK: (`exercise_id`, `metric`)
 
 Append-only — BR-006.
 
+### `record_corrections`
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | TEXT PK | UUID string |
+| `session_id` | TEXT FK | Completed session only (BR-009) |
+| `original_set_log_id` | TEXT FK | Set log being corrected |
+| `corrected_weight_kg` | REAL NULL | |
+| `corrected_reps` | INTEGER NULL | |
+| `reason` | TEXT | User-provided note |
+| `created_at` | INTEGER | Epoch millis |
+
+Append-only — BR-009. No `UPDATE`/`DELETE` DAO methods.
+
 ## Immutability Enforcement
 
 - No `UPDATE`/`DELETE` DAO methods for rows where parent session `status = COMPLETED`
