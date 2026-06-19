@@ -4,6 +4,7 @@ import android.content.Context
 import com.openfitness.data.local.dao.ExerciseDao
 import com.openfitness.data.mapper.ExerciseMapper
 import com.openfitness.data.parser.BundledExerciseCatalogParser
+import com.openfitness.data.preferences.UserPreferencesDataStore
 import com.openfitness.domain.model.Exercise
 import com.openfitness.domain.repository.CatalogSeeder
 import com.openfitness.domain.repository.ExerciseRepository
@@ -43,10 +44,19 @@ class CatalogSeederImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val exerciseDao: ExerciseDao,
     private val parser: BundledExerciseCatalogParser,
+    private val preferences: UserPreferencesDataStore,
 ) : CatalogSeeder {
 
     override suspend fun isSeeded(): Boolean = withContext(Dispatchers.IO) {
-        exerciseDao.count() > 0
+        if (preferences.isCatalogSeeded()) {
+            return@withContext true
+        }
+        if (exerciseDao.count() > 0) {
+            preferences.setCatalogSeeded(true)
+            true
+        } else {
+            false
+        }
     }
 
     override suspend fun seedIfEmpty() = withContext(Dispatchers.IO) {
@@ -56,5 +66,6 @@ class CatalogSeederImpl @Inject constructor(
             .use { it.readText() }
         val exercises = parser.parse(json)
         exerciseDao.upsertAll(exercises.map(ExerciseMapper::toEntity))
+        preferences.setCatalogSeeded(true)
     }
 }

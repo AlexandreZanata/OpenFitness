@@ -10,7 +10,9 @@ import com.openfitness.data.local.dao.SetLogDao
 import com.openfitness.data.local.dao.WorkoutSessionDao
 import com.openfitness.data.local.dao.WorkoutTemplateDao
 import com.openfitness.data.parser.BundledExerciseCatalogParser
+import com.openfitness.data.preferences.UserPreferencesDataStore
 import com.openfitness.data.repository.CatalogSeederImpl
+import com.openfitness.data.transaction.RoomTransactionRunner
 import com.openfitness.data.repository.ExerciseRepositoryImpl
 import com.openfitness.data.repository.PersonalRecordRepositoryImpl
 import com.openfitness.data.repository.RecordCorrectionRepositoryImpl
@@ -23,6 +25,7 @@ import com.openfitness.domain.repository.PersonalRecordRepository
 import com.openfitness.domain.repository.RecordCorrectionRepository
 import com.openfitness.domain.repository.SetLogRepository
 import com.openfitness.domain.repository.WorkoutSessionRepository
+import com.openfitness.domain.repository.TransactionRunner
 import com.openfitness.domain.repository.WorkoutTemplateRepository
 import dagger.Binds
 import dagger.Module
@@ -81,4 +84,7 @@ abstract class RepositoryModule {
 
     @Binds @Singleton
     abstract fun bindRecordCorrectionRepository(impl: RecordCorrectionRepositoryImpl): RecordCorrectionRepository
+
+    @Binds @Singleton
+    abstract fun bindTransactionRunner(impl: RoomTransactionRunner): TransactionRunner
 }

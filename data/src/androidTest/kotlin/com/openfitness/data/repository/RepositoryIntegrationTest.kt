@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.openfitness.data.local.OpenFitnessDatabase
 import com.openfitness.data.parser.BundledExerciseCatalogParser
+import com.openfitness.data.preferences.UserPreferencesDataStore
 import com.openfitness.domain.exception.ImmutableRecordException
 import com.openfitness.domain.model.Exercise
 import com.openfitness.domain.model.SessionExercise
@@ -43,7 +44,8 @@ class RepositoryIntegrationTest {
             .allowMainThreadQueries()
             .build()
         exerciseRepository = ExerciseRepositoryImpl(database.exerciseDao())
-        catalogSeeder = CatalogSeederImpl(context, database.exerciseDao(), BundledExerciseCatalogParser())
+        val preferences = UserPreferencesDataStore(context)
+        catalogSeeder = CatalogSeederImpl(context, database.exerciseDao(), BundledExerciseCatalogParser(), preferences)
         sessionRepository = WorkoutSessionRepositoryImpl(
             database,
             database.workoutSessionDao(),
