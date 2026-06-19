@@ -1,0 +1,29 @@
+# Changelog
+
+All notable changes to this project are documented in this file.
+
+Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
+## [Unreleased]
+
+### Added
+
+- Project scaffold: Gradle multi-module (`:domain`, `:application`, `:data`, `:app`)
+- Technical documentation in `docs/` (architecture, entities, business rules, use cases, contracts)
+- Cursor agent rules in `.cursor/rules/`
+- Local implementation tracker in `.local/` (gitignored)
+- CI workflow (GitHub Actions)
+- MIT License
+
+## [1.0.0] - TBD
+
+### Planned
+
+- Exercise library (bundled + custom)
+- Workout templates and active sessions
+- Set logging with personal records
+- Immutable workout history
+- i18n: English (default) and Brazilian Portuguese
+
+[Unreleased]: https://github.com/AlexandreZanata/OpenFitness/compare/main...HEAD
+[1.0.0]: https://github.com/AlexandreZanata/OpenFitness/releases/tag/v1.0.0
