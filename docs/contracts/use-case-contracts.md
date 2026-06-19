@@ -79,6 +79,56 @@ class ViewPersonalRecordsUseCase(private val repo: PersonalRecordRepository) {
 }
 ```
 
+## Record Editing
+
+```kotlin
+class EditSetUseCase(
+    private val sessionRepo: WorkoutSessionRepository,
+    private val transactionRunner: TransactionRunner,
+) {
+    suspend operator fun invoke(
+        sessionId: SessionId,
+        setLogId: SetLogId,
+        weightKg: Double?,
+        reps: Int?,
+    ): Result<SetLog, AppError>
+}
+
+class UpdateWorkoutTemplateUseCase(private val repo: WorkoutTemplateRepository) {
+    suspend operator fun invoke(
+        templateId: TemplateId,
+        name: String?,
+        exercises: List<TemplateExerciseInput>?,
+    ): Result<WorkoutTemplate, AppError>
+}
+
+class UpdateCustomExerciseUseCase(
+    private val repo: ExerciseRepository,
+    private val uniquenessRule: ExerciseNameUniquenessRule,
+) {
+    suspend operator fun invoke(
+        exerciseId: ExerciseId,
+        name: String,
+        muscleGroup: MuscleGroup,
+        equipment: EquipmentType,
+    ): Result<Exercise, AppError>
+}
+
+class CorrectCompletedSetUseCase(
+    private val sessionRepo: WorkoutSessionRepository,
+    private val correctionRepo: RecordCorrectionRepository,
+    private val transactionRunner: TransactionRunner,
+) {
+    suspend operator fun invoke(
+        sessionId: SessionId,
+        originalSetLogId: SetLogId,
+        weightKg: Double?,
+        reps: Int?,
+        reason: String?,
+    ): Result<RecordCorrection, AppError>
+}
+```
+
 ## Result Type
 
 ```kotlin
