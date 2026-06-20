@@ -8,10 +8,20 @@ Immutable, self-validating types. Invalid values **never exist** as objects — 
 |--------------|----------|
 | ExerciseId | [exercise-id.md](exercise-id.md) |
 | SessionId | [session-id.md](session-id.md) |
+| SetLogId | inline — UUID v4, domain-generated |
+| TemplateId | inline — UUID v4, domain-generated |
 | Weight | [weight.md](weight.md) |
 | RepCount | [rep-count.md](rep-count.md) |
 | Duration | [duration.md](duration.md) |
 | MuscleGroup | [muscle-group.md](muscle-group.md) |
+
+## Enums (not value objects)
+
+Defined in `docs/glossary.md`, not inline-validated VOs:
+
+- `EquipmentType`
+- `SessionStatus`
+- `PersonalRecordMetric`
 
 ## Shared Properties
 

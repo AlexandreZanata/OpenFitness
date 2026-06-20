@@ -57,6 +57,27 @@ interface PersonalRecordRepository {
 }
 ```
 
+## RecordCorrectionRepository
+
+```kotlin
+interface RecordCorrectionRepository {
+    suspend fun findBySession(sessionId: SessionId): List<RecordCorrection>
+    suspend fun save(correction: RecordCorrection)
+}
+```
+
+Append-only persistence for BR-009. No update or delete methods.
+
+## UserPreferencesRepository
+
+```kotlin
+interface UserPreferencesRepository {
+    fun observeRestTimerSeconds(): Flow<Int>
+}
+```
+
+Implemented in `:data` via DataStore. Keys defined in [database-schema.md](database-schema.md) § DataStore Preferences.
+
 ## CatalogSeeder (infrastructure port)
 
 ```kotlin

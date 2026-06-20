@@ -8,6 +8,7 @@ Immutable facts that **already happened**. Names are always past tense.
 |-------|-----------|----------|
 | `WorkoutSessionStarted` | WorkoutSession | [workout-session-started.md](workout-session-started.md) |
 | `SetLogged` | WorkoutSession | [set-logged.md](set-logged.md) |
+| `SetLogUpdated` | WorkoutSession | [set-log-updated.md](set-log-updated.md) |
 | `WorkoutSessionCompleted` | WorkoutSession | [workout-session-completed.md](workout-session-completed.md) |
 | `PersonalRecordAchieved` | PersonalRecord | [personal-record-achieved.md](personal-record-achieved.md) |
 

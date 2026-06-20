@@ -11,6 +11,7 @@ Domain entities and aggregates for OpenFitness. Each file documents one aggregat
 | WorkoutSession | Yes | [workout-session.md](workout-session.md) |
 | SetLog | No (child of WorkoutSession) | [set-log.md](set-log.md) |
 | PersonalRecord | Yes | [personal-record.md](personal-record.md) |
+| RecordCorrection | Yes (append-only) | [record-correction.md](record-correction.md) |
 
 ## Aggregate Map
 
@@ -27,6 +28,9 @@ WorkoutSession (root)
 
 PersonalRecord (root)
  └── (standalone — keyed by exercise + metric)
+
+RecordCorrection (root)
+ └── (append-only — references original SetLog, never mutates it)
 ```
 
 ## Shared Rules

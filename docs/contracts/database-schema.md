@@ -15,7 +15,7 @@ Room schema for `:data`. Version **1** — migrations required for changes.
 | `is_custom` | INTEGER | Boolean |
 | `created_at` | INTEGER | Epoch millis |
 
-**FTS:** `exercises_fts` virtual table (FTS5) synced via Room trigger.
+**Search:** `ExerciseDao.search()` uses SQL `LIKE '%' || :query || '%' COLLATE NOCASE` with optional `primary_muscle_group` filter. Index on `name` supports prefix scans; full FTS5 deferred to v1.1 if catalog size grows.
 
 ### `workout_templates`
 

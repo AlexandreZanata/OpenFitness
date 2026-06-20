@@ -136,3 +136,33 @@ typealias UseCaseResult<T> = Result<T, AppError>
 ```
 
 Domain exceptions are caught inside use cases and mapped to `AppError` — never leaked to UI raw.
+
+## Helper Use Cases
+
+Query and bootstrap helpers injected alongside primary use cases:
+
+```kotlin
+class GetWorkoutSessionUseCase(private val sessionRepo: WorkoutSessionRepository) {
+    suspend operator fun invoke(sessionId: SessionId): WorkoutSession?
+}
+
+class GetRecordCorrectionsUseCase(private val correctionRepo: RecordCorrectionRepository) {
+    suspend operator fun invoke(sessionId: SessionId): List<RecordCorrection>
+}
+
+class ListWorkoutTemplatesUseCase(private val repo: WorkoutTemplateRepository) {
+    operator fun invoke(): Flow<List<WorkoutTemplate>>
+}
+
+class GetExerciseUseCase(private val repo: ExerciseRepository) {
+    suspend operator fun invoke(id: ExerciseId): Exercise?
+}
+
+class SeedCatalogUseCase(private val catalogSeeder: CatalogSeeder) {
+    suspend operator fun invoke()
+}
+
+class ObserveRestTimerUseCase(private val preferences: UserPreferencesRepository) {
+    operator fun invoke(): Flow<Int>
+}
+```
