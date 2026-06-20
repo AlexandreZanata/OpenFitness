@@ -29,6 +29,25 @@ class PersonalRecordEvaluationRuleTest {
     }
 
     @Test
+    fun `GIVEN cancelled session WHEN evaluate THEN no PR update`() {
+        val sessionId = com.openfitness.domain.valueobject.SessionId.generate()
+        var session = WorkoutSession.restore(
+            id = sessionId,
+            templateId = null,
+            status = com.openfitness.domain.valueobject.SessionStatus.IN_PROGRESS,
+            exercises = listOf(SessionExercise(exerciseId, 0)),
+            setLogs = emptyList(),
+            startedAt = instant,
+            completedAt = null,
+            cancelledAt = null,
+        )
+        val setLog = SetLog.create(sessionId, exerciseId, 1, Weight.fromKilograms(120.0), RepCount(5), instant)
+        session = session.logSet(setLog).cancel(instant)
+        val results = rule.evaluate(session, emptyMap(), instant)
+        assertTrue(results.isEmpty())
+    }
+
+    @Test
     fun `GIVEN completed session beating PR WHEN evaluate THEN NewRecord`() {
         val sessionId = com.openfitness.domain.valueobject.SessionId.generate()
         var session = WorkoutSession.restore(
@@ -42,7 +61,7 @@ class PersonalRecordEvaluationRuleTest {
             cancelledAt = null,
         )
         val setLog = SetLog.create(sessionId, exerciseId, 1, Weight.fromKilograms(120.0), RepCount(5), instant)
-        session = session.logSet(setLog)
+        session = session.logSet(setLog).complete(instant)
         val results = rule.evaluate(session, emptyMap(), instant)
         assertTrue(results.any { it is PersonalRecordUpdateResult.NewRecord })
     }
@@ -61,7 +80,7 @@ class PersonalRecordEvaluationRuleTest {
             cancelledAt = null,
         )
         val setLog = SetLog.create(sessionId, exerciseId, 1, Weight.fromKilograms(80.0), RepCount(5), instant)
-        session = session.logSet(setLog)
+        session = session.logSet(setLog).complete(instant)
         val keyWeight = exerciseId.toString() to PersonalRecordMetric.MAX_WEIGHT
         val keyReps = exerciseId.toString() to PersonalRecordMetric.MAX_REPS
         val current = mapOf(

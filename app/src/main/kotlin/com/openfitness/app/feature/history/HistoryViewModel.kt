@@ -8,6 +8,7 @@ import com.openfitness.application.usecase.session.CorrectCompletedSetUseCase
 import com.openfitness.application.usecase.session.GetRecordCorrectionsUseCase
 import com.openfitness.application.usecase.session.GetWorkoutSessionUseCase
 import com.openfitness.application.usecase.history.ViewWorkoutHistoryUseCase
+import com.openfitness.application.usecase.preferences.ObserveWeightUnitUseCase
 import com.openfitness.domain.model.RecordCorrection
 import com.openfitness.domain.model.SetLog
 import com.openfitness.domain.valueobject.SessionId
@@ -27,12 +28,18 @@ class HistoryViewModel @Inject constructor(
     private val getWorkoutSessionUseCase: GetWorkoutSessionUseCase,
     private val getRecordCorrectionsUseCase: GetRecordCorrectionsUseCase,
     private val correctCompletedSetUseCase: CorrectCompletedSetUseCase,
+    private val observeWeightUnitUseCase: ObserveWeightUnitUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HistoryUiState())
     val uiState: StateFlow<HistoryUiState> = _uiState.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            observeWeightUnitUseCase().collect { unit ->
+                _uiState.update { it.copy(weightUnit = unit) }
+            }
+        }
         viewModelScope.launch {
             viewWorkoutHistoryUseCase()
                 .catch {

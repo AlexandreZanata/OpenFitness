@@ -73,6 +73,7 @@ Append-only persistence for BR-009. No update or delete methods.
 ```kotlin
 interface UserPreferencesRepository {
     fun observeRestTimerSeconds(): Flow<Int>
+    fun observeWeightUnitDisplay(): Flow<String>
 }
 ```
 

@@ -61,6 +61,7 @@ interface CatalogSeeder {
 
 interface UserPreferencesRepository {
     fun observeRestTimerSeconds(): Flow<Int>
+    fun observeWeightUnitDisplay(): Flow<String>
 }
 
 interface TransactionRunner {

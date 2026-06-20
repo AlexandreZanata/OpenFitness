@@ -32,6 +32,7 @@ data class ActiveSessionUiState(
     val editingSetLogId: SetLogId? = null,
     val isCompleted: Boolean = false,
     val newPrCount: Int = 0,
+    val weightUnit: String = "kg",
 )
 
 sealed interface ActiveSessionEvent {

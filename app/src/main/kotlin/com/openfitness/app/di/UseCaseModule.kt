@@ -8,6 +8,7 @@ import com.openfitness.application.usecase.exerciselibrary.UpdateCustomExerciseU
 import com.openfitness.application.usecase.history.ViewPersonalRecordsUseCase
 import com.openfitness.application.usecase.history.ViewWorkoutHistoryUseCase
 import com.openfitness.application.usecase.preferences.ObserveRestTimerUseCase
+import com.openfitness.application.usecase.preferences.ObserveWeightUnitUseCase
 import com.openfitness.application.usecase.session.CompleteWorkoutSessionUseCase
 import com.openfitness.application.usecase.session.CorrectCompletedSetUseCase
 import com.openfitness.application.usecase.session.EditSetUseCase
@@ -134,4 +135,8 @@ object UseCaseModule {
     @Provides @Singleton
     fun provideObserveRestTimerUseCase(repo: UserPreferencesRepository): ObserveRestTimerUseCase =
         ObserveRestTimerUseCase(repo)
+
+    @Provides @Singleton
+    fun provideObserveWeightUnitUseCase(repo: UserPreferencesRepository): ObserveWeightUnitUseCase =
+        ObserveWeightUnitUseCase(repo)
 }

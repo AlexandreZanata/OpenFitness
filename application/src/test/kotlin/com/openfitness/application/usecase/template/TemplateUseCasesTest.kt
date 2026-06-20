@@ -10,8 +10,11 @@ import com.openfitness.domain.valueobject.ExerciseId
 import com.openfitness.domain.valueobject.TemplateId
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import app.cash.turbine.test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
@@ -22,6 +25,21 @@ class TemplateUseCasesTest {
     private val repo: WorkoutTemplateRepository = mockk(relaxed = true)
     private val exerciseId = ExerciseId.generate()
     private val instant = Instant.parse("2026-06-19T10:00:00Z")
+
+    @Test
+    fun `GIVEN templates WHEN list THEN emits from repository`() = runTest {
+        val template = WorkoutTemplate.create(
+            name = "Push Day",
+            exercises = listOf(TemplateExercise(exerciseId, 0, 3)),
+            createdAt = instant,
+        )
+        every { repo.observeAll() } returns flowOf(listOf(template))
+
+        ListWorkoutTemplatesUseCase(repo)().test {
+            assertEquals(listOf(template), awaitItem())
+            awaitComplete()
+        }
+    }
 
     @Test
     fun `GIVEN valid input WHEN create template THEN saves`() = runTest {

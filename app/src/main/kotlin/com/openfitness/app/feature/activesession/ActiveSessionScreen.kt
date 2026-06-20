@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.openfitness.app.R
 import com.openfitness.app.common.component.ErrorContent
 import com.openfitness.app.common.component.LoadingContent
-import com.openfitness.app.common.error.toMessage
+import com.openfitness.app.common.format.WeightDisplayFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,8 +57,9 @@ fun ActiveSessionScreen(
         when {
             state.isLoading -> LoadingContent(Modifier.padding(padding))
             state.error != null -> ErrorContent(
-                message = state.error.toMessage(resources),
+                error = state.error,
                 onRetry = { onEvent(ActiveSessionEvent.Retry) },
+                onDismiss = { onEvent(ActiveSessionEvent.Retry) },
                 modifier = Modifier.padding(padding),
             )
             state.isCompleted -> Column(
@@ -93,7 +94,9 @@ fun ActiveSessionScreen(
                     OutlinedTextField(
                         value = state.weightInput,
                         onValueChange = { onEvent(ActiveSessionEvent.WeightChanged(it)) },
-                        label = { Text(stringResource(R.string.active_session_weight)) },
+                        label = {
+                            Text(WeightDisplayFormatter.weightInputLabel(resources, state.weightUnit))
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .testTag("weight_input"),
@@ -117,12 +120,14 @@ fun ActiveSessionScreen(
                 }
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     items(state.setLogs, key = { it.id.toString() }) { setLog ->
+                        val displayWeight = WeightDisplayFormatter.displayWeightKg(setLog.weightKg, state.weightUnit)
                         Text(
                             text = stringResource(
                                 R.string.active_session_set_line,
                                 setLog.setNumber,
-                                setLog.weightKg ?: 0.0,
+                                displayWeight ?: 0.0,
                                 setLog.reps ?: 0,
+                                WeightDisplayFormatter.unitSuffix(state.weightUnit),
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -175,7 +180,9 @@ fun ActiveSessionScreen(
                     OutlinedTextField(
                         value = weight,
                         onValueChange = { weight = it },
-                        label = { Text(stringResource(R.string.active_session_weight)) },
+                        label = {
+                            Text(WeightDisplayFormatter.weightInputLabel(resources, state.weightUnit))
+                        },
                         modifier = Modifier.testTag("edit_set_weight"),
                     )
                     OutlinedTextField(

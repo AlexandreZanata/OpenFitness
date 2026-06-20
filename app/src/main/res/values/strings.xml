@@ -24,13 +24,15 @@
 
     <string name="active_session_title">Active session</string>
     <string name="active_session_weight">Weight (kg)</string>
+    <string name="active_session_weight_kg">Weight (kg)</string>
+    <string name="active_session_weight_lb">Weight (lb)</string>
     <string name="active_session_reps">Reps</string>
     <string name="active_session_log_set">Log set</string>
     <string name="active_session_finish">Finish workout</string>
     <string name="active_session_finish_confirm_title">Finish this workout?</string>
     <string name="active_session_complete_title">Workout complete</string>
     <string name="active_session_rest_timer">Rest: %1$ds</string>
-    <string name="active_session_set_line">Set %1$d — %2$.1f kg × %3$d</string>
+    <string name="active_session_set_line">Set %1$d — %2$.1f %4$s × %3$d</string>
     <string name="edit_set_title">Edit set</string>
 
     <string name="history_title">History</string>
@@ -40,7 +42,7 @@
     <string name="history_session_line">%1$s — %2$d sets</string>
     <string name="history_detail_title">Session detail</string>
     <string name="history_correct_action">Correct</string>
-    <string name="history_correction_line">Corrected: %1$.1f kg × %2$d</string>
+    <string name="history_correction_line">Corrected: %1$.1f %3$s × %2$d</string>
     <string name="correct_record_title">Correct entry</string>
     <string name="correct_record_reason">Reason</string>
 
@@ -54,6 +56,7 @@
     <string name="action_back">Back</string>
     <string name="action_confirm">Confirm</string>
     <string name="action_retry">Retry</string>
+    <string name="action_dismiss">Dismiss</string>
 
     <string name="error_validation">Please check your input and try again.</string>
     <string name="error_not_found">Item not found.</string>

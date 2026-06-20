@@ -60,8 +60,9 @@ fun TemplatesScreen(
         when {
             state.isLoading -> LoadingContent(Modifier.padding(padding))
             state.error != null -> ErrorContent(
-                message = state.error.toMessage(resources),
+                error = state.error,
                 onRetry = { onEvent(TemplatesEvent.Retry) },
+                onDismiss = { onEvent(TemplatesEvent.Retry) },
                 modifier = Modifier.padding(padding),
             )
             state.isEmpty && firstExerciseId != null -> Column(

@@ -7,6 +7,7 @@ import com.openfitness.application.error.AppError
 import com.openfitness.application.error.UseCaseResult
 import com.openfitness.application.usecase.exerciselibrary.GetExerciseUseCase
 import com.openfitness.application.usecase.preferences.ObserveRestTimerUseCase
+import com.openfitness.application.usecase.preferences.ObserveWeightUnitUseCase
 import com.openfitness.application.usecase.session.CompleteWorkoutSessionUseCase
 import com.openfitness.application.usecase.session.EditSetUseCase
 import com.openfitness.application.usecase.session.GetWorkoutSessionUseCase
@@ -35,6 +36,7 @@ class ActiveSessionViewModel @Inject constructor(
     private val editSetUseCase: EditSetUseCase,
     private val completeWorkoutSessionUseCase: CompleteWorkoutSessionUseCase,
     private val observeRestTimerUseCase: ObserveRestTimerUseCase,
+    private val observeWeightUnitUseCase: ObserveWeightUnitUseCase,
 ) : ViewModel() {
 
     private val sessionId: SessionId = SessionId.fromString(
@@ -50,6 +52,11 @@ class ActiveSessionViewModel @Inject constructor(
     private var restTimerJob: Job? = null
 
     init {
+        viewModelScope.launch {
+            observeWeightUnitUseCase().collect { unit ->
+                _uiState.update { it.copy(weightUnit = unit) }
+            }
+        }
         loadSession()
     }
 

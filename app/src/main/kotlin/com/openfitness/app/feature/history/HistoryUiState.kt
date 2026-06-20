@@ -42,6 +42,7 @@ data class HistoryUiState(
     val isLoadingDetail: Boolean = false,
     val showCorrectDialog: Boolean = false,
     val correctingSetLogId: SetLogId? = null,
+    val weightUnit: String = "kg",
 )
 
 sealed interface HistoryEvent {

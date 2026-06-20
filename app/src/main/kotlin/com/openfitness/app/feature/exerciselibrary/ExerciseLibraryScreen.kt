@@ -66,8 +66,9 @@ fun ExerciseLibraryScreen(
         when {
             state.isLoading -> LoadingContent(Modifier.padding(padding))
             state.error != null -> ErrorContent(
-                message = state.error.toMessage(resources),
+                error = state.error,
                 onRetry = { onEvent(ExerciseLibraryEvent.Retry) },
+                onDismiss = { onEvent(ExerciseLibraryEvent.Retry) },
                 modifier = Modifier.padding(padding),
             )
             state.isEmpty -> EmptyContent(

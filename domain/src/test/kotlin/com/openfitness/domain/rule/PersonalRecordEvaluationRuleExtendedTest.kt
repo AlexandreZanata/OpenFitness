@@ -51,7 +51,7 @@ class PersonalRecordEvaluationRuleExtendedTest {
         )
         session = session.logSet(
             SetLog.create(sessionId, exerciseId, 1, null, RepCount(15), instant),
-        )
+        ).complete(instant)
         val results = rule.evaluate(session, emptyMap(), instant)
         assertTrue(results.isNotEmpty())
         assertTrue(results.all { it is PersonalRecordUpdateResult.NewRecord })

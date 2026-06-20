@@ -216,3 +216,26 @@ class CorrectCompletedSetUseCaseTest {
         coVerify(exactly = 0) { sessionRepo.save(any()) }
     }
 }
+
+class GetRecordCorrectionsUseCaseTest {
+
+    private val correctionRepo: RecordCorrectionRepository = mockk()
+    private val useCase = GetRecordCorrectionsUseCase(correctionRepo)
+    private val sessionId = SessionId.generate()
+
+    @Test
+    fun `GIVEN session corrections WHEN invoke THEN returns list`() = runTest {
+        val correction = com.openfitness.domain.model.RecordCorrection.create(
+            sessionId = sessionId,
+            originalSetLogId = SetLogId.generate(),
+            correctedWeight = Weight.fromKilograms(90.0),
+            correctedReps = RepCount(5),
+            reason = "typo",
+        )
+        coEvery { correctionRepo.findBySession(sessionId) } returns listOf(correction)
+
+        val result = useCase(sessionId)
+
+        assertEquals(listOf(correction), result)
+    }
+}

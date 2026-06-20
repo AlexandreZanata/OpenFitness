@@ -12,4 +12,6 @@ class UserPreferencesRepositoryImpl @Inject constructor(
 ) : UserPreferencesRepository {
 
     override fun observeRestTimerSeconds(): Flow<Int> = preferences.restTimerSeconds
+
+    override fun observeWeightUnitDisplay(): Flow<String> = preferences.weightUnitDisplay
 }

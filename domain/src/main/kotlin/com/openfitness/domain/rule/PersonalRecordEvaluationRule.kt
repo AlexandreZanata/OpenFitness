@@ -6,6 +6,7 @@ import com.openfitness.domain.model.PersonalRecordUpdateResult
 import com.openfitness.domain.model.SetLog
 import com.openfitness.domain.model.WorkoutSession
 import com.openfitness.domain.valueobject.PersonalRecordMetric
+import com.openfitness.domain.valueobject.SessionStatus
 import java.time.Instant
 
 class PersonalRecordEvaluationRule {
@@ -14,6 +15,9 @@ class PersonalRecordEvaluationRule {
         currentRecords: Map<Pair<String, PersonalRecordMetric>, PersonalRecordAggregate>,
         completedAt: Instant,
     ): List<PersonalRecordUpdateResult> {
+        if (session.status != SessionStatus.COMPLETED) {
+            return emptyList()
+        }
         val results = mutableListOf<PersonalRecordUpdateResult>()
         val setsByExercise = session.setLogs.groupBy { it.exerciseId }
 

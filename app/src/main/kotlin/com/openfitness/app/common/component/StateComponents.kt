@@ -15,6 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.openfitness.app.R
+import com.openfitness.application.error.AppError
+import com.openfitness.app.common.error.RecoveryAction
+import com.openfitness.app.common.error.toMessage
+import com.openfitness.app.common.error.toRecoveryAction
 
 @Composable
 fun LoadingContent(modifier: Modifier = Modifier) {
@@ -48,10 +52,16 @@ fun EmptyContent(
 
 @Composable
 fun ErrorContent(
-    message: String,
-    onRetry: (() -> Unit)?,
+    error: AppError,
+    onRetry: (() -> Unit)? = null,
+    onDismiss: (() -> Unit)? = null,
+    onNavigateBack: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
+    val resources = androidx.compose.ui.platform.LocalContext.current.resources
+    val message = error.toMessage(resources)
+    val recovery = error.toRecoveryAction()
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -60,10 +70,23 @@ fun ErrorContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(text = message, style = MaterialTheme.typography.bodyLarge)
-        if (onRetry != null) {
-            Button(onClick = onRetry, modifier = Modifier.padding(top = 16.dp)) {
-                Text(text = stringResource(R.string.action_retry))
+        when (recovery) {
+            RecoveryAction.Retry -> onRetry?.let { handler ->
+                Button(onClick = handler, modifier = Modifier.padding(top = 16.dp)) {
+                    Text(text = stringResource(R.string.action_retry))
+                }
             }
+            RecoveryAction.Dismiss -> onDismiss?.let { handler ->
+                Button(onClick = handler, modifier = Modifier.padding(top = 16.dp)) {
+                    Text(text = stringResource(R.string.action_dismiss))
+                }
+            }
+            RecoveryAction.NavigateBack -> onNavigateBack?.let { handler ->
+                Button(onClick = handler, modifier = Modifier.padding(top = 16.dp)) {
+                    Text(text = stringResource(R.string.action_back))
+                }
+            }
+            null -> Unit
         }
     }
 }

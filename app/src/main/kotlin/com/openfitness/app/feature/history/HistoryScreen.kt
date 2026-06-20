@@ -36,7 +36,7 @@ import com.openfitness.app.R
 import com.openfitness.app.common.component.EmptyContent
 import com.openfitness.app.common.component.ErrorContent
 import com.openfitness.app.common.component.LoadingContent
-import com.openfitness.app.common.error.toMessage
+import com.openfitness.app.common.format.WeightDisplayFormatter
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -83,7 +83,7 @@ fun HistoryScreen(
         when {
             state.isLoading -> LoadingContent(Modifier.padding(padding))
             state.error != null && !showingDetail -> ErrorContent(
-                message = state.error.toMessage(resources),
+                error = state.error,
                 onRetry = { onEvent(HistoryEvent.Retry) },
                 modifier = Modifier.padding(padding),
             )
@@ -91,7 +91,9 @@ fun HistoryScreen(
                 detail = state.selectedSessionDetail,
                 isLoading = state.isLoadingDetail,
                 error = state.error,
+                weightUnit = state.weightUnit,
                 onCorrect = { setLogId -> onEvent(HistoryEvent.ShowCorrectDialog(setLogId)) },
+                onNavigateBack = { onEvent(HistoryEvent.DismissDetail) },
                 modifier = Modifier.padding(padding),
             )
             state.isEmpty -> EmptyContent(
@@ -140,7 +142,9 @@ fun HistoryScreen(
                     OutlinedTextField(
                         value = weight,
                         onValueChange = { weight = it },
-                        label = { Text(stringResource(R.string.active_session_weight)) },
+                        label = {
+                            Text(WeightDisplayFormatter.weightInputLabel(resources, state.weightUnit))
+                        },
                         modifier = Modifier.testTag("correct_record_weight"),
                     )
                     OutlinedTextField(
@@ -179,7 +183,9 @@ private fun SessionDetailContent(
     detail: HistorySessionDetailUiModel?,
     isLoading: Boolean,
     error: com.openfitness.application.error.AppError?,
+    weightUnit: String,
     onCorrect: (com.openfitness.domain.valueobject.SetLogId) -> Unit,
+    onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val resources = LocalContext.current.resources
@@ -187,8 +193,8 @@ private fun SessionDetailContent(
     when {
         isLoading -> LoadingContent(modifier)
         error != null -> ErrorContent(
-            message = error.toMessage(resources),
-            onRetry = null,
+            error = error,
+            onNavigateBack = onNavigateBack,
             modifier = modifier,
         )
         detail == null -> LoadingContent(modifier)
@@ -213,8 +219,9 @@ private fun SessionDetailContent(
                             text = stringResource(
                                 R.string.active_session_set_line,
                                 setLog.setNumber,
-                                setLog.weightKg ?: 0.0,
+                                WeightDisplayFormatter.displayWeightKg(setLog.weightKg, weightUnit) ?: 0.0,
                                 setLog.reps ?: 0,
+                                WeightDisplayFormatter.unitSuffix(weightUnit),
                             ),
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.testTag("history_set_item"),
@@ -230,8 +237,9 @@ private fun SessionDetailContent(
                         Text(
                             text = stringResource(
                                 R.string.history_correction_line,
-                                correction.weightKg ?: 0.0,
+                                WeightDisplayFormatter.displayWeightKg(correction.weightKg, weightUnit) ?: 0.0,
                                 correction.reps ?: 0,
+                                WeightDisplayFormatter.unitSuffix(weightUnit),
                             ),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.primary,

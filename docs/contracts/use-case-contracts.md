@@ -165,4 +165,8 @@ class SeedCatalogUseCase(private val catalogSeeder: CatalogSeeder) {
 class ObserveRestTimerUseCase(private val preferences: UserPreferencesRepository) {
     operator fun invoke(): Flow<Int>
 }
+
+class ObserveWeightUnitUseCase(private val preferences: UserPreferencesRepository) {
+    operator fun invoke(): Flow<String>
+}
 ```

@@ -24,13 +24,15 @@
 
     <string name="active_session_title">Sessão ativa</string>
     <string name="active_session_weight">Peso (kg)</string>
+    <string name="active_session_weight_kg">Peso (kg)</string>
+    <string name="active_session_weight_lb">Peso (lb)</string>
     <string name="active_session_reps">Repetições</string>
     <string name="active_session_log_set">Registrar série</string>
     <string name="active_session_finish">Finalizar treino</string>
     <string name="active_session_finish_confirm_title">Finalizar este treino?</string>
     <string name="active_session_complete_title">Treino concluído</string>
     <string name="active_session_rest_timer">Descanso: %1$ds</string>
-    <string name="active_session_set_line">Série %1$d — %2$.1f kg × %3$d</string>
+    <string name="active_session_set_line">Série %1$d — %2$.1f %4$s × %3$d</string>
     <string name="edit_set_title">Editar série</string>
 
     <string name="history_title">Histórico</string>
@@ -40,7 +42,7 @@
     <string name="history_session_line">%1$s — %2$d séries</string>
     <string name="history_detail_title">Detalhe da sessão</string>
     <string name="history_correct_action">Corrigir</string>
-    <string name="history_correction_line">Corrigido: %1$.1f kg × %2$d</string>
+    <string name="history_correction_line">Corrigido: %1$.1f %3$s × %2$d</string>
     <string name="correct_record_title">Corrigir registro</string>
     <string name="correct_record_reason">Motivo</string>
 
@@ -54,6 +56,7 @@
     <string name="action_back">Voltar</string>
     <string name="action_confirm">Confirmar</string>
     <string name="action_retry">Tentar novamente</string>
+    <string name="action_dismiss">Fechar</string>
 
     <string name="error_validation">Verifique os dados e tente novamente.</string>
     <string name="error_not_found">Item não encontrado.</string>
