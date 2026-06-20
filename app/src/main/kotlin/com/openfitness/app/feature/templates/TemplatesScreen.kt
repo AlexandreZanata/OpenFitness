@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,7 +43,16 @@ import com.openfitness.app.common.error.toMessage
 fun TemplatesScreen(
     state: TemplatesUiState,
     onEvent: (TemplatesEvent) -> Unit,
+    onSessionStarted: (com.openfitness.domain.valueobject.SessionId) -> Unit,
+    onNavigationConsumed: () -> Unit,
 ) {
+    LaunchedEffect(state.navigateToSessionId) {
+        state.navigateToSessionId?.let { sessionId ->
+            onSessionStarted(sessionId)
+            onNavigationConsumed()
+        }
+    }
+
     val resources = LocalContext.current.resources
     val editingTemplate = state.editingTemplateId?.let { id ->
         state.templates.firstOrNull { it.id == id }
@@ -75,6 +85,7 @@ fun TemplatesScreen(
                     title = stringResource(R.string.templates_empty),
                     ctaLabel = null,
                     onCtaClick = null,
+                    modifier = Modifier.weight(1f),
                 )
                 Button(
                     onClick = {

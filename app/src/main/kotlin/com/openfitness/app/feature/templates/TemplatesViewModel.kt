@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.openfitness.application.error.AppError
 import com.openfitness.application.error.UseCaseResult
 import com.openfitness.application.model.TemplateExerciseInput
+import com.openfitness.application.usecase.bootstrap.SeedCatalogUseCase
 import com.openfitness.application.usecase.exerciselibrary.BrowseExercisesUseCase
 import com.openfitness.application.usecase.session.StartWorkoutSessionUseCase
 import com.openfitness.application.usecase.template.CreateWorkoutTemplateUseCase
@@ -15,10 +16,8 @@ import com.openfitness.domain.valueobject.SessionId
 import com.openfitness.domain.valueobject.TemplateId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
@@ -26,6 +25,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class TemplatesViewModel @Inject constructor(
+    private val seedCatalogUseCase: SeedCatalogUseCase,
     private val listWorkoutTemplatesUseCase: ListWorkoutTemplatesUseCase,
     private val createWorkoutTemplateUseCase: CreateWorkoutTemplateUseCase,
     private val updateWorkoutTemplateUseCase: UpdateWorkoutTemplateUseCase,
@@ -36,11 +36,9 @@ class TemplatesViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(TemplatesUiState())
     val uiState: StateFlow<TemplatesUiState> = _uiState.asStateFlow()
 
-    private val _navigation = MutableSharedFlow<SessionId>(extraBufferCapacity = 1)
-    val navigation = _navigation.asSharedFlow()
-
     init {
         viewModelScope.launch {
+            seedCatalogUseCase()
             browseExercisesUseCase("", null)
                 .catch { /* ignore for template picker fallback */ }
                 .collect { exercises ->
@@ -94,6 +92,10 @@ class TemplatesViewModel @Inject constructor(
         }
     }
 
+    fun onNavigationConsumed() {
+        _uiState.update { it.copy(navigateToSessionId = null) }
+    }
+
     private fun createTemplate(event: TemplatesEvent.CreateTemplate) {
         viewModelScope.launch {
             val input = listOf(TemplateExerciseInput(event.exerciseId, targetSets = 3))
@@ -118,7 +120,9 @@ class TemplatesViewModel @Inject constructor(
     private fun startWorkout(event: TemplatesEvent.StartWorkout) {
         viewModelScope.launch {
             when (val result = startWorkoutSessionUseCase(event.templateId, event.exerciseIds)) {
-                is UseCaseResult.Success -> _navigation.tryEmit(result.value.id)
+                is UseCaseResult.Success -> _uiState.update {
+                    it.copy(navigateToSessionId = result.value.id, error = null)
+                }
                 is UseCaseResult.Failure -> _uiState.update { it.copy(error = result.error) }
             }
         }

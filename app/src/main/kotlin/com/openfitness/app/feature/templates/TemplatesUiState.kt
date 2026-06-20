@@ -2,6 +2,7 @@ package com.openfitness.app.feature.templates
 
 import com.openfitness.application.error.AppError
 import com.openfitness.domain.valueobject.ExerciseId
+import com.openfitness.domain.valueobject.SessionId
 import com.openfitness.domain.valueobject.TemplateId
 
 data class TemplateUiModel(
@@ -19,6 +20,7 @@ data class TemplatesUiState(
     val showCreateDialog: Boolean = false,
     val showEditDialog: Boolean = false,
     val editingTemplateId: TemplateId? = null,
+    val navigateToSessionId: SessionId? = null,
 )
 
 sealed interface TemplatesEvent {

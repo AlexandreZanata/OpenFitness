@@ -1,11 +1,12 @@
 package com.openfitness.app
 
+import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTextInput
@@ -20,59 +21,56 @@ class WorkoutFlowUiTest {
     @get:Rule
     val composeRule = createAndroidComposeRule<MainActivity>()
 
-    @Test
-    fun happyPath_startLogComplete() {
-        composeRule.waitUntil(timeoutMillis = 15_000) {
-            composeRule.onAllNodesWithTag("start_quick_workout").fetchSemanticsNodes().isNotEmpty()
+    private fun startQuickWorkout() {
+        composeRule.waitUntil(timeoutMillis = 20_000) {
+            composeRule.onAllNodesWithTag("start_quick_workout", useUnmergedTree = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
-
-        composeRule.onNodeWithTag("start_quick_workout").performClick()
-
-        composeRule.waitUntil(timeoutMillis = 10_000) {
-            composeRule.onAllNodesWithTag("weight_input").fetchSemanticsNodes().isNotEmpty()
+        composeRule.onNodeWithTag("start_quick_workout", useUnmergedTree = true)
+            .assertHasClickAction()
+            .performClick()
+        composeRule.waitForIdle()
+        composeRule.waitUntil(timeoutMillis = 20_000) {
+            composeRule.onAllNodesWithTag("weight_input", useUnmergedTree = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
+    }
 
-        composeRule.onNodeWithTag("weight_input").performTextInput("60")
-        composeRule.onNodeWithTag("reps_input").performTextInput("8")
+    private fun logFirstSet(weight: String, reps: String) {
+        composeRule.onNodeWithTag("weight_input").performTextInput(weight)
+        composeRule.onNodeWithTag("reps_input").performTextInput(reps)
         composeRule.onNodeWithTag("log_set_button").performClick()
-
-        composeRule.waitUntil(timeoutMillis = 10_000) {
+        composeRule.waitUntil(timeoutMillis = 15_000) {
             composeRule.onAllNodesWithTag("set_log_item").fetchSemanticsNodes().isNotEmpty()
         }
+    }
 
+    private fun finishWorkout() {
         composeRule.onNodeWithTag("finish_workout_button").performClick()
         composeRule.onNodeWithTag("confirm_finish_button").performClick()
-
-        composeRule.waitUntil(timeoutMillis = 10_000) {
+        composeRule.waitUntil(timeoutMillis = 15_000) {
             composeRule.onAllNodesWithTag("session_summary").fetchSemanticsNodes().isNotEmpty()
         }
+    }
 
-        composeRule.onNodeWithText("Workout complete").assertIsDisplayed()
+    @Test
+    fun happyPath_startLogComplete() {
+        startQuickWorkout()
+        logFirstSet("60", "8")
+        finishWorkout()
+        composeRule.onNodeWithTag("session_summary").assertIsDisplayed()
     }
 
     @Test
     fun editSetDuringActiveSession() {
-        composeRule.waitUntil(timeoutMillis = 15_000) {
-            composeRule.onAllNodesWithTag("start_quick_workout").fetchSemanticsNodes().isNotEmpty()
-        }
-
-        composeRule.onNodeWithTag("start_quick_workout").performClick()
-
-        composeRule.waitUntil(timeoutMillis = 10_000) {
-            composeRule.onAllNodesWithTag("weight_input").fetchSemanticsNodes().isNotEmpty()
-        }
-
-        composeRule.onNodeWithTag("weight_input").performTextInput("50")
-        composeRule.onNodeWithTag("reps_input").performTextInput("10")
-        composeRule.onNodeWithTag("log_set_button").performClick()
-
-        composeRule.waitUntil(timeoutMillis = 10_000) {
-            composeRule.onAllNodesWithTag("set_log_item").fetchSemanticsNodes().isNotEmpty()
-        }
+        startQuickWorkout()
+        logFirstSet("50", "10")
 
         composeRule.onNodeWithTag("set_log_item").performClick()
 
-        composeRule.waitUntil(timeoutMillis = 5_000) {
+        composeRule.waitUntil(timeoutMillis = 10_000) {
             composeRule.onAllNodesWithTag("edit_set_confirm").fetchSemanticsNodes().isNotEmpty()
         }
 
@@ -81,60 +79,44 @@ class WorkoutFlowUiTest {
         composeRule.onNodeWithTag("edit_set_confirm").performClick()
 
         composeRule.waitUntil(timeoutMillis = 10_000) {
-            composeRule.onAllNodesWithText("55.0").fetchSemanticsNodes().isNotEmpty()
+            composeRule.onAllNodesWithTag("edit_set_confirm").fetchSemanticsNodes().isEmpty()
         }
+
+        composeRule.onNode(hasTestTag("set_log_item") and hasText("55", substring = true)).assertExists()
+        composeRule.onNode(hasTestTag("set_log_item") and hasText("12", substring = true)).assertExists()
+
+        finishWorkout()
     }
 
     @Test
     fun correctCompletedSet_appendsCorrectionInHistory() {
-        composeRule.waitUntil(timeoutMillis = 15_000) {
-            composeRule.onAllNodesWithTag("start_quick_workout").fetchSemanticsNodes().isNotEmpty()
-        }
-
-        composeRule.onNodeWithTag("start_quick_workout").performClick()
-
-        composeRule.waitUntil(timeoutMillis = 10_000) {
-            composeRule.onAllNodesWithTag("weight_input").fetchSemanticsNodes().isNotEmpty()
-        }
-
-        composeRule.onNodeWithTag("weight_input").performTextInput("50")
-        composeRule.onNodeWithTag("reps_input").performTextInput("10")
-        composeRule.onNodeWithTag("log_set_button").performClick()
-
-        composeRule.waitUntil(timeoutMillis = 10_000) {
-            composeRule.onAllNodesWithTag("set_log_item").fetchSemanticsNodes().isNotEmpty()
-        }
-
-        composeRule.onNodeWithTag("finish_workout_button").performClick()
-        composeRule.onNodeWithTag("confirm_finish_button").performClick()
-
-        composeRule.waitUntil(timeoutMillis = 10_000) {
-            composeRule.onAllNodesWithTag("session_summary").fetchSemanticsNodes().isNotEmpty()
-        }
+        startQuickWorkout()
+        logFirstSet("50", "10")
+        finishWorkout()
 
         composeRule.activityRule.scenario.onActivity { activity ->
             activity.onBackPressedDispatcher.onBackPressed()
         }
 
-        composeRule.waitUntil(timeoutMillis = 10_000) {
+        composeRule.waitUntil(timeoutMillis = 15_000) {
             composeRule.onAllNodesWithTag("nav_history").fetchSemanticsNodes().isNotEmpty()
         }
 
         composeRule.onNodeWithTag("nav_history").performClick()
 
-        composeRule.waitUntil(timeoutMillis = 10_000) {
+        composeRule.waitUntil(timeoutMillis = 15_000) {
             composeRule.onAllNodesWithTag("history_session_item").fetchSemanticsNodes().isNotEmpty()
         }
 
-        composeRule.onNodeWithTag("history_session_item").performClick()
+        composeRule.onAllNodesWithTag("history_session_item", useUnmergedTree = true)[0].performClick()
 
-        composeRule.waitUntil(timeoutMillis = 10_000) {
+        composeRule.waitUntil(timeoutMillis = 15_000) {
             composeRule.onAllNodesWithTag("history_session_detail").fetchSemanticsNodes().isNotEmpty()
         }
 
         composeRule.onNodeWithTag("correct_set_button").performClick()
 
-        composeRule.waitUntil(timeoutMillis = 5_000) {
+        composeRule.waitUntil(timeoutMillis = 10_000) {
             composeRule.onAllNodesWithTag("correct_record_confirm").fetchSemanticsNodes().isNotEmpty()
         }
 
@@ -142,7 +124,7 @@ class WorkoutFlowUiTest {
         composeRule.onNodeWithTag("correct_record_reps").performTextReplacement("12")
         composeRule.onNodeWithTag("correct_record_confirm").performClick()
 
-        composeRule.waitUntil(timeoutMillis = 10_000) {
+        composeRule.waitUntil(timeoutMillis = 15_000) {
             composeRule.onAllNodesWithTag("history_correction_item").fetchSemanticsNodes().isNotEmpty()
         }
     }

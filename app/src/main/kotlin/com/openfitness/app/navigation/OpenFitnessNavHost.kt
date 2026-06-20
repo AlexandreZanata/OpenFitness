@@ -2,9 +2,9 @@ package com.openfitness.app.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -43,7 +43,6 @@ private data class BottomNavItem(
     val route: String,
     val labelRes: Int,
     val testTag: String,
-    val icon: @Composable () -> Unit,
 )
 
 @Composable
@@ -59,30 +58,10 @@ fun OpenFitnessApp() {
     )
 
     val bottomItems = listOf(
-        BottomNavItem(
-            route = Routes.EXERCISE_LIBRARY,
-            labelRes = R.string.nav_exercises,
-            testTag = "nav_exercises",
-            icon = { Icon(Icons.Default.List, contentDescription = null) },
-        ),
-        BottomNavItem(
-            route = Routes.TEMPLATES,
-            labelRes = R.string.nav_workout,
-            testTag = "nav_workout",
-            icon = { Icon(Icons.Default.FitnessCenter, contentDescription = null) },
-        ),
-        BottomNavItem(
-            route = Routes.HISTORY,
-            labelRes = R.string.nav_history,
-            testTag = "nav_history",
-            icon = { Icon(Icons.Default.History, contentDescription = null) },
-        ),
-        BottomNavItem(
-            route = Routes.PERSONAL_RECORDS,
-            labelRes = R.string.nav_records,
-            testTag = "nav_records",
-            icon = { Icon(Icons.Default.Star, contentDescription = null) },
-        ),
+        BottomNavItem(Routes.EXERCISE_LIBRARY, R.string.nav_exercises, "nav_exercises"),
+        BottomNavItem(Routes.TEMPLATES, R.string.nav_workout, "nav_workout"),
+        BottomNavItem(Routes.HISTORY, R.string.nav_history, "nav_history"),
+        BottomNavItem(Routes.PERSONAL_RECORDS, R.string.nav_records, "nav_records"),
     )
 
     Scaffold(
@@ -90,6 +69,7 @@ fun OpenFitnessApp() {
             if (showBottomBar) {
                 NavigationBar {
                     bottomItems.forEach { item ->
+                        val label = stringResource(item.labelRes)
                         NavigationBarItem(
                             selected = currentRoute == item.route,
                             onClick = {
@@ -101,8 +81,27 @@ fun OpenFitnessApp() {
                                     restoreState = true
                                 }
                             },
-                            icon = item.icon,
-                            label = { Text(stringResource(item.labelRes)) },
+                            icon = {
+                                when (item.route) {
+                                    Routes.EXERCISE_LIBRARY -> Icon(
+                                        Icons.AutoMirrored.Filled.List,
+                                        contentDescription = label,
+                                    )
+                                    Routes.TEMPLATES -> Icon(
+                                        Icons.Default.FitnessCenter,
+                                        contentDescription = label,
+                                    )
+                                    Routes.HISTORY -> Icon(
+                                        Icons.Default.History,
+                                        contentDescription = label,
+                                    )
+                                    else -> Icon(
+                                        Icons.Default.Star,
+                                        contentDescription = label,
+                                    )
+                                }
+                            },
+                            label = { Text(label) },
                             modifier = Modifier.testTag(item.testTag),
                         )
                     }
@@ -135,14 +134,16 @@ private fun OpenFitnessNavHost(
         composable(Routes.TEMPLATES) {
             val viewModel: TemplatesViewModel = hiltViewModel()
             val state by viewModel.uiState.collectAsStateWithLifecycle()
-            LaunchedEffect(viewModel) {
-                viewModel.navigation.collect { sessionId ->
+            TemplatesScreen(
+                state = state,
+                onEvent = viewModel::onEvent,
+                onSessionStarted = { sessionId ->
                     navController.navigate(Routes.activeSession(sessionId.toString())) {
                         launchSingleTop = true
                     }
-                }
-            }
-            TemplatesScreen(state = state, onEvent = viewModel::onEvent)
+                },
+                onNavigationConsumed = viewModel::onNavigationConsumed,
+            )
         }
         composable(Routes.HISTORY) {
             val viewModel: HistoryViewModel = hiltViewModel()
