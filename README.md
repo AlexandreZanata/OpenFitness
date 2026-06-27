@@ -62,6 +62,7 @@ See **[docs/architecture/overview.md](docs/architecture/overview.md)** for layer
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contributor guide |
 | [docs/commit-conventions.md](docs/commit-conventions.md) | Git commit standards |
 | [docs/local-build.md](docs/local-build.md) | Local compile and install |
+| [docs/nutri-offline-local.md](docs/nutri-offline-local.md) | Local ML pipeline (NutriOffline, `.local/`) |
 | [docs/release-build.md](docs/release-build.md) | Signed release build |
 
 ## Development

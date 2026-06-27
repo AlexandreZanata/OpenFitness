@@ -8,6 +8,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- NutriOffline Phase 0: hardware validation script (`scripts/validate-nutri-hardware.sh`) and local ML docs (`docs/nutri-offline-local.md`)
 - Project scaffold: Gradle multi-module (`:domain`, `:application`, `:data`, `:app`)
 - Technical documentation in `docs/` (architecture, entities, business rules, use cases, contracts)
 - Cursor agent rules in `.cursor/rules/`
