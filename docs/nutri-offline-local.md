@@ -24,6 +24,10 @@ cd .local/nutri-offline
 source venv/bin/activate
 python scripts/validate_environment.py
 python scripts/smoke_train.py
+
+# Data acquisition (Phase 1)
+python scripts/download/run_all.py
+./scripts/validate-nutri-data-acquisition.sh
 ```
 
 ## Local documentation
@@ -35,6 +39,7 @@ All NutriOffline docs are under `.local/`:
 | [.local/IMPLEMENTATION-PLAN.md](../.local/IMPLEMENTATION-PLAN.md) | Master roadmap (phases 0–7) |
 | [.local/nutri-offline/ENVIRONMENT.md](../.local/nutri-offline/ENVIRONMENT.md) | Pinned versions and reproduce steps |
 | [.local/phases/00-hardware-environment/TASKS.md](../.local/phases/00-hardware-environment/TASKS.md) | Phase 0 task checklist |
+| [.local/phases/01-data-acquisition/TASKS.md](../.local/phases/01-data-acquisition/TASKS.md) | Phase 1 task checklist |
 
 ## Architecture (target)
 
@@ -51,3 +56,4 @@ Fine-tuning teaches reasoning and Brazilian Portuguese tone; **factual macros co
 | Script | Purpose |
 |--------|---------|
 | [scripts/validate-nutri-hardware.sh](../scripts/validate-nutri-hardware.sh) | Gate N-00-01 — NVIDIA GPU + VRAM check |
+| [scripts/validate-nutri-data-acquisition.sh](../scripts/validate-nutri-data-acquisition.sh) | Gate N-01-08 — raw data smoke read |
