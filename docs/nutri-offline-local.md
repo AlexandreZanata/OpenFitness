@@ -36,6 +36,10 @@ python scripts/normalize/run_all.py
 # Vector RAG index (Phase 3)
 python scripts/rag/run_all.py --scope v1 --device cuda
 ./scripts/validate-nutri-rag.sh
+
+# Fine-tuning dataset (Phase 4)
+python scripts/dataset/run_all.py --target 3000
+./scripts/validate-nutri-dataset.sh
 ```
 
 ## Local documentation
@@ -50,6 +54,7 @@ All NutriOffline docs are under `.local/`:
 | [.local/phases/01-data-acquisition/TASKS.md](../.local/phases/01-data-acquisition/TASKS.md) | Phase 1 task checklist |
 | [.local/phases/02-data-normalization/TASKS.md](../.local/phases/02-data-normalization/TASKS.md) | Phase 2 task checklist |
 | [.local/phases/03-vector-db-rag/TASKS.md](../.local/phases/03-vector-db-rag/TASKS.md) | Phase 3 task checklist |
+| [.local/phases/04-finetuning-dataset/TASKS.md](../.local/phases/04-finetuning-dataset/TASKS.md) | Phase 4 task checklist |
 
 ## Architecture (target)
 
@@ -69,3 +74,4 @@ Fine-tuning teaches reasoning and Brazilian Portuguese tone; **factual macros co
 | [scripts/validate-nutri-data-acquisition.sh](../scripts/validate-nutri-data-acquisition.sh) | Gate N-01-08 — raw data smoke read |
 | [scripts/validate-nutri-normalization.sh](../scripts/validate-nutri-normalization.sh) | Gate N-02-06 — unified schema + golden rows |
 | [scripts/validate-nutri-rag.sh](../scripts/validate-nutri-rag.sh) | Gate N-03-05 — LanceDB index + acceptance queries |
+| [scripts/validate-nutri-dataset.sh](../scripts/validate-nutri-dataset.sh) | Gate N-04 — ChatML dataset grounding + counts |
