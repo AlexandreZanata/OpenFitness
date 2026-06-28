@@ -8,6 +8,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- NutriOffline Phase 3: RAG index gate (`scripts/validate-nutri-rag.sh`)
 - NutriOffline Phase 2: normalization gate (`scripts/validate-nutri-normalization.sh`)
 - NutriOffline Phase 1: data acquisition gate (`scripts/validate-nutri-data-acquisition.sh`)
 - NutriOffline Phase 0: hardware validation script (`scripts/validate-nutri-hardware.sh`) and local ML docs (`docs/nutri-offline-local.md`)

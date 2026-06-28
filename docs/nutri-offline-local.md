@@ -32,6 +32,10 @@ python scripts/download/run_all.py
 # Normalization (Phase 2)
 python scripts/normalize/run_all.py
 ./scripts/validate-nutri-normalization.sh
+
+# Vector RAG index (Phase 3)
+python scripts/rag/run_all.py --scope v1 --device cuda
+./scripts/validate-nutri-rag.sh
 ```
 
 ## Local documentation
@@ -45,6 +49,7 @@ All NutriOffline docs are under `.local/`:
 | [.local/phases/00-hardware-environment/TASKS.md](../.local/phases/00-hardware-environment/TASKS.md) | Phase 0 task checklist |
 | [.local/phases/01-data-acquisition/TASKS.md](../.local/phases/01-data-acquisition/TASKS.md) | Phase 1 task checklist |
 | [.local/phases/02-data-normalization/TASKS.md](../.local/phases/02-data-normalization/TASKS.md) | Phase 2 task checklist |
+| [.local/phases/03-vector-db-rag/TASKS.md](../.local/phases/03-vector-db-rag/TASKS.md) | Phase 3 task checklist |
 
 ## Architecture (target)
 
@@ -63,3 +68,4 @@ Fine-tuning teaches reasoning and Brazilian Portuguese tone; **factual macros co
 | [scripts/validate-nutri-hardware.sh](../scripts/validate-nutri-hardware.sh) | Gate N-00-01 — NVIDIA GPU + VRAM check |
 | [scripts/validate-nutri-data-acquisition.sh](../scripts/validate-nutri-data-acquisition.sh) | Gate N-01-08 — raw data smoke read |
 | [scripts/validate-nutri-normalization.sh](../scripts/validate-nutri-normalization.sh) | Gate N-02-06 — unified schema + golden rows |
+| [scripts/validate-nutri-rag.sh](../scripts/validate-nutri-rag.sh) | Gate N-03-05 — LanceDB index + acceptance queries |
