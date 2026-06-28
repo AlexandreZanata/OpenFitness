@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Gate N-01-08: verify NutriOffline raw data sources (Phase 1).
-# Requires Phase 0 venv and completed downloads under .local/nutri-offline/.
+# Requires Phase 0 venv and completed downloads under nutri-offline/.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-NUTRI="${ROOT}/.local/nutri-offline"
+NUTRI="${ROOT}/nutri-offline"
 VENV="${NUTRI}/venv/bin/activate"
 SMOKE="${NUTRI}/scripts/smoke_read_sources.py"
 

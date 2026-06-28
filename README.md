@@ -40,8 +40,9 @@ Full specification: **[docs/tech-stack.md](docs/tech-stack.md)**
 :domain/            # Entities, value objects, rules, events, ports
 :data/              # Room, parser, WorkManager, repositories
 docs/               # Architecture, use cases, glossary, contracts
+nutri-offline/      # Offline nutrition LLM + RAG pipeline (Python)
 .cursor/rules/      # Agent engineering contract
-.local/             # Local implementation phases (gitignored)
+.local/             # Local keystores only (gitignored)
 scripts/            # Repo validation and release helpers
 ```
 
@@ -62,7 +63,7 @@ See **[docs/architecture/overview.md](docs/architecture/overview.md)** for layer
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contributor guide |
 | [docs/commit-conventions.md](docs/commit-conventions.md) | Git commit standards |
 | [docs/local-build.md](docs/local-build.md) | Local compile and install |
-| [docs/nutri-offline-local.md](docs/nutri-offline-local.md) | Local ML pipeline (NutriOffline, `.local/`) |
+| [docs/nutri-offline.md](docs/nutri-offline.md) | NutriOffline ML pipeline (QLoRA + RAG) |
 | [docs/release-build.md](docs/release-build.md) | Signed release build |
 
 ## Development

@@ -18,7 +18,9 @@ Read these documents in order:
 
 Agent engineering rules live in [`.cursor/rules/`](.cursor/rules/).
 
-Local phased implementation guide: `.local/README.md` (gitignored).
+NutriOffline ML pipeline: [nutri-offline/README.md](nutri-offline/README.md) and [docs/nutri-offline.md](docs/nutri-offline.md).
+
+Local keystores only: `.local/README.md` (gitignored).
 
 ## Development setup
 
@@ -34,7 +36,7 @@ cd OpenFitness
 
 See **[docs/local-build.md](docs/local-build.md)** for `local.properties`, SDK setup, and troubleshooting.
 
-**Never commit:** `local.properties`, keystores, `signing.properties`, `.env`, `.local/`.
+**Never commit:** `local.properties`, keystores, `signing.properties`, `.env`, `.local/`, or gitignored paths under `nutri-offline/` (`data/`, `models/`, `venv/`, etc.).
 
 ## Architecture rules
 

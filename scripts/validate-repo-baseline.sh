@@ -40,7 +40,8 @@ assert_contains() {
     echo "OK: $label contains '$needle'"
 }
 
-assert_file "$GITIGNORE" ".gitignore"
+assert_file "$ROOT/nutri-offline/README.md" "nutri-offline/README.md"
+assert_file "$ROOT/docs/nutri-offline.md" "docs/nutri-offline.md"
 
 assert_gitignore_contains ".gradle/" "Gradle cache"
 assert_gitignore_contains "build/" "Gradle build output"

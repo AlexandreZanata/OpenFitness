@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-NUTRI="${ROOT}/.local/nutri-offline"
+NUTRI="${ROOT}/nutri-offline"
 VENV="${NUTRI}/venv/bin/activate"
 E2E="${NUTRI}/scripts/app/test_offline_e2e.py"
 START="${NUTRI}/scripts/app/start_offline.sh"

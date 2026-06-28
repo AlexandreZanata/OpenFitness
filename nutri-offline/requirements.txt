@@ -1,0 +1,27 @@
+# NutriOffline — reproducible install pins (Phase 0)
+
+# Install order matters — see ENVIRONMENT.md for full reproduce steps.
+
+# 1. PyTorch (CUDA 12.4)
+--extra-index-url https://download.pytorch.org/whl/cu124
+torch==2.6.0+cu124
+torchvision==0.21.0+cu124
+torchaudio==2.6.0+cu124
+
+# 2. Unsloth stack (install unsloth-zoo first with --no-deps, then unsloth from git)
+# pip install --no-deps git+https://github.com/unslothai/unsloth-zoo.git
+# pip install "unsloth[cu124-torch260] @ git+https://github.com/unslothai/unsloth.git" --no-build-isolation
+
+# 3. Compatibility pins (required on torch 2.6)
+transformers==4.56.1
+torchao==0.13.0
+
+# 4. Data / embedding stack
+duckdb==1.5.4
+pandas==3.0.3
+pyarrow==24.0.0
+openpyxl==3.1.5
+lancedb==0.33.0
+sentence-transformers==5.6.0
+
+# Full resolved environment: requirements-lock.txt

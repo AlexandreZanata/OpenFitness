@@ -32,7 +32,7 @@ docs/
 ├── domain-events/               ← immutable past-tense facts
 ├── use-cases/                   ← UC-xxx flows
 ├── contracts/                   ← ports, UI state, errors, DB schema
-└── nutri-offline-local.md       ← local ML pipeline (gitignored `.local/`)
+└── nutri-offline.md             ← NutriOffline ML pipeline (nutri-offline/)
 ```
 
 ## Product Scope (v1)
@@ -56,7 +56,7 @@ OpenFitness v1 is **100% on-device**. No backend, no account system, no cloud sy
 4. [Business Rules](business-rules/README.md) — rules before code
 5. [Use Cases](use-cases/README.md) — product flows
 6. [Contracts](contracts/README.md) — technical interfaces
-7. [NutriOffline (local ML)](nutri-offline-local.md) — QLoRA + RAG under `.local/`
+7. [NutriOffline ML pipeline](nutri-offline.md) — QLoRA + RAG in `nutri-offline/`
 8. [Implementation Order](implementation-order.md) — build sequence
 
 ## Contract Statement

@@ -1,0 +1,23 @@
+# Python environment
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Heavy ML artifacts (never commit)
+data/
+models/
+indexes/
+logs/
+run/
+llama.cpp/
+unsloth_compiled_cache/
+models/gguf_gguf/
+
+# Secrets
+.env
+.env.*
+
+# Unsloth temp
+_unsloth_temporary_saved_buffers/

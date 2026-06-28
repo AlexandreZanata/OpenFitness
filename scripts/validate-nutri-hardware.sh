@@ -23,7 +23,7 @@ if (( VRAM_TOTAL < MIN_VRAM_MIB )); then
     exit 1
 fi
 
-NUTRI_OFFLINE="${ROOT}/.local/nutri-offline"
+NUTRI_OFFLINE="${ROOT}/nutri-offline"
 if [[ -d "${NUTRI_OFFLINE}/venv" ]]; then
     echo "Hint: run full checks with:"
     echo "  source ${NUTRI_OFFLINE}/venv/bin/activate && python ${NUTRI_OFFLINE}/scripts/validate_environment.py"

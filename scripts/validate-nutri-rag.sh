@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-NUTRI="${ROOT}/.local/nutri-offline"
+NUTRI="${ROOT}/nutri-offline"
 VENV="${NUTRI}/venv/bin/activate"
 INDEX="${NUTRI}/indexes/nutri-foods"
 TEST="${NUTRI}/scripts/rag/test_queries.py"
