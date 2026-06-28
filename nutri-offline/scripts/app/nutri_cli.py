@@ -14,7 +14,7 @@ from orchestrator import NutriAssistant
 
 
 def print_response(result, *, debug: bool) -> None:
-    print(f"\nAnswer ({result.latency_ms:.0f} ms):\n{result.answer}\n")
+    print(f"\nAnswer [{result.mode}] ({result.latency_ms:.0f} ms):\n{result.answer}\n")
     if result.sources:
         print("Sources:")
         for source in result.sources:
@@ -52,6 +52,12 @@ def main() -> int:
     ask_parser.add_argument("--debug", action="store_true")
     ask_parser.add_argument("--no-rag", action="store_true")
     ask_parser.add_argument("--json", action="store_true")
+    ask_parser.add_argument(
+        "--mode",
+        choices=("auto", "lookup", "llm"),
+        default="auto",
+        help="Response path: auto (default), lookup-only, or llm-only",
+    )
 
     repl_parser = sub.add_parser("repl", help="Interactive session")
     repl_parser.add_argument("--top-k", type=int, default=5)
@@ -85,6 +91,7 @@ def main() -> int:
         top_k=args.top_k,
         use_rag=not args.no_rag,
         debug=args.debug,
+        mode=args.mode,
     )
 
     if args.json:
@@ -94,6 +101,7 @@ def main() -> int:
             "rag_context_used": result.rag_context_used,
             "model": result.model,
             "latency_ms": result.latency_ms,
+            "mode": result.mode,
         }
         if args.debug:
             payload["rag_context"] = result.rag_context

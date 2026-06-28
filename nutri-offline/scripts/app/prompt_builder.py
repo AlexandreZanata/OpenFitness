@@ -36,7 +36,7 @@ def build_messages(
 ) -> tuple[list[dict[str, str]], list[RagHit]]:
     if use_rag and results:
         kept, context = truncate_context(results)
-        system = f"{SYSTEM_PROMPT}\n\nContext:\n{context}"
+        system = f"{SYSTEM_PROMPT}\n\nContext (tabela compacta — use estes valores):\n{context}"
         return [
             {"role": "system", "content": system},
             {"role": "user", "content": question},

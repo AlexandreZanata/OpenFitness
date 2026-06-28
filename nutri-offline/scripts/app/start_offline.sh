@@ -35,11 +35,13 @@ for _ in $(seq 1 30); do
     sleep 2
 done
 
-if [[ "${START_FASTAPI:-0}" == "1" ]]; then
+if [[ "${START_FASTAPI:-0}" == "1" ]] || [[ "${START_CHAT:-0}" == "1" ]]; then
     source "${ROOT}/venv/bin/activate"
     python "${ROOT}/scripts/app/server.py" > "${LOG_DIR}/nutri-app.log" 2>&1 &
     echo $! > "${PID_DIR}/nutri-app.pid"
-    echo "Started FastAPI on 127.0.0.1:8090 (pid $(cat "${PID_DIR}/nutri-app.pid"))"
+    APP_PORT="${NUTRI_APP_PORT:-8090}"
+    echo "Started FastAPI on 127.0.0.1:${APP_PORT} (pid $(cat "${PID_DIR}/nutri-app.pid"))"
+    echo "Chat UI: http://127.0.0.1:${APP_PORT}/"
 fi
 
 cat <<EOF
@@ -52,8 +54,10 @@ CLI:
   python scripts/app/nutri_cli.py ask "Quantas calorias tem arroz branco cozido?"
   python scripts/app/nutri_cli.py repl --debug
 
-API (optional):
-  START_FASTAPI=1 bash scripts/app/start_offline.sh
+API / chat UI (optional):
+  bash scripts/app/start_chat.sh
+  # or: START_FASTAPI=1 bash scripts/app/start_offline.sh
+  # open http://127.0.0.1:8090/
   curl -X POST http://127.0.0.1:8090/v1/nutri/ask -H 'Content-Type: application/json' \\
     -d '{"question":"Quantas calorias tem banana prata?"}'
 

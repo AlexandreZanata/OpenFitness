@@ -24,6 +24,8 @@ python scripts/smoke_train.py
 
 See [docs/nutri-offline.md](../docs/nutri-offline.md) for the full phase workflow and gate scripts.
 
+**Next optimization:** [docs/README-RAG-V2.md](docs/README-RAG-V2.md) — Phase A done: shorthand `arroz 100g` → TACO table in ~90 ms (no LLM). Phase B: hybrid retrieval.
+
 ## Layout
 
 ```
@@ -33,7 +35,7 @@ nutri-offline/
 ├── phases/                  # Per-phase README + TASKS
 ├── scripts/                 # Pipeline code
 ├── tests/                   # Unit tests
-├── docs/                    # Android guide, use case draft
+├── docs/                    # RAG V2 plan, Android guide, use cases
 ├── data/                    # gitignored — raw + processed datasets
 ├── models/                  # gitignored — adapters, GGUF, HF cache
 ├── indexes/                 # gitignored — LanceDB RAG index

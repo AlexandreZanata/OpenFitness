@@ -16,19 +16,19 @@ OpenFitness user (or CLI/API consumer in NutriOffline prototype)
 
 ## Main flow
 
-1. User submits a nutrition question in PT-BR (e.g. calories, comparison, branded product).
-2. System embeds the question with bge-m3.
-3. System retrieves top-k food records from LanceDB.
-4. System builds a chat prompt with RAG context and citation rules.
-5. System sends prompt to local LLM (llama.cpp).
-6. System returns answer with source list and optional debug RAG context.
+1. User submits a nutrition question in PT-BR (full sentence) **or shorthand** (`arroz 100g`, `arroz 100g, carne 200g`).
+2. **Lookup path (RAG V2):** if shorthand portion syntax is detected, system parses items, retrieves per-item from LanceDB with source boost, renders a grounded markdown table — **no LLM** (~65–150 ms).
+3. **Reasoning path:** system embeds the question with bge-m3, retrieves top-k with compact table context, sends prompt to local LLM (llama.cpp).
+4. System returns answer with source list, `mode` (`lookup` | `llm`), and optional debug RAG context.
 
 ## Alternative flows
 
 | Condition | Behavior |
 |-----------|----------|
-| Food not in index | Answer states data not found — no invented macros (BR-DS-002) |
-| llama-server down | Clear error: start offline stack |
+| Shorthand portion lookup (`arroz 100g`) | Deterministic table from indexed records (BR-RET-002) |
+| Food not in index | Lookup table row shows **Não encontrado** — no invented macros (BR-DS-002) |
+| Branded product hint (`iogurte vigor`) | OFF-preferring retrieval |
+| llama-server down | Lookup path still works; reasoning path returns clear error |
 | Question in English | Supported minority; PT-BR primary |
 
 ## Applied rules
@@ -36,6 +36,9 @@ OpenFitness user (or CLI/API consumer in NutriOffline prototype)
 - **BR-DS-001:** Numeric answers trace to RAG context records
 - **BR-DS-002:** No invented nutrients absent from context
 - **BR-DS-004:** Consistent system prompt across requests
+- **BR-RET-001:** Generic BR foods prefer TACO/TBCA when scores are close
+- **BR-RET-002:** Lookup table macros come from `scale_nutrient()` only
+- **BR-RET-003:** Multi-item queries retrieved independently; totals in Python
 
 ## Events raised
 
@@ -51,7 +54,9 @@ None persisted in v1 (read-only query surface).
 
 ```
 POST /v1/nutri/ask
-{ "question": string, "top_k": int, "language": "pt-BR", "debug": bool }
+{ "question": string, "top_k": int, "language": "pt-BR", "debug": bool, "mode": "auto"|"lookup"|"llm" }
+
+Response includes: answer, sources, mode, latency_ms, model
 ```
 
 See [Phase 7 README](../../phases/07-app-integration/README.md).

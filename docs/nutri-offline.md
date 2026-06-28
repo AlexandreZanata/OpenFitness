@@ -56,8 +56,9 @@ python scripts/export/run_all.py --skip-merge
 python scripts/inference/run_all.py --skip-export
 ./scripts/validate-nutri-inference.sh
 
-# Offline assistant (Phase 7)
-bash scripts/app/start_offline.sh
+# Offline assistant (Phase 7 + RAG V2 lookup)
+bash scripts/app/start_chat.sh          # llama-server + chat UI at http://127.0.0.1:8090/
+python scripts/app/nutri_cli.py ask "arroz 100g"    # lookup path (~90 ms, no LLM)
 python scripts/app/nutri_cli.py ask "Quantas calorias tem banana prata?"
 ./scripts/validate-nutri-app.sh
 ```
@@ -72,6 +73,7 @@ Run gate scripts from the **repository root** (they `cd` into `nutri-offline/` a
 | [nutri-offline/IMPLEMENTATION-PLAN.md](../nutri-offline/IMPLEMENTATION-PLAN.md) | Master roadmap (phases 0–7) |
 | [nutri-offline/ENVIRONMENT.md](../nutri-offline/ENVIRONMENT.md) | Pinned versions and reproduce steps |
 | [nutri-offline/phases/](../nutri-offline/phases/) | Per-phase README + TASKS checklists |
+| [nutri-offline/docs/README-RAG-V2.md](../nutri-offline/docs/README-RAG-V2.md) | RAG V2 — speed, accuracy, shorthand UX |
 | [nutri-offline/docs/UC-nutri-query.md](../nutri-offline/docs/UC-nutri-query.md) | Use case draft |
 | [nutri-offline/docs/android-integration.md](../nutri-offline/docs/android-integration.md) | Android integration options |
 

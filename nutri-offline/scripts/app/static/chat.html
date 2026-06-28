@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NutriOffline — Chat</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --surface-2: #243044;
+      --text: #e7ecf3;
+      --muted: #8b9cb3;
+      --accent: #3dd68c;
+      --accent-dim: #2a9d63;
+      --user: #2563eb;
+      --border: #2d3a4f;
+      --error: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    header h1 span { color: var(--accent); }
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+    .dot.ok { background: var(--accent); box-shadow: 0 0 8px var(--accent-dim); }
+    .dot.err { background: var(--error); }
+    .controls {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.85rem;
+    }
+    label { display: flex; align-items: center; gap: 0.35rem; cursor: pointer; color: var(--muted); }
+    label input { accent-color: var(--accent); }
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .msg {
+      max-width: 88%;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .msg.user {
+      align-self: flex-end;
+      background: var(--user);
+      border-bottom-right-radius: 0.25rem;
+    }
+    .msg.assistant {
+      align-self: flex-start;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 0.25rem;
+    }
+    .msg.assistant .content h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+    .msg.assistant .content table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 0.5rem 0;
+    }
+    .msg.assistant .content th,
+    .msg.assistant .content td {
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.5rem;
+      text-align: left;
+    }
+    .msg.assistant .content th {
+      background: var(--surface);
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .msg.assistant .content em {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: 0.35rem;
+      margin-right: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge.lookup { background: #1a3d2e; color: var(--accent); }
+    .badge.llm { background: #2a2844; color: #a78bfa; }
+    .meta {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+    .sources {
+      margin-top: 0.6rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .sources strong { color: var(--text); font-weight: 500; }
+    .welcome {
+      text-align: center;
+      color: var(--muted);
+      padding: 2rem 1rem;
+      font-size: 0.95rem;
+    }
+    .welcome p { margin-top: 0.5rem; font-size: 0.85rem; }
+    .typing {
+      align-self: flex-start;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 0.5rem 0;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse { 50% { opacity: 0.4; } }
+    footer {
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      padding: 1rem 1.25rem;
+    }
+    .input-row {
+      max-width: 820px;
+      margin: 0 auto;
+      display: flex;
+      gap: 0.6rem;
+    }
+    #question {
+      flex: 1;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      resize: none;
+      min-height: 48px;
+      max-height: 140px;
+      font-family: inherit;
+    }
+    #question:focus {
+      outline: none;
+      border-color: var(--accent-dim);
+    }
+    button {
+      background: var(--accent);
+      color: #0a0f14;
+      border: none;
+      border-radius: 0.75rem;
+      padding: 0 1.25rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    button:hover { background: #4ee09a; }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .error-banner {
+      background: #3f1d1d;
+      color: var(--error);
+      padding: 0.6rem 1rem;
+      font-size: 0.85rem;
+      text-align: center;
+      display: none;
+    }
+    .error-banner.show { display: block; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Nutri<span>Offline</span></h1>
+    <div class="status">
+      <span class="dot" id="health-dot"></span>
+      <span id="health-text">Checking…</span>
+    </div>
+    <div class="controls">
+      <label><input type="checkbox" id="use-rag" checked /> RAG</label>
+      <label><input type="checkbox" id="debug" /> Debug</label>
+      <button type="button" id="clear-btn" style="background:var(--surface-2);color:var(--text);padding:0.4rem 0.75rem;font-size:0.8rem;">Clear</button>
+    </div>
+  </header>
+
+  <div class="error-banner" id="error-banner"></div>
+
+  <main id="chat">
+    <div class="welcome" id="welcome">
+      <strong>Assistente de nutrição offline</strong>
+      <p>Atalho rápido (sem LLM): <code>arroz 100g</code>, <code>arroz 100g, carne 200g</code></p>
+      <p style="margin-top:0.75rem;font-size:0.8rem;line-height:1.6;">
+        Exemplos:<br />
+        <code>arroz 100g</code> ·
+        <code>banana | feijão 80g</code> ·
+        <code>iogurte vigor 170g</code><br />
+        Perguntas abertas usam o LLM local com contexto RAG.
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <form class="input-row" id="form">
+      <textarea id="question" rows="1" placeholder="Ex.: arroz 100g  ·  arroz 100g, carne 200g  ·  Quantas calorias tem banana?" autofocus></textarea>
+      <button type="submit" id="send-btn">Enviar</button>
+    </form>
+  </footer>
+
+  <script>
+    const chat = document.getElementById("chat");
+    const form = document.getElementById("form");
+    const input = document.getElementById("question");
+    const sendBtn = document.getElementById("send-btn");
+    const useRag = document.getElementById("use-rag");
+    const debugMode = document.getElementById("debug");
+    const healthDot = document.getElementById("health-dot");
+    const healthText = document.getElementById("health-text");
+    const errorBanner = document.getElementById("error-banner");
+    const clearBtn = document.getElementById("clear-btn");
+
+    /** @type {{role: string, content: string}[]} */
+    let history = [];
+    let busy = false;
+
+    function showError(msg) {
+      errorBanner.textContent = msg;
+      errorBanner.classList.add("show");
+    }
+
+    function hideError() {
+      errorBanner.classList.remove("show");
+    }
+
+    function appendMessage(role, content, meta = "") {
+      document.getElementById("welcome")?.remove();
+      const el = document.createElement("div");
+      el.className = `msg ${role}`;
+      if (role === "assistant") {
+        const contentEl = document.createElement("div");
+        contentEl.className = "content";
+        contentEl.innerHTML = renderMarkdown(content);
+        el.appendChild(contentEl);
+      } else {
+        el.textContent = content;
+      }
+      if (meta) {
+        const metaEl = document.createElement("div");
+        metaEl.className = "meta";
+        metaEl.innerHTML = meta;
+        el.appendChild(metaEl);
+      }
+      chat.appendChild(el);
+      chat.scrollTop = chat.scrollHeight;
+      return el;
+    }
+
+    function renderMarkdown(text) {
+      const lines = text.split("\n");
+      const html = [];
+      let inTable = false;
+      let tableRows = [];
+
+      function flushTable() {
+        if (!tableRows.length) return;
+        const rows = tableRows.map((row, idx) => {
+          const cells = row.split("|").slice(1, -1).map((c) => c.trim());
+          if (idx === 1 && cells.every((c) => /^[-:]+$/.test(c))) return "";
+          const tag = idx === 0 ? "th" : "td";
+          return `<tr>${cells.map((c) => `<${tag}>${inlineMd(c)}</${tag}>`).join("")}</tr>`;
+        }).filter(Boolean);
+        html.push(`<table>${rows.join("")}</table>`);
+        tableRows = [];
+        inTable = false;
+      }
+
+      function inlineMd(s) {
+        return escapeHtml(s)
+          .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+          .replace(/_(.+?)_/g, "<em>$1</em>");
+      }
+
+      for (const line of lines) {
+        if (line.trim().startsWith("|")) {
+          inTable = true;
+          tableRows.push(line.trim());
+          continue;
+        }
+        if (inTable) flushTable();
+        if (line.startsWith("### ")) {
+          html.push(`<h3>${escapeHtml(line.slice(4))}</h3>`);
+        } else if (line.trim()) {
+          html.push(`<p>${inlineMd(line)}</p>`);
+        }
+      }
+      if (inTable) flushTable();
+      return html.join("");
+    }
+
+    function appendTyping() {
+      const el = document.createElement("div");
+      el.className = "typing";
+      el.id = "typing";
+      el.textContent = "Pensando…";
+      chat.appendChild(el);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function removeTyping() {
+      document.getElementById("typing")?.remove();
+    }
+
+    async function checkHealth() {
+      try {
+        const res = await fetch("/v1/nutri/health");
+        const data = await res.json();
+        const ok = data.rag_index && data.llm_server;
+        healthDot.className = ok ? "dot ok" : "dot err";
+        healthText.textContent = ok
+          ? "RAG + LLM online"
+          : `Offline — RAG:${data.rag_index ? "ok" : "no"} LLM:${data.llm_server ? "ok" : "no"}`;
+      } catch {
+        healthDot.className = "dot err";
+        healthText.textContent = "API unreachable";
+      }
+    }
+
+    async function sendMessage(text) {
+      if (busy || !text.trim()) return;
+      busy = true;
+      sendBtn.disabled = true;
+      hideError();
+      appendMessage("user", text.trim());
+      history.push({ role: "user", content: text.trim() });
+      appendTyping();
+
+      try {
+        const res = await fetch("/v1/nutri/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: text.trim(),
+            history: history.slice(0, -1),
+            use_rag: useRag.checked,
+            debug: debugMode.checked,
+            top_k: 5,
+          }),
+        });
+        removeTyping();
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        const modeBadge = data.mode === "lookup"
+          ? '<span class="badge lookup">lookup</span>'
+          : '<span class="badge llm">llm</span>';
+        let meta = `${modeBadge}${data.latency_ms.toFixed(0)} ms · ${data.model}`;
+        if (data.rag_context_used) meta += " · RAG";
+        if (data.sources?.length) {
+          const src = data.sources
+            .map((s) => `[${s.source}] ${s.name}`)
+            .join(", ");
+          meta += `<div class="sources"><strong>Fontes:</strong> ${src}</div>`;
+        }
+        if (debugMode.checked && data.rag_context) {
+          meta += `<div class="sources"><strong>Contexto RAG:</strong><br>${escapeHtml(data.rag_context)}</div>`;
+        }
+        appendMessage("assistant", data.answer, meta);
+        history.push({ role: "assistant", content: data.answer });
+      } catch (err) {
+        removeTyping();
+        history.pop();
+        showError(err.message || "Erro ao contactar o servidor.");
+      } finally {
+        busy = false;
+        sendBtn.disabled = false;
+        input.focus();
+      }
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = input.value;
+      input.value = "";
+      input.style.height = "auto";
+      sendMessage(text);
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        form.requestSubmit();
+      }
+    });
+
+    input.addEventListener("input", () => {
+      input.style.height = "auto";
+      input.style.height = Math.min(input.scrollHeight, 140) + "px";
+    });
+
+    clearBtn.addEventListener("click", () => {
+      history = [];
+      chat.innerHTML = `
+        <div class="welcome" id="welcome">
+          <strong>Assistente de nutrição offline</strong>
+          <p>Atalho rápido (sem LLM): <code>arroz 100g</code>, <code>arroz 100g, carne 200g</code></p>
+          <p style="margin-top:0.75rem;font-size:0.8rem;line-height:1.6;">
+            Exemplos:<br />
+            <code>arroz 100g</code> ·
+            <code>banana | feijão 80g</code> ·
+            <code>iogurte vigor 170g</code>
+          </p>
+        </div>`;
+      hideError();
+    });
+
+    checkHealth();
+    setInterval(checkHealth, 15000);
+  </script>
+</body>
+</html>
