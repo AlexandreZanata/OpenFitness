@@ -24,7 +24,7 @@ python scripts/smoke_train.py
 
 See [docs/nutri-offline.md](../docs/nutri-offline.md) for the full phase workflow and gate scripts.
 
-**Next optimization:** [docs/README-RAG-V2.md](docs/README-RAG-V2.md) — Phase A done: shorthand `arroz 100g` → TACO table in ~90 ms (no LLM). Phase B: hybrid retrieval.
+**Next optimization:** [docs/README-RAG-V2.md](docs/README-RAG-V2.md) — Phase B done: alias table + hybrid search (no hardcoded expansions). Phase C: performance polish.
 
 ## Layout
 

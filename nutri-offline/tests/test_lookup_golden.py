@@ -71,6 +71,14 @@ class LookupGoldenTest(unittest.TestCase):
         self.assertIn("Não encontrado", result.answer)
         self.assertEqual(extract_table_kcal(result.answer), [])
 
+    def test_g5_branded_off_product(self) -> None:
+        # GIVEN branded shorthand with known OFF product token
+        result = self.assistant.ask("iogurte vigor 170g", mode="auto")
+        self.assertEqual(result.mode, "lookup")
+        self.assertIn("Open Food Facts", result.answer)
+        self.assertTrue(any(s["source"] == "off" for s in result.sources))
+        self.assertTrue(any("vigor" in s["name"].lower() for s in result.sources))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -6,10 +6,11 @@ import sys
 import unittest
 from pathlib import Path
 
-APP_DIR = Path(__file__).resolve().parents[1] / "scripts" / "app"
-sys.path.insert(0, str(APP_DIR))
+RAG_DIR = Path(__file__).resolve().parents[1] / "scripts" / "rag"
+sys.path.insert(0, str(RAG_DIR))
 
-from rag_pipeline import RagHit, apply_source_boost, keyword_match_bonus  # noqa: E402
+from rerank import apply_source_boost, keyword_match_bonus  # noqa: E402
+from rag_pipeline import RagHit  # noqa: E402
 
 
 class SourceBoostTest(unittest.TestCase):

@@ -1,6 +1,6 @@
 # RAG V2 — Performance, accuracy, and shorthand UX plan
 
-> **Status:** Phase A done (2026-06-28) · **Parent:** [Phase 3](../phases/03-vector-db-rag/README.md) · [Phase 7](../phases/07-app-integration/README.md)  
+> **Status:** Phase B done (2026-06-28) · **Parent:** [Phase 3](../phases/03-vector-db-rag/README.md) · [Phase 7](../phases/07-app-integration/README.md)  
 > **Goal:** 10× faster responses, lighter runtime, and **correct macros from TACO / FDC / OFF** with intuitive input like `arroz 100g, carne 200g`.
 
 ---
@@ -337,15 +337,21 @@ No index rebuild required.
 
 **Exit:** `arroz 100g` returns TACO table in **< 1 s** without LLM. Validated: ~65–90 ms lookup, 128 kcal TACO.
 
-### Phase B — Hybrid retrieval (5–7 days)
+### Phase B — Hybrid retrieval (5–7 days) ✅
 
-- [ ] RAG-V2-07 — alias table from TACO names + manual seeds
-- [ ] RAG-V2-06 — keyword + vector hybrid
-- [ ] RAG-V2-08 — per-item retrieval loop *(basic loop shipped in Phase A; hybrid per-item in Phase B)*
-- [ ] RAG-V2-09 — index v2 columns (`name_normalized`, `aliases`, `source_tier`)
-- [ ] Golden gate G1–G5 *(G1–G4 pass in `tests/test_lookup_golden.py`; G5 branded OFF manual)*
+- [x] RAG-V2-07 — alias table from TACO names + manual seeds (`build_food_aliases.py`)
+- [x] RAG-V2-06 — keyword + vector hybrid (`hybrid_search.py`, DuckDB sidecar + optional LanceDB FTS)
+- [x] RAG-V2-08 — per-item retrieval loop in `lookup_orchestrator.py`
+- [x] RAG-V2-09 — index v2 schema + rebuild script (`build_index_v2.py`)
+- [x] Golden gate G1–G5 (`tests/test_lookup_golden.py`, `validate-nutri-rag-v2.sh`)
 
-**Exit:** shorthand multi-item queries correct on golden set.
+**Exit:** shorthand multi-item queries correct on golden set without hardcoded expansions.
+
+**Rebuild v2 index (optional, enables LanceDB FTS hybrid):**
+```bash
+python scripts/rag/build_food_aliases.py
+python scripts/rag/build_index_v2.py --scope v1 --device cuda
+```
 
 ### Phase C — Performance polish (3–5 days)
 
@@ -407,9 +413,9 @@ Add badge: `lookup` (fast, no LLM) vs `llm` (reasoning).
 - [x] `arroz 100g` → TACO table, **128 kcal**, **< 1 s**
 - [x] `arroz 100g, carne 200g` → 2 rows + correct total, **< 1.5 s**
 - [x] No hallucinated URLs or numbers on lookup path
-- [x] E2E golden G1–G4 pass offline (`tests/test_lookup_golden.py`)
+- [x] E2E golden G1–G5 pass offline (`tests/test_lookup_golden.py`)
 - [ ] Benchmark documents 10× improvement on lookup p95
-- [ ] Phase docs updated; gate `validate-nutri-rag-v2.sh` in CI
+- [x] Phase docs updated; gate `validate-nutri-rag-v2.sh` in CI
 
 ---
 
@@ -423,4 +429,4 @@ Add badge: `lookup` (fast, no LLM) vs `llm` (reasoning).
 
 ---
 
-**Next step:** **Phase B** — alias table + hybrid FTS/vector search (`food_aliases.parquet`, `hybrid_search.py`).
+**Next step:** **Phase C** — smaller embedder A/B, SSE streaming, response cache, benchmark report.

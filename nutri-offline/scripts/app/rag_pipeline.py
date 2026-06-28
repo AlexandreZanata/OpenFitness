@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-import re
 import sys
-import unicodedata
 from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
@@ -13,72 +11,17 @@ RAG_DIR = Path(__file__).resolve().parents[1] / "rag"
 sys.path.insert(0, str(RAG_DIR))
 
 from embed import encode_texts, load_embedder, resolve_device  # noqa: E402
+from hybrid_search import AliasIndex, HybridHit, HybridSearcher  # noqa: E402
 from query_rag import open_table  # noqa: E402
+from rerank import (  # noqa: E402
+    apply_source_boost,
+    keyword_match_bonus,
+    normalize_tokens,
+    preparation_bonus,
+)
 
-SOURCE_BOOST: dict[str, float] = {
-    "taco": 0.15,
-    "tbca": 0.12,
-    "fdc": 0.05,
-    "off": 0.0,
-}
-
-AUTHORITY_SOURCES = ("taco", "tbca")
-
-# Lightweight shorthand → richer search query (Phase A; full aliases in Phase B)
-GENERIC_SEARCH_EXPANSIONS: dict[str, str] = {
-    "arroz": "arroz tipo 1 cozido",
-    "carne": "carne bovina grelhada",
-    "feijão": "feijão carioca cozido",
-    "feijao": "feijão carioca cozido",
-    "banana": "banana prata crua",
-    "ovo": "ovo de galinha cozido",
-    "frango": "frango grelhado",
-}
-
-
-def _normalize_tokens(text: str) -> list[str]:
-    normalized = unicodedata.normalize("NFKD", text.lower())
-    stripped = "".join(ch for ch in normalized if not unicodedata.combining(ch))
-    return [token for token in re.split(r"[^a-z0-9]+", stripped) if len(token) >= 2]
-
-
-def keyword_match_bonus(query: str, name: str) -> float:
-    """Small score bonus when query tokens appear in the candidate name."""
-    query_tokens = set(_normalize_tokens(query))
-    name_tokens = set(_normalize_tokens(name))
-    if not query_tokens:
-        return 0.0
-    overlap = len(query_tokens & name_tokens)
-    return min(0.12, overlap * 0.04)
-
-
-def apply_source_boost(hits: list[RagHit]) -> list[RagHit]:
-    """Rerank hits with source authority boost (BR-RET-001)."""
-    boosted = [
-        replace(hit, score=hit.score + SOURCE_BOOST.get(hit.source.lower(), 0.0))
-        for hit in hits
-    ]
-    boosted.sort(key=lambda item: item.score, reverse=True)
-    return boosted
-
-
-def lookup_search_query(food: str) -> str:
-    """Expand generic shorthand to a richer embedding query."""
-    key = food.strip().lower()
-    if key in GENERIC_SEARCH_EXPANSIONS:
-        return GENERIC_SEARCH_EXPANSIONS[key]
-    return food
-
-
-def preparation_bonus(name: str) -> float:
-    """Prefer cooked/generic table entries over raw ingredients for portions."""
-    lowered = name.lower()
-    bonus = 0.0
-    if "cozido" in lowered or "grelhad" in lowered or "crua" in lowered:
-        bonus += 0.06
-    if " cru" in lowered or lowered.endswith("cru"):
-        bonus -= 0.08
-    return bonus
+# Backward-compatible re-exports for tests and lookup_orchestrator
+_normalize_tokens = normalize_tokens
 
 
 @dataclass
@@ -91,6 +34,17 @@ class RagHit:
     metadata: dict[str, Any]
 
 
+def _hybrid_to_rag(hit: HybridHit) -> RagHit:
+    return RagHit(
+        score=hit.score,
+        id=hit.id,
+        name=hit.name,
+        source=hit.source,
+        rag_context=hit.rag_context,
+        metadata=hit.metadata,
+    )
+
+
 class RagPipeline:
     """Embed queries and search the local LanceDB index."""
 
@@ -100,6 +54,10 @@ class RagPipeline:
         self.device = resolve_device(device)
         self._model = load_embedder(self.device)
         self._table = open_table()
+        self._hybrid = HybridSearcher(
+            table=self._table,
+            alias_index=AliasIndex(),
+        )
 
     @classmethod
     def get(cls, *, device: str = "cpu") -> RagPipeline:
@@ -143,6 +101,10 @@ class RagPipeline:
         )
         return self._rows_to_hits(rows)
 
+    def lookup_search_query(self, food: str) -> str:
+        """Resolve shorthand food token via alias table (RAG-V2-07)."""
+        return self._hybrid.lookup_search_query(food)
+
     def search_for_lookup(
         self,
         food: str,
@@ -151,43 +113,17 @@ class RagPipeline:
         source_hint: str | None = None,
         prefer_branded: bool = False,
     ) -> list[RagHit]:
-        """Retrieve candidates for deterministic lookup (authority + general merge)."""
-        query = lookup_search_query(food)
+        """Hybrid alias + keyword + vector retrieval for deterministic lookup."""
+        query = self.lookup_search_query(food)
         vector = self.embed_query(query)
-
-        general_limit = top_k * 4 if not prefer_branded else top_k * 2
-        rows = (
-            self._table.search(vector, vector_column_name="vector")
-            .limit(general_limit)
-            .to_list()
+        hits = self._hybrid.search(
+            food,
+            vector,
+            top_k=top_k,
+            source_hint=source_hint,
+            prefer_branded=prefer_branded,
         )
-
-        merged: dict[str, RagHit] = {row["id"]: hit for row, hit in zip(rows, self._rows_to_hits(rows))}
-
-        if source_hint:
-            filter_sql = f"source = '{source_hint.lower()}'"
-        elif not prefer_branded:
-            filter_sql = "source IN ('taco', 'tbca')"
-        else:
-            filter_sql = None
-
-        if filter_sql:
-            authority_rows = (
-                self._table.search(vector, vector_column_name="vector")
-                .where(filter_sql)
-                .limit(top_k * 2)
-                .to_list()
-            )
-            for row, hit in zip(authority_rows, self._rows_to_hits(authority_rows)):
-                merged.setdefault(row["id"], hit)
-
-        hits = list(merged.values())
-        scored: list[RagHit] = []
-        for hit in hits:
-            bonus = keyword_match_bonus(food, hit.name) + keyword_match_bonus(query, hit.name)
-            bonus += preparation_bonus(hit.name)
-            scored.append(replace(hit, score=hit.score + bonus))
-        return apply_source_boost(scored)[: top_k * 2]
+        return [_hybrid_to_rag(hit) for hit in hits]
 
     def search_ranked(self, question: str, *, top_k: int = 5) -> list[RagHit]:
         """Vector search with keyword bonus and source boost reranking."""
@@ -196,7 +132,7 @@ class RagPipeline:
             replace(hit, score=hit.score + keyword_match_bonus(question, hit.name))
             for hit in hits
         ]
-        return apply_source_boost(with_keyword)
+        return apply_source_boost(with_keyword)  # type: ignore[return-value]
 
     @staticmethod
     def build_context(results: list[RagHit]) -> str:

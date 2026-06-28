@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PROCESSED_DIR = ROOT / "data" / "processed"
 FOODS_PARQUET = PROCESSED_DIR / "foods.parquet"
+FOOD_ALIASES_PARQUET = PROCESSED_DIR / "food_aliases.parquet"
 INDEX_DIR = ROOT / "indexes" / "nutri-foods"
 INDEX_METADATA = INDEX_DIR / "metadata.json"
 LOG_DIR = ROOT / "logs"
@@ -14,6 +15,7 @@ LOG_DIR = ROOT / "logs"
 EMBEDDING_MODEL = "BAAI/bge-m3"
 EMBEDDING_DIM = 1024
 TABLE_NAME = "foods"
+SCHEMA_VERSION_V2 = 2
 
 # v1: TACO + OFF Brazil + FDC Foundation (~108k rows, <4h CPU build)
 SCOPE_V1_SQL = """

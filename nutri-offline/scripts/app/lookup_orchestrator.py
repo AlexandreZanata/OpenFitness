@@ -2,15 +2,16 @@
 
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass
+from pathlib import Path
+
+RAG_DIR = Path(__file__).resolve().parents[1] / "rag"
+sys.path.insert(0, str(RAG_DIR))
 
 from intent_parser import IntentKind, ParsedIntent, PortionItem, parse_intent
-from rag_pipeline import (
-    RagHit,
-    RagPipeline,
-    _normalize_tokens,
-    apply_source_boost,
-)
+from rag_pipeline import RagHit, RagPipeline
+from rerank import apply_source_boost, normalize_tokens  # noqa: E402
 from response_formatter import format_lookup_table
 
 MIN_LOOKUP_SCORE = 0.08
@@ -47,8 +48,8 @@ class LookupResult:
 
 
 def _has_name_overlap(food: str, name: str) -> bool:
-    food_tokens = set(_normalize_tokens(food))
-    name_tokens = set(_normalize_tokens(name))
+    food_tokens = set(normalize_tokens(food))
+    name_tokens = set(normalize_tokens(name))
     return bool(food_tokens & name_tokens)
 
 
