@@ -24,7 +24,7 @@ python scripts/smoke_train.py
 
 See [docs/nutri-offline.md](../docs/nutri-offline.md) for the full phase workflow and gate scripts.
 
-**Next optimization:** [docs/README-RAG-V2.md](docs/README-RAG-V2.md) — Phase B done: alias table + hybrid search (no hardcoded expansions). Phase C: performance polish.
+**Next optimization:** [docs/README-RAG-V2.md](docs/README-RAG-V2.md) — Phase C done: SSE streaming, lookup cache, benchmark gate.
 
 ## Layout
 

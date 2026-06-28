@@ -3,7 +3,9 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-GGUF="${NUTRI_GGUF:-${ROOT}/models/gguf/nutri-qwen25-3b-smoke-test-q4_k_m.gguf}"
+QUANT="${NUTRI_GGUF_QUANT:-q4_k_m}"
+ADAPTER="${NUTRI_ADAPTER:-smoke-test}"
+GGUF="${NUTRI_GGUF:-${ROOT}/models/gguf/nutri-qwen25-3b-${ADAPTER}-${QUANT}.gguf}"
 HOST="${NUTRI_INFERENCE_HOST:-127.0.0.1}"
 PORT="${NUTRI_INFERENCE_PORT:-8080}"
 SERVER="${ROOT}/llama.cpp/build/bin/llama-server"

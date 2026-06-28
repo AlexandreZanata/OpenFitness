@@ -31,6 +31,10 @@ fi
     tests.test_food_aliases \
     tests.test_hybrid_search \
     tests.test_lookup_golden \
+    tests.test_response_cache \
     -v)
 
-echo "PASS: NutriOffline RAG V2 gate (Phase B)"
+echo "Running RAG V2 benchmark (lookup-only if LLM offline)..."
+(cd "${NUTRI}" && python scripts/app/benchmark_v2.py --skip-llm --repeats 1)
+
+echo "PASS: NutriOffline RAG V2 gate (Phase B + C)"

@@ -132,6 +132,7 @@
     }
     .badge.lookup { background: #1a3d2e; color: var(--accent); }
     .badge.llm { background: #2a2844; color: #a78bfa; }
+    .badge.cache { background: #3d3a1a; color: #fbbf24; }
     .meta {
       font-size: 0.72rem;
       color: var(--muted);
@@ -379,7 +380,7 @@
       appendTyping();
 
       try {
-        const res = await fetch("/v1/nutri/chat", {
+        const res = await fetch("/v1/nutri/chat/stream", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -395,23 +396,87 @@
           const err = await res.json().catch(() => ({}));
           throw new Error(err.detail || `HTTP ${res.status}`);
         }
-        const data = await res.json();
-        const modeBadge = data.mode === "lookup"
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let assistantEl = null;
+        let contentEl = null;
+        let streamedText = "";
+        let finalData = null;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const chunks = buffer.split("\n\n");
+          buffer = chunks.pop() || "";
+
+          for (const chunk of chunks) {
+            const lines = chunk.split("\n");
+            let eventType = "message";
+            let dataLine = "";
+            for (const line of lines) {
+              if (line.startsWith("event:")) eventType = line.slice(6).trim();
+              if (line.startsWith("data:")) dataLine = line.slice(5).trim();
+            }
+            if (!dataLine) continue;
+            const payload = JSON.parse(dataLine);
+
+            if (eventType === "error") {
+              throw new Error(payload.message || "Stream error");
+            }
+            if (eventType === "token") {
+              if (!assistantEl) {
+                document.getElementById("welcome")?.remove();
+                assistantEl = document.createElement("div");
+                assistantEl.className = "msg assistant";
+                contentEl = document.createElement("div");
+                contentEl.className = "content";
+                assistantEl.appendChild(contentEl);
+                chat.appendChild(assistantEl);
+              }
+              streamedText += payload.content || "";
+              contentEl.textContent = streamedText;
+              chat.scrollTop = chat.scrollHeight;
+            }
+            if (eventType === "done") {
+              finalData = payload;
+            }
+          }
+        }
+
+        if (!finalData) throw new Error("Stream ended without response");
+
+        const modeBadge = finalData.mode === "lookup"
           ? '<span class="badge lookup">lookup</span>'
           : '<span class="badge llm">llm</span>';
-        let meta = `${modeBadge}${data.latency_ms.toFixed(0)} ms · ${data.model}`;
-        if (data.rag_context_used) meta += " · RAG";
-        if (data.sources?.length) {
-          const src = data.sources
+        const cacheBadge = finalData.cache_hit
+          ? '<span class="badge cache">cache</span>'
+          : "";
+        let meta = `${modeBadge}${cacheBadge}${finalData.latency_ms.toFixed(0)} ms · ${finalData.model}`;
+        if (finalData.rag_context_used) meta += " · RAG";
+        if (finalData.sources?.length) {
+          const src = finalData.sources
             .map((s) => `[${s.source}] ${s.name}`)
             .join(", ");
           meta += `<div class="sources"><strong>Fontes:</strong> ${src}</div>`;
         }
-        if (debugMode.checked && data.rag_context) {
-          meta += `<div class="sources"><strong>Contexto RAG:</strong><br>${escapeHtml(data.rag_context)}</div>`;
+        if (debugMode.checked && finalData.rag_context) {
+          meta += `<div class="sources"><strong>Contexto RAG:</strong><br>${escapeHtml(finalData.rag_context)}</div>`;
         }
-        appendMessage("assistant", data.answer, meta);
-        history.push({ role: "assistant", content: data.answer });
+
+        if (assistantEl && contentEl) {
+          contentEl.innerHTML = renderMarkdown(finalData.answer);
+          const metaEl = document.createElement("div");
+          metaEl.className = "meta";
+          metaEl.innerHTML = meta;
+          assistantEl.appendChild(metaEl);
+        } else {
+          appendMessage("assistant", finalData.answer, meta);
+        }
+
+        history.push({ role: "assistant", content: finalData.answer });
       } catch (err) {
         removeTyping();
         history.pop();

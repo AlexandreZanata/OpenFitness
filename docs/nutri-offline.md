@@ -61,7 +61,11 @@ bash scripts/app/start_chat.sh          # llama-server + chat UI at http://127.0
 python scripts/app/nutri_cli.py ask "arroz 100g"    # lookup path (~90 ms, no LLM)
 python scripts/app/nutri_cli.py ask "Quantas calorias tem banana prata?"
 ./scripts/validate-nutri-app.sh
-./scripts/validate-nutri-rag-v2.sh   # RAG V2 alias + hybrid lookup golden gate
+./scripts/validate-nutri-rag-v2.sh   # RAG V2 alias + hybrid + cache + benchmark gate
+
+# RAG V2 benchmarks (optional)
+# cd nutri-offline && python scripts/app/benchmark_v2.py --skip-llm
+# cd nutri-offline && python scripts/rag/embedder_benchmark.py --device cpu
 ```
 
 Run gate scripts from the **repository root** (they `cd` into `nutri-offline/` automatically).

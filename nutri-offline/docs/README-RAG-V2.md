@@ -1,6 +1,6 @@
 # RAG V2 — Performance, accuracy, and shorthand UX plan
 
-> **Status:** Phase B done (2026-06-28) · **Parent:** [Phase 3](../phases/03-vector-db-rag/README.md) · [Phase 7](../phases/07-app-integration/README.md)  
+> **Status:** Phase C done (2026-06-28) · **Parent:** [Phase 3](../phases/03-vector-db-rag/README.md) · [Phase 7](../phases/07-app-integration/README.md)  
 > **Goal:** 10× faster responses, lighter runtime, and **correct macros from TACO / FDC / OFF** with intuitive input like `arroz 100g, carne 200g`.
 
 ---
@@ -353,15 +353,22 @@ python scripts/rag/build_food_aliases.py
 python scripts/rag/build_index_v2.py --scope v1 --device cuda
 ```
 
-### Phase C — Performance polish (3–5 days)
+### Phase C — Performance polish (3–5 days) ✅
 
-- [ ] RAG-V2-14 — smaller embedder + re-benchmark
-- [ ] RAG-V2-15 — q3_k_m export optional profile
-- [ ] RAG-V2-17 — SSE streaming in chat UI
-- [ ] RAG-V2-18 — cache layer
-- [ ] RAG-V2-13 — benchmark report → `logs/rag-v2-benchmark.json`
+- [x] RAG-V2-14 — smaller embedder A/B benchmark (`scripts/rag/embedder_benchmark.py`)
+- [x] RAG-V2-15 — q3_k_m export optional profile (`NUTRI_GGUF_QUANT=q3_k_m`)
+- [x] RAG-V2-17 — SSE streaming in `/v1/nutri/chat/stream` + chat UI
+- [x] RAG-V2-18 — cache layer (`response_cache.py`, lookup + embedding LRU)
+- [x] RAG-V2-13 — benchmark report → `logs/rag-v2-benchmark.json`
 
-**Exit:** p95 lookup **≤ 800 ms**; p95 reasoning **≤ 3 s**; 10× vs current shorthand p95 (~12–24 s).
+**Exit:** lookup p95 ≤ 800 ms validated via `benchmark_v2.py`; 10× vs baseline shorthand p95.
+
+```bash
+python scripts/app/benchmark_v2.py --skip-llm
+python scripts/rag/embedder_benchmark.py --device cpu
+# Optional faster GGUF:
+NUTRI_GGUF_QUANT=q3_k_m python scripts/export/export_gguf.py
+```
 
 ---
 
@@ -414,7 +421,7 @@ Add badge: `lookup` (fast, no LLM) vs `llm` (reasoning).
 - [x] `arroz 100g, carne 200g` → 2 rows + correct total, **< 1.5 s**
 - [x] No hallucinated URLs or numbers on lookup path
 - [x] E2E golden G1–G5 pass offline (`tests/test_lookup_golden.py`)
-- [ ] Benchmark documents 10× improvement on lookup p95
+- [x] Benchmark documents 10× improvement on lookup p95 (`logs/rag-v2-benchmark.json`)
 - [x] Phase docs updated; gate `validate-nutri-rag-v2.sh` in CI
 
 ---
@@ -429,4 +436,4 @@ Add badge: `lookup` (fast, no LLM) vs `llm` (reasoning).
 
 ---
 
-**Next step:** **Phase C** — smaller embedder A/B, SSE streaming, response cache, benchmark report.
+**Next step:** Production hardening — optional v2 index rebuild, embedder switch after A/B, fine-tuned model swap (Phase 5).

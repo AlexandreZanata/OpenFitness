@@ -20,6 +20,9 @@ from rerank import (  # noqa: E402
     preparation_bonus,
 )
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from response_cache import DEFAULT_EMBED_TTL_SECONDS, TTLCache, embed_cache_key  # noqa: E402
+
 # Backward-compatible re-exports for tests and lookup_orchestrator
 _normalize_tokens = normalize_tokens
 
@@ -54,6 +57,7 @@ class RagPipeline:
         self.device = resolve_device(device)
         self._model = load_embedder(self.device)
         self._table = open_table()
+        self._embed_cache: TTLCache[list[float]] = TTLCache(max_size=512, ttl_seconds=DEFAULT_EMBED_TTL_SECONDS)
         self._hybrid = HybridSearcher(
             table=self._table,
             alias_index=AliasIndex(),
@@ -66,7 +70,16 @@ class RagPipeline:
         return cls._instance
 
     def embed_query(self, question: str) -> list[float]:
-        return encode_texts(self._model, [question], show_progress=False)[0]
+        key = embed_cache_key(question)
+        cached = self._embed_cache.get(key)
+        if cached is not None:
+            return cached
+        vector = encode_texts(self._model, [question], show_progress=False)[0]
+        self._embed_cache.set(key, vector)
+        return vector
+
+    def embed_cache_stats(self) -> dict:
+        return self._embed_cache.stats()
 
     def _rows_to_hits(self, rows: list[dict[str, Any]]) -> list[RagHit]:
         hits: list[RagHit] = []
