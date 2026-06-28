@@ -8,6 +8,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- NutriOffline Phase 7: offline app integration gate (`scripts/validate-nutri-app.sh`)
 - NutriOffline Phase 6: GGUF inference gate (`scripts/validate-nutri-inference.sh`)
 - NutriOffline Phase 4: fine-tuning dataset gate (`scripts/validate-nutri-dataset.sh`)
 - NutriOffline Phase 3: RAG index gate (`scripts/validate-nutri-rag.sh`)

@@ -46,6 +46,11 @@ export NUTRI_ADAPTER=smoke-test
 python scripts/export/run_all.py --skip-merge
 python scripts/inference/run_all.py --skip-export
 ./scripts/validate-nutri-inference.sh
+
+# Offline assistant (Phase 7)
+bash scripts/app/start_offline.sh
+python scripts/app/nutri_cli.py ask "Quantas calorias tem banana prata?"
+./scripts/validate-nutri-app.sh
 ```
 
 ## Local documentation
@@ -62,6 +67,7 @@ All NutriOffline docs are under `.local/`:
 | [.local/phases/03-vector-db-rag/TASKS.md](../.local/phases/03-vector-db-rag/TASKS.md) | Phase 3 task checklist |
 | [.local/phases/04-finetuning-dataset/TASKS.md](../.local/phases/04-finetuning-dataset/TASKS.md) | Phase 4 task checklist |
 | [.local/phases/06-gguf-inference/TASKS.md](../.local/phases/06-gguf-inference/TASKS.md) | Phase 6 task checklist |
+| [.local/phases/07-app-integration/TASKS.md](../.local/phases/07-app-integration/TASKS.md) | Phase 7 task checklist |
 
 ## Architecture (target)
 
@@ -83,3 +89,4 @@ Fine-tuning teaches reasoning and Brazilian Portuguese tone; **factual macros co
 | [scripts/validate-nutri-rag.sh](../scripts/validate-nutri-rag.sh) | Gate N-03-05 — LanceDB index + acceptance queries |
 | [scripts/validate-nutri-dataset.sh](../scripts/validate-nutri-dataset.sh) | Gate N-04 — ChatML dataset grounding + counts |
 | [scripts/validate-nutri-inference.sh](../scripts/validate-nutri-inference.sh) | Gate N-06 — GGUF + llama-server smoke tests |
+| [scripts/validate-nutri-app.sh](../scripts/validate-nutri-app.sh) | Gate N-07 — end-to-end offline RAG + LLM |
