@@ -1,6 +1,6 @@
 # Phase 5 — Fine-tuning training (Unsloth QLoRA)
 
-> **Status:** Not started  
+> **Status:** In progress — training scripts ready; full 3-epoch run pending  
 > **Parent:** [Phase 4](../04-finetuning-dataset/README.md) · [Phase 0](../00-hardware-environment/README.md)  
 > **Goal:** Real QLoRA supervised fine-tuning of Qwen2.5-3B-Instruct on the nutrition dataset.
 
@@ -54,9 +54,13 @@ eval_steps: 100
 ```
 scripts/training/
 ├── train_qlora.py         # Unsloth SFT main script
-├── config.yaml            # hyperparameters
-├── eval_domain.py         # domain-specific eval
-└── compare_base_vs_ft.py  # qualitative comparison
+├── config.yaml            # hyperparameters + ci/full profiles
+├── config_loader.py       # profile merge (quantun-ia pattern)
+├── dataset_loader.py      # Phase 4 ChatML → SFT text
+├── preflight.py           # CUDA/disk/dataset gate
+├── run_all.py             # preflight → train orchestrator
+├── eval_domain.py         # domain-specific eval (pending)
+└── compare_base_vs_ft.py  # qualitative comparison (pending)
 
 models/adapters/
 └── nutri-qwen25-3b-v1/    # LoRA checkpoint

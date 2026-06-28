@@ -49,7 +49,7 @@ nutri-offline/
 | 2 — Normalization | [phases/02-data-normalization/TASKS.md](phases/02-data-normalization/TASKS.md) |
 | 3 — Vector RAG | [phases/03-vector-db-rag/TASKS.md](phases/03-vector-db-rag/TASKS.md) |
 | 4 — Fine-tuning dataset | [phases/04-finetuning-dataset/TASKS.md](phases/04-finetuning-dataset/TASKS.md) |
-| 5 — QLoRA training | [phases/05-finetuning-training/TASKS.md](phases/05-finetuning-training/TASKS.md) |
+| 5 — QLoRA training | [phases/05-finetuning-training/TASKS.md](phases/05-finetuning-training/TASKS.md) · [TRAINING-READINESS.md](phases/05-finetuning-training/TRAINING-READINESS.md) |
 | 6 — GGUF inference | [phases/06-gguf-inference/TASKS.md](phases/06-gguf-inference/TASKS.md) |
 | 7 — App integration | [phases/07-app-integration/TASKS.md](phases/07-app-integration/TASKS.md) |
 

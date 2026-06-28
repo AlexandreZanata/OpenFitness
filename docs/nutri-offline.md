@@ -43,6 +43,13 @@ python scripts/rag/run_all.py --scope v1 --device cuda
 python scripts/dataset/run_all.py --target 3000
 ./scripts/validate-nutri-dataset.sh
 
+# QLoRA training (Phase 5)
+./scripts/validate-nutri-training-preflight.sh
+cd nutri-offline && source venv/bin/activate
+export HF_HOME="$(pwd)/models/base" UNSLOTH_USE_FP16=1
+python scripts/training/train_qlora.py --config scripts/training/config.yaml --profile ci   # 2-step smoke
+python scripts/training/train_qlora.py --config scripts/training/config.yaml               # full 3 epochs
+
 # GGUF export + inference (Phase 6)
 export NUTRI_ADAPTER=smoke-test
 python scripts/export/run_all.py --skip-merge
@@ -87,5 +94,6 @@ Fine-tuning teaches reasoning and Brazilian Portuguese tone; **factual macros co
 | [scripts/validate-nutri-normalization.sh](../scripts/validate-nutri-normalization.sh) | N-02 |
 | [scripts/validate-nutri-rag.sh](../scripts/validate-nutri-rag.sh) | N-03 |
 | [scripts/validate-nutri-dataset.sh](../scripts/validate-nutri-dataset.sh) | N-04 |
+| [scripts/validate-nutri-training-preflight.sh](../scripts/validate-nutri-training-preflight.sh) | N-05 |
 | [scripts/validate-nutri-inference.sh](../scripts/validate-nutri-inference.sh) | N-06 |
 | [scripts/validate-nutri-app.sh](../scripts/validate-nutri-app.sh) | N-07 |

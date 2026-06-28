@@ -1,0 +1,52 @@
+# NutriOffline Phase 5 — QLoRA SFT (Unsloth + TRL)
+# Profile merge: defaults → profiles.<name> (quantun-ia pattern)
+# RTX 4060 8 GB — fp16 + batch 1 + grad_accum 8
+
+active_profile: full
+
+defaults:
+  base_model: unsloth/Qwen2.5-3B-Instruct-bnb-4bit
+  train_jsonl: data/datasets/train.jsonl
+  val_jsonl: data/datasets/val.jsonl
+  output_dir: models/adapters/nutri-qwen25-3b-v1
+  max_seq_length: 2048
+  num_train_epochs: 3
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  learning_rate: 2.0e-4
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.0
+  lora_target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+  fp16: true
+  bf16: false
+  warmup_ratio: 0.05
+  weight_decay: 0.01
+  lr_scheduler: cosine
+  seed: 42
+  eval_steps: 100
+  save_steps: 100
+  logging_steps: 10
+  early_stopping_patience: 3
+  max_vram_gb: 7.5
+  min_free_disk_gb: 20
+  min_train_examples: 2000
+  min_val_examples: 200
+
+profiles:
+  ci:
+    # Block C mini-train — 2 steps, no checkpoint churn
+    max_steps: 2
+    num_train_epochs: 1
+    eval_steps: 1
+    save_steps: 100000
+    logging_steps: 1
+    early_stopping_patience: 0
+    output_dir: models/adapters/nutri-qwen25-3b-ci-smoke
