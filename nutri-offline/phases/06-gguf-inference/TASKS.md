@@ -17,13 +17,13 @@
 | **llama.cpp install** | Build from source (recommended) · prebuilt binary | ✅ Unsloth prebuild (fallback; cmake if available) |
 | **Server port** | 8080 (recommended) · configurable | ✅ 8080 |
 
-> **Note:** Pipeline validated with Phase 0 `smoke-test` adapter. Re-export with `NUTRI_ADAPTER=nutri-qwen25-3b-v1` after Phase 5 training completes.
+> **Note:** Production default is `NUTRI_ADAPTER=nutri-qwen25-3b-v1`. Canonical GGUF name: `nutri-qwen25-3b-v1-q4_k_m.gguf` (see `scripts/export/gguf_paths.py`).
 
 ---
 
 ## 0. Prerequisites
 
-- [x] Phase 5 adapter saved: `models/adapters/nutri-qwen25-3b-v1/` — **using smoke-test for pipeline gate**
+- [x] Phase 5 adapter saved: `models/adapters/nutri-qwen25-3b-v1/` — **production default**
 - [x] Sufficient disk: ~5 GB for merged + GGUF files
 - [x] llama.cpp cloned or installed
 
@@ -124,5 +124,7 @@
 - [x] Offline test: server binds 127.0.0.1 only
 - [x] RAG + LLM pipeline validated manually
 - [x] Ready for [Phase 7](../07-app-integration/TASKS.md)
+
+> **Mobile (Phase 8):** GGUF is **desktop-only**. The ≤200 MB mobile pack does not include llama-server — see [Phase 8](../08-mobile-pack/README.md).
 
 **Effort estimate:** 2–3 days

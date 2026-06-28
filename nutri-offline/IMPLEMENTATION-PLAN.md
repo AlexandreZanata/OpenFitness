@@ -45,8 +45,9 @@ User question → local embedding → vector DB (top-k)
 | **5** | [Fine-tuning training](phases/05-finetuning-training/README.md) | 2–5 days exec + iteration | Phase 4 |
 | **6** | [GGUF inference](phases/06-gguf-inference/README.md) | 2–3 days | Phase 5 |
 | **7** | [App integration](phases/07-app-integration/README.md) | 2–3 weeks | Phases 3, 6 |
+| **8** | [Mobile pack ≤200 MB](phases/08-mobile-pack/README.md) | 4–6 weeks | Phases 3, 7, RAG V2 |
 
-**Total estimate:** 6–10 weeks part-time.
+**Total estimate:** 8–14 weeks part-time (Phases 0–7 desktop + Phase 8 mobile).
 
 ---
 
@@ -115,7 +116,17 @@ Details: [phases/01-data-acquisition/OFFICIAL-REFERENCE.md](phases/01-data-acqui
 - [ ] GGUF model runs via llama.cpp on localhost with no internet
 - [ ] RAG pipeline: question → embedding → top-k → prompt → answer
 - [ ] End-to-end offline test: airplane mode, factual macro answer with source citation
+- [ ] **Phase 8:** Mobile pack ≤200 MB with desktop capability parity (lookup + rule-based reasoning)
 
 ---
+
+## Mobile vs desktop (Phase 8)
+
+| Runtime | Pack size | LLM | Use case |
+|---------|-----------|-----|----------|
+| **Desktop** (Phases 6–7) | ~3 GB | Qwen2.5-3B GGUF | Dev, full catalog, optional LLM reasoning |
+| **Mobile** (Phase 8) | **≤200 MB** | None on-device | OpenFitness Android, mid-range phones |
+
+Mobile achieves parity via **expanded intent parser + hybrid RAG + rule engine** — not by compressing the 3B model. See [phases/08-mobile-pack/README.md](phases/08-mobile-pack/README.md).
 
 **References:** [README.md](README.md) · [Unsloth docs](https://unsloth.ai/docs) · [LanceDB](https://lancedb.github.io/lancedb/) · [llama.cpp](https://github.com/ggml-org/llama.cpp)

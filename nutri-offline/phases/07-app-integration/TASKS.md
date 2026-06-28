@@ -40,6 +40,7 @@
 | N-07-07 | Startup orchestration | `scripts/app/start_offline.sh` | P1 | ✅ |
 | N-07-08 | Android integration guide | `docs/android-integration.md` | P1 | ✅ |
 | N-07-09 | OpenFitness use case draft | `docs/UC-nutri-query.md` | P2 | ✅ |
+| N-07-10 | Mobile runtime adapter | `scripts/mobile/mobile_assistant.py` | P1 | ⬜ [Phase 8](../08-mobile-pack/TASKS.md) N-08-16 |
 
 ---
 
@@ -129,8 +130,9 @@
 - [x] [Phase 2](../02-data-normalization/TASKS.md) — unified schema
 - [x] [Phase 3](../03-vector-db-rag/TASKS.md) — vector index
 - [x] [Phase 4](../04-finetuning-dataset/TASKS.md) — training dataset
-- [ ] [Phase 5](../05-finetuning-training/TASKS.md) — QLoRA fine-tuning
+- [x] [Phase 5](../05-finetuning-training/TASKS.md) — QLoRA fine-tuning (adapter v1)
 - [x] [Phase 6](../06-gguf-inference/TASKS.md) — GGUF inference
-- [x] [Phase 7](TASKS.md) — app integration
+- [x] [Phase 7](TASKS.md) — app integration (desktop)
+- [ ] [Phase 8](../08-mobile-pack/TASKS.md) — mobile pack ≤200 MB
 
 **Effort estimate:** 2–3 weeks

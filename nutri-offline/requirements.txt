@@ -24,4 +24,8 @@ openpyxl==3.1.5
 lancedb==0.33.0
 sentence-transformers==5.6.0
 
+# 5. Mobile pack index (Phase 8)
+sqlite-vec==0.1.9
+pysqlite3-binary==0.5.4.post2
+
 # Full resolved environment: requirements-lock.txt

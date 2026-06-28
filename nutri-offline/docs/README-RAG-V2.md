@@ -1,6 +1,6 @@
 # RAG V2 — Performance, accuracy, and shorthand UX plan
 
-> **Status:** Phase C done (2026-06-28) · **Parent:** [Phase 3](../phases/03-vector-db-rag/README.md) · [Phase 7](../phases/07-app-integration/README.md)  
+> **Status:** Production ready (2026-06-28) · Phases A–C + v2 index + v1 GGUF · **Phase D (mobile ≤200 MB) planned** · **Parent:** [Phase 3](../phases/03-vector-db-rag/README.md) · [Phase 7](../phases/07-app-integration/README.md) · [Phase 8](../phases/08-mobile-pack/README.md)  
 > **Goal:** 10× faster responses, lighter runtime, and **correct macros from TACO / FDC / OFF** with intuitive input like `arroz 100g, carne 200g`.
 
 ---
@@ -227,10 +227,10 @@ Rebuild index: `scripts/rag/build_index_v2.py`.
 | Model | Dims | Speed | Recommendation |
 |-------|------|-------|----------------|
 | BAAI/bge-m3 (current) | 1024 | Baseline | Keep for rebuild quality |
-| **BAAI/bge-small-en-v1.5** + PT aliases | 384 | ~3× faster | **v2 runtime default** |
+| **BAAI/bge-small-en-v1.5** + PT aliases | 384 | ~3.9× faster (A/B) | Future — requires index rebuild |
 | intfloat/multilingual-e5-small | 384 | ~3× faster | Alternative A/B |
 
-Run A/B on 50 golden queries before switching production embedder.
+**Production decision (2026-06-28):** keep **bge-m3** — A/B showed bge-small ~3.9× faster (p95 12.7 ms vs 49.8 ms) but switching embedders requires a full index rebuild at 384 dims; v2 index was built with bge-m3 for retrieval quality. See `logs/embedder-ab-benchmark.json`.
 
 ### 4.2 LLM slimming (when LLM is needed)
 
@@ -372,6 +372,82 @@ NUTRI_GGUF_QUANT=q3_k_m python scripts/export/export_gguf.py
 
 ---
 
+## Production setup ✅
+
+One-shot orchestrator (aliases → GGUF wiring → v2 index → embedder A/B → gate):
+
+```bash
+cd nutri-offline
+bash scripts/production/setup_production.sh
+# Skip long steps when re-running:
+# SKIP_INDEX=1 SKIP_EMBEDDER_AB=1 bash scripts/production/setup_production.sh
+```
+
+Gate (from repository root):
+
+```bash
+./scripts/validate-nutri-production.sh
+```
+
+### v2 index (rebuilt 2026-06-28)
+
+| Field | Value |
+|-------|-------|
+| Records | 107,768 (scope v1) |
+| `schema_version` | 2 |
+| `fts_index` | true (`search_text` column) |
+| Embedder | BAAI/bge-m3 (1024-dim) |
+| Size | ~448 MB |
+| Build time | ~16 min (CUDA) |
+
+Manual rebuild:
+
+```bash
+python scripts/rag/build_food_aliases.py
+python scripts/rag/build_index_v2.py --scope v1 --device cuda --skip-aliases
+```
+
+Restart the app process after rebuild — `RagPipeline` caches the embedder singleton.
+
+### Fine-tuned model (Phase 5 + 6)
+
+| Artifact | Path |
+|----------|------|
+| Adapter | `models/adapters/nutri-qwen25-3b-v1/` |
+| GGUF (q4_k_m) | `models/gguf/nutri-qwen25-3b-v1-q4_k_m.gguf` |
+| Env template | `production.env.example` |
+
+Default env: `NUTRI_ADAPTER=nutri-qwen25-3b-v1`, `NUTRI_GGUF_QUANT=q4_k_m`. Canonical GGUF naming is handled by `scripts/export/gguf_paths.py` (avoids double-prefix filenames).
+
+Start chat with production model:
+
+```bash
+bash scripts/app/start_chat.sh
+```
+
+**Optional follow-ups:** domain eval (N-05-06), optional q3_k_m export, optional embedder migration with 384-dim index rebuild.
+
+### Phase D — Mobile pack ≤200 MB (4–6 weeks) ⬜
+
+Desktop capability parity **without** on-device LLM. Hard budget: **200 MB** total download.
+
+- [ ] N-08-01 … N-08-03 — capability matrix + tier selection (TACO/TBCA + top OFF)
+- [ ] N-08-05 … N-08-08 — sqlite-vec int8 mobile index + hybrid search port
+- [ ] N-08-09 — ONNX embedder ≤35 MB (bge-small / e5-small)
+- [ ] N-08-11 … N-08-16 — NL intent expansion + rule engine (compare, substitute)
+- [ ] N-08-17 … N-08-19 — pack builder + size gate + parity benchmark
+
+**Exit:** `nutri-mobile.pack` ≤200 MB; G1–G5 + 20 NL queries ≥95% accuracy vs desktop lookup; p95 ≤500 ms.
+
+```bash
+python scripts/mobile/build_pack.py
+./scripts/validate-nutri-mobile-pack.sh
+```
+
+Docs: [Phase 8 README](../phases/08-mobile-pack/README.md) · [MOBILE-CAPABILITY-MATRIX.md](MOBILE-CAPABILITY-MATRIX.md)
+
+---
+
 ## File layout (new)
 
 ```
@@ -423,6 +499,10 @@ Add badge: `lookup` (fast, no LLM) vs `llm` (reasoning).
 - [x] E2E golden G1–G5 pass offline (`tests/test_lookup_golden.py`)
 - [x] Benchmark documents 10× improvement on lookup p95 (`logs/rag-v2-benchmark.json`)
 - [x] Phase docs updated; gate `validate-nutri-rag-v2.sh` in CI
+- [x] Production gate `validate-nutri-production.sh` (v2 index + v1 GGUF + golden G1–G5)
+- [x] v2 index rebuilt (`schema_version: 2`, FTS on `search_text`)
+- [x] Embedder A/B documented; **bge-m3** kept for production
+- [x] Fine-tuned adapter `nutri-qwen25-3b-v1` wired as default GGUF
 
 ---
 
@@ -436,4 +516,4 @@ Add badge: `lookup` (fast, no LLM) vs `llm` (reasoning).
 
 ---
 
-**Next step:** Production hardening — optional v2 index rebuild, embedder switch after A/B, fine-tuned model swap (Phase 5).
+**Next step:** [Phase 8 — Mobile pack ≤200 MB](../phases/08-mobile-pack/TASKS.md) (capability parity without on-device LLM).

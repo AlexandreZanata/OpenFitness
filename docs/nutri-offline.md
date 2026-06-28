@@ -51,10 +51,15 @@ python scripts/training/train_qlora.py --config scripts/training/config.yaml --p
 python scripts/training/train_qlora.py --config scripts/training/config.yaml               # full 3 epochs
 
 # GGUF export + inference (Phase 6)
-export NUTRI_ADAPTER=smoke-test
+export NUTRI_ADAPTER=nutri-qwen25-3b-v1
+export NUTRI_GGUF_QUANT=q4_k_m
 python scripts/export/run_all.py --skip-merge
 python scripts/inference/run_all.py --skip-export
 ./scripts/validate-nutri-inference.sh
+
+# Production setup (RAG v2 index + v1 GGUF + embedder A/B)
+cd nutri-offline && bash scripts/production/setup_production.sh
+./scripts/validate-nutri-production.sh   # v2 index metadata + golden G1–G5 + GGUF path
 
 # Offline assistant (Phase 7 + RAG V2 lookup)
 bash scripts/app/start_chat.sh          # llama-server + chat UI at http://127.0.0.1:8090/
@@ -66,6 +71,14 @@ python scripts/app/nutri_cli.py ask "Quantas calorias tem banana prata?"
 # RAG V2 benchmarks (optional)
 # cd nutri-offline && python scripts/app/benchmark_v2.py --skip-llm
 # cd nutri-offline && python scripts/rag/embedder_benchmark.py --device cpu
+# Mobile pack ≤200 MB (Phase 8 — in progress)
+cd nutri-offline && source venv/bin/activate
+python scripts/mobile/select_mobile_records.py
+python scripts/mobile/spike_sqlite_vec.py
+# python scripts/mobile/build_mobile_index.py --device cuda
+# python scripts/mobile/export_embedder_onnx.py
+# python scripts/mobile/build_pack.py
+./scripts/validate-nutri-mobile-pack.sh
 ```
 
 Run gate scripts from the **repository root** (they `cd` into `nutri-offline/` automatically).
@@ -75,10 +88,12 @@ Run gate scripts from the **repository root** (they `cd` into `nutri-offline/` a
 | Document | Purpose |
 |----------|---------|
 | [nutri-offline/README.md](../nutri-offline/README.md) | Project entry point |
-| [nutri-offline/IMPLEMENTATION-PLAN.md](../nutri-offline/IMPLEMENTATION-PLAN.md) | Master roadmap (phases 0–7) |
+| [nutri-offline/IMPLEMENTATION-PLAN.md](../nutri-offline/IMPLEMENTATION-PLAN.md) | Master roadmap (phases 0–8) |
 | [nutri-offline/ENVIRONMENT.md](../nutri-offline/ENVIRONMENT.md) | Pinned versions and reproduce steps |
 | [nutri-offline/phases/](../nutri-offline/phases/) | Per-phase README + TASKS checklists |
 | [nutri-offline/docs/README-RAG-V2.md](../nutri-offline/docs/README-RAG-V2.md) | RAG V2 — speed, accuracy, shorthand UX |
+| [nutri-offline/docs/MOBILE-CAPABILITY-MATRIX.md](../nutri-offline/docs/MOBILE-CAPABILITY-MATRIX.md) | Desktop parity at ≤200 MB |
+| [nutri-offline/phases/08-mobile-pack/](../nutri-offline/phases/08-mobile-pack/) | Mobile pack tasks |
 | [nutri-offline/docs/UC-nutri-query.md](../nutri-offline/docs/UC-nutri-query.md) | Use case draft |
 | [nutri-offline/docs/android-integration.md](../nutri-offline/docs/android-integration.md) | Android integration options |
 
@@ -104,3 +119,6 @@ Fine-tuning teaches reasoning and Brazilian Portuguese tone; **factual macros co
 | [scripts/validate-nutri-training-preflight.sh](../scripts/validate-nutri-training-preflight.sh) | N-05 |
 | [scripts/validate-nutri-inference.sh](../scripts/validate-nutri-inference.sh) | N-06 |
 | [scripts/validate-nutri-app.sh](../scripts/validate-nutri-app.sh) | N-07 |
+| [scripts/validate-nutri-rag-v2.sh](../scripts/validate-nutri-rag-v2.sh) | RAG V2 |
+| [scripts/validate-nutri-production.sh](../scripts/validate-nutri-production.sh) | Production |
+| [scripts/validate-nutri-mobile-pack.sh](../scripts/validate-nutri-mobile-pack.sh) | Phase 8 (planned) |

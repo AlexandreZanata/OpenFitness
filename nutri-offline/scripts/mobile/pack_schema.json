@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "NutriOffline mobile pack manifest",
+  "description": "Phase 8 — single artifact ≤200 MB (200 * 1024 * 1024 bytes)",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "pack_id",
+    "build_timestamp",
+    "size_bytes",
+    "size_limit_bytes",
+    "embedder",
+    "index",
+    "files"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "pack_id": { "type": "string", "const": "nutri-mobile" },
+    "build_timestamp": { "type": "string", "format": "date-time" },
+    "size_bytes": { "type": "integer", "maximum": 209715200 },
+    "size_limit_bytes": { "type": "integer", "const": 209715200 },
+    "embedder": {
+      "type": "object",
+      "required": ["model_id", "dims", "format", "size_bytes"],
+      "properties": {
+        "model_id": { "type": "string" },
+        "dims": { "type": "integer", "maximum": 384 },
+        "format": { "enum": ["onnx-int8"] },
+        "size_bytes": { "type": "integer", "maximum": 36700160 }
+      }
+    },
+    "index": {
+      "type": "object",
+      "required": ["record_count", "tiers", "vector_format"],
+      "properties": {
+        "record_count": { "type": "integer" },
+        "tiers": {
+          "type": "object",
+          "properties": {
+            "taco": { "type": "integer" },
+            "tbca": { "type": "integer" },
+            "off_tier_c": { "type": "integer" }
+          }
+        },
+        "vector_format": { "enum": ["int8", "float32"] }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "size_bytes", "sha256"],
+        "properties": {
+          "path": { "type": "string" },
+          "size_bytes": { "type": "integer" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    }
+  }
+}

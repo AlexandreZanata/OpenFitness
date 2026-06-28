@@ -38,7 +38,8 @@
 | N-03-04 | Query API | `scripts/rag/query_rag.py` | P0 | ✅ |
 | N-03-05 | Acceptance test suite | `scripts/rag/test_queries.py` | P0 | ✅ |
 | N-03-06 | Index metadata + versioning | `indexes/nutri-foods/metadata.json` | P1 | ✅ |
-| N-03-07 | Evaluate sqlite-vec alternative | spike doc in README | P2 | ⏸ Deferred (Phase 7) |
+| N-03-07 | Evaluate sqlite-vec alternative | spike doc in README | P2 | ⏸ → [Phase 8](../08-mobile-pack/TASKS.md) N-08-04 |
+| N-03-09 | Mobile index contract (Tier A/B/C) | `scripts/mobile/select_mobile_records.py` | P1 | ⬜ Phase 8 |
 
 ---
 
