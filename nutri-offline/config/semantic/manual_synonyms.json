@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "description": "High-value BR colloquial food phrases for mobile synonym resolution (N-09-02)",
+  "entries": [
+    {
+      "phrase": "carne vermelha",
+      "default_record_id": "taco:377",
+      "label": "patinho (default lean bovine cut)",
+      "candidates": ["taco:377", "taco:328", "taco:326"]
+    },
+    {
+      "phrase": "pao frances",
+      "default_record_id": "taco:53",
+      "label": "pão francês",
+      "candidates": ["taco:53"]
+    },
+    {
+      "phrase": "pão francês",
+      "default_record_id": "taco:53",
+      "label": "pão francês",
+      "candidates": ["taco:53"]
+    },
+    {
+      "phrase": "cacetinho",
+      "default_record_id": "taco:53",
+      "label": "pão francês",
+      "candidates": ["taco:53"]
+    },
+    {
+      "phrase": "pao de sal",
+      "default_record_id": "taco:53",
+      "label": "pão francês",
+      "candidates": ["taco:53"]
+    },
+    {
+      "phrase": "pão de sal",
+      "default_record_id": "taco:53",
+      "label": "pão francês",
+      "candidates": ["taco:53"]
+    },
+    {
+      "phrase": "mussarela",
+      "default_record_id": "taco:432",
+      "label": "queijo muçarela",
+      "candidates": ["taco:432"]
+    },
+    {
+      "phrase": "muçarela",
+      "default_record_id": "taco:432",
+      "label": "queijo muçarela",
+      "candidates": ["taco:432"]
+    }
+  ]
+}

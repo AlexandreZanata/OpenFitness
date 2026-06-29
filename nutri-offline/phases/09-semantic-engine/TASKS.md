@@ -2,7 +2,7 @@
 
 > **ID:** N-09 · Normalization-first mobile retrieval  
 > **Quality gate:** typo/ontology/portion golden set + pack ≤200 MB  
-> **Status:** Block A in progress  
+> **Status:** Block B complete (N-09-01, N-09-02 done)  
 > **Depends on:** [Phase 8](../08-mobile-pack/TASKS.md)
 
 ---
@@ -11,8 +11,8 @@
 
 | Block | Purpose | Status |
 |-------|---------|--------|
-| [A — Spell-fix](#block-a--spell-fix) | Layer 1 orthographic correction | 🔄 |
-| [B — Synonyms](#block-b--synonyms) | Layer 2 alias graph v2 | ⬜ |
+| [A — Spell-fix](#block-a--spell-fix) | Layer 1 orthographic correction | ✅ |
+| [B — Synonyms](#block-b--synonyms) | Layer 2 alias graph v2 | ✅ |
 | [C — Ontology](#block-c--ontology) | Layer 3 food hierarchy | ⬜ |
 | [D — Multi-surface index](#block-d--multi-surface-index) | Layer 4 semantic surfaces | ⬜ |
 | [E — Household portions](#block-e--household-portions) | Layer 5 portion rules | ⬜ |
@@ -26,7 +26,7 @@
 | ID | Task | Folder / notes | Priority | Status |
 |----|------|----------------|----------|--------|
 | N-09-01 | Spell-fix lexicon | `scripts/mobile/spell_normalize.py` | P0 | ✅ |
-| N-09-02 | Synonym graph v2 | Expand `food_aliases` + `synonyms.db` | P0 | ⬜ |
+| N-09-02 | Synonym graph v2 | Expand `food_aliases` + `synonyms.db` | P0 | ✅ |
 | N-09-03 | Ontology | `data/semantic/food_ontology.json` + resolver | P0 | ⬜ |
 | N-09-04 | Multi-surface builder | `build_semantic_surfaces.py` → ~24k rows | P0 | ⬜ |
 | N-09-05 | Household portions | `data/semantic/household_portions.json` + rules | P0 | ⬜ |
@@ -35,6 +35,7 @@
 | N-09-08 | Optional intent embedder | 50 prototype vectors if regex < 90% | P1 | ⬜ |
 | N-09-09 | Unit tests — spell-fix | `tests/test_spell_normalize.py` | P0 | ✅ |
 | N-09-10 | Phase docs + cross-links | IMPLEMENTATION-PLAN, SEMANTIC-ENGINE-V2 | P1 | ✅ |
+| N-09-11 | Unit tests — synonyms | `tests/test_synonym_resolver.py` | P0 | ✅ |
 
 ---
 
@@ -56,9 +57,13 @@
 
 ### N-09-02 Synonym graph v2
 
-- [ ] Expand manual seeds for high-value BR terms
-- [ ] Bidirectional colloquial → canonical map as primary resolution path
-- [ ] Pack artifact: compact `synonyms.db` or extended `aliases` table
+- [x] Manual BR seeds in `config/semantic/manual_synonyms.json`
+- [x] Build `synonyms.db` from manual seeds + mobile-scoped `food_aliases.parquet`
+- [x] `SynonymResolver` — colloquial phrase → record_id(s) with default policy (BR-NORM-002)
+- [x] Wire into `MobileSearcher.search()` before alias/vector lookup
+- [x] Bundle `synonyms.db` in mobile pack via `build_pack.py`
+- [x] Golden fixture: `tests/fixtures/synonym_resolutions.jsonl`
+- [x] Manual validation: `cacetinho`, `carne vermelha`, `pao de sal` → TACO rows
 
 ---
 

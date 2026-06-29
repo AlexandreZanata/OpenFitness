@@ -23,6 +23,7 @@ from mobile_paths import (  # noqa: E402
     MOBILE_INDEX_DIR,
     PACK_ARTIFACT,
     PACK_MANIFEST,
+    SYNONYMS_DB,
     VECTORS_DB,
 )
 from pack_budget import (  # noqa: E402
@@ -93,6 +94,7 @@ def main() -> int:
     required = {
         "vectors.db": VECTORS_DB,
         "lexicon.db": LEXICON_DB,
+        "synonyms.db": SYNONYMS_DB,
         "embedder.onnx": EMBEDDER_ONNX,
     }
     missing = [name for name, path in required.items() if not path.is_file()]

@@ -1,0 +1,5 @@
+{"phrase": "cacetinho", "expected_record_id": "taco:53", "expected_label": "pão francês"}
+{"phrase": "carne vermelha", "expected_record_id": "taco:377", "expected_label": "patinho (default lean bovine cut)"}
+{"phrase": "pao de sal", "expected_record_id": "taco:53", "expected_label": "pão francês"}
+{"phrase": "pao frances", "expected_record_id": "taco:53", "expected_label": "pão francês"}
+{"phrase": "arroz", "expected_record_id": null, "note": "alias table handles single-token canonical names"}

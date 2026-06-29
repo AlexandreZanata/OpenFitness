@@ -15,10 +15,11 @@ sys.path.insert(0, str(RAG_DIR))
 
 from rerank import apply_source_boost, keyword_match_bonus, preparation_bonus  # noqa: E402
 
-from mobile_paths import LEXICON_DB, VECTORS_DB  # noqa: E402
+from mobile_paths import LEXICON_DB, SYNONYMS_DB, VECTORS_DB  # noqa: E402
 from mobile_embedder import MobileEmbedder  # noqa: E402
 from mobile_sqlite import connect  # noqa: E402
 from spell_normalize import SpellNormalizer  # noqa: E402
+from synonym_resolver import SynonymResolver  # noqa: E402
 
 
 def _normalize_lookup_key(text: str) -> str:
@@ -44,6 +45,7 @@ class MobileSearcher:
         lexicon_db: Path = LEXICON_DB,
         embedder: MobileEmbedder | None = None,
         spell_normalizer: SpellNormalizer | None = None,
+        synonym_resolver: SynonymResolver | None = None,
     ) -> None:
         if not vectors_db.is_file():
             raise FileNotFoundError(f"vectors.db not found: {vectors_db}")
@@ -53,6 +55,9 @@ class MobileSearcher:
         self._spell_normalizer = spell_normalizer
         if self._spell_normalizer is None and self._lexicon_db is not None:
             self._spell_normalizer = SpellNormalizer.from_lexicon_db(self._lexicon_db)
+        self._synonym_resolver = synonym_resolver
+        if self._synonym_resolver is None and SYNONYMS_DB.is_file():
+            self._synonym_resolver = SynonymResolver.from_db(SYNONYMS_DB)
 
     def normalize_food_query(self, food: str) -> tuple[str, tuple[dict[str, str], ...]]:
         if self._spell_normalizer is None:
@@ -67,6 +72,45 @@ class MobileSearcher:
             for item in result.corrections
         )
         return result.text, debug
+
+    def _synonym_hits(self, food: str) -> list[MobileHit]:
+        if self._synonym_resolver is None:
+            return []
+        result = self._synonym_resolver.resolve(food)
+        if not result.matches:
+            return []
+        record_ids = [match.record_id for match in result.matches]
+        hits = self._fetch_by_ids(record_ids)
+        default_id = result.primary.record_id if result.primary else None
+        enriched: list[MobileHit] = []
+        for hit in hits:
+            score = 1.05 if hit.id == default_id else 1.02
+            metadata = dict(hit.metadata)
+            if hit.id == default_id and result.primary and result.primary.label:
+                metadata["synonym_label"] = result.primary.label
+            enriched.append(
+                MobileHit(
+                    score=score,
+                    id=hit.id,
+                    name=hit.name,
+                    source=hit.source,
+                    metadata=metadata,
+                    match_kind="synonym",
+                )
+            )
+        enriched.sort(key=lambda item: item.score, reverse=True)
+        return enriched
+
+    def food_for_overlap(self, food: str) -> str:
+        """Return a canonical food label for token-overlap checks after normalization."""
+        normalized, _ = self.normalize_food_query(food)
+        synonym_hits = self._synonym_hits(normalized)
+        if synonym_hits:
+            return synonym_hits[0].name
+        alias_hits = self._alias_hits(normalized)
+        if alias_hits:
+            return alias_hits[0].name
+        return normalized
 
     def lookup_search_query(self, food: str) -> str:
         if self._lexicon_db is None:
@@ -274,6 +318,7 @@ class MobileSearcher:
         groups: list[list[MobileHit]] = []
 
         if not prefer_branded:
+            groups.append(self._synonym_hits(food))
             groups.append(self._alias_hits(food))
 
         if source_hint:

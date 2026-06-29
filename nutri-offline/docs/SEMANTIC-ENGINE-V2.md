@@ -1,6 +1,6 @@
 # NutriOffline — Semantic nutrition engine (v2 proposal)
 
-> **Status:** Phase 9 in progress (N-09-01 ✅) · **Author:** product/architecture review  
+> **Status:** Phase 9 in progress (N-09-01, N-09-02 ✅) · **Author:** product/architecture review  
 > **Context:** Phase 8 mobile pack works (≤200 MB, ~37 MB artifact) but retrieval quality gaps come from **normalization**, not model size.  
 > **Recommendation:** Do **not** invest further in classic RAG as the primary mechanism. Invest in a **specialized semantic engine** with structured lookup at the end.
 
@@ -123,6 +123,8 @@ Source:
 - `food_aliases.parquet` (already exists for desktop RAG V2)
 
 **Difference from today:** aliases are not optional boost — they are the **primary** resolution path before vectors.
+
+**Business rule BR-NORM-002:** colloquial multi-word phrases (`cacetinho`, `carne vermelha`) resolve via `synonyms.db` before vector search; ambiguous groups use a documented default record with label.
 
 ---
 
@@ -308,7 +310,7 @@ Still fits mobile budget if:
 | ID | Block | Deliverable | Est. |
 |----|-------|-------------|------|
 | N-09-01 | Spell-fix lexicon | `scripts/mobile/spell_normalize.py` + tests | 2d | ✅ |
-| N-09-02 | Synonym graph v2 | Expand `food_aliases` + `synonyms.db` | 3d | ⬜ |
+| N-09-02 | Synonym graph v2 | Expand `food_aliases` + `synonyms.db` | 3d | ✅ |
 | N-09-03 | Ontology | `data/semantic/food_ontology.json` + resolver | 3d | ⬜ |
 | N-09-04 | Multi-surface builder | `build_semantic_surfaces.py` → 24k rows | 5d | ⬜ |
 | N-09-05 | Household portions | `data/semantic/household_portions.json` + rules | 3d | ⬜ |
@@ -415,4 +417,5 @@ Phase 8 already proves regex + rules cover 95% NL parity on a curated set — **
 - Mobile search: `nutri-offline/scripts/mobile/mobile_search.py`
 - Aliases desktop: `nutri-offline/scripts/rag/build_food_aliases.py`
 - Spell-fix Layer 1: `nutri-offline/scripts/mobile/spell_normalize.py`
+- Synonym Layer 2: `nutri-offline/scripts/mobile/synonym_resolver.py`
 - BR-RET-002 grounding: `nutri-offline/scripts/dataset/answers.py` → `scale_nutrient()`

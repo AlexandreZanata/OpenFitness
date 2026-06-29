@@ -38,8 +38,7 @@ class MobileRagAdapter:
         self._searcher = searcher
 
     def normalize_lookup_food(self, food: str) -> str:
-        normalized, _debug = self._searcher.normalize_food_query(food)
-        return normalized
+        return self._searcher.food_for_overlap(food)
 
     def search_for_lookup(self, food: str, *, top_k: int = 5, source_hint=None, prefer_branded=False):
         hits = self._searcher.search(

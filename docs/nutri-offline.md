@@ -66,6 +66,7 @@ bash scripts/app/start_chat.sh          # llama-server + chat UI at http://127.0
 python scripts/app/nutri_cli.py ask "arroz 100g"    # lookup path (~90 ms, no LLM)
 python scripts/app/nutri_cli.py ask "100g de arror" --runtime mobile   # spell-fix → TACO arroz
 python scripts/mobile/spell_normalize.py "de arror"                    # Layer 1 only
+python scripts/app/nutri_cli.py ask "100g cacetinho" --runtime mobile  # Layer 2 synonym
 python scripts/app/test_mobile_chat_api.py --runtime mobile   # 20 NL API queries
 ./scripts/validate-nutri-app.sh
 ./scripts/validate-nutri-rag-v2.sh   # RAG V2 alias + hybrid + cache + benchmark gate
@@ -78,6 +79,7 @@ cd nutri-offline && source venv/bin/activate && export HF_HOME="$(pwd)/models/ba
 python scripts/mobile/select_mobile_records.py
 python scripts/mobile/build_mobile_index.py --device cuda
 python scripts/mobile/build_mobile_lexicon.py
+python scripts/mobile/build_synonyms.py
 python scripts/mobile/export_embedder_onnx.py
 python scripts/mobile/build_pack.py
 ./scripts/validate-nutri-mobile-pack.sh

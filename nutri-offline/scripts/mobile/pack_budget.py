@@ -18,6 +18,7 @@ COMPONENT_BUDGETS: dict[str, int] = {
 _COMPONENT_BY_FILENAME: dict[str, str] = {
     "vectors.db": "vector_index",
     "lexicon.db": "metadata_fts",
+    "synonyms.db": "aliases",
     "aliases.db": "aliases",
     "embedder.onnx": "embedder",
     "pack.manifest.json": "manifest",
