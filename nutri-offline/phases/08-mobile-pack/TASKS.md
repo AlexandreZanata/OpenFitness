@@ -191,6 +191,7 @@
 - [x] Assert total ≤200 MB
 - [x] Assert manifest checksums match
 - [x] Run golden + parity tests
+- [x] Extended in [Phase 10](../10-mobile-qa/TASKS.md): B20 QA benchmark at 100%
 
 ---
 

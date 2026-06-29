@@ -99,6 +99,12 @@ class IntentParserHouseholdTest(unittest.TestCase):
         self.assertEqual(intent.kind, IntentKind.LOOKUP)
         self.assertEqual(intent.items[0].portion_g, 100)
 
+    def test_nl_explicit_gram_portion_not_overridden(self) -> None:
+        intent = parse_intent("Quantas calorias tem 100g de banana?")
+        self.assertEqual(intent.kind, IntentKind.LOOKUP)
+        self.assertEqual(intent.items[0].portion_g, 100)
+        self.assertEqual(intent.items[0].food, "banana")
+
 
 if __name__ == "__main__":
     unittest.main()

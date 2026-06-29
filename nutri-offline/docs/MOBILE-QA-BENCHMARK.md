@@ -53,19 +53,20 @@ See [Phase 10 TASKS](../phases/10-mobile-qa/TASKS.md) for full B11–B20 table.
 ## Measurement workflow
 
 ```bash
-cd nutri-offline && source venv/bin/activate
+# Full gate from repo root (pack ≤200 MB + tests + B20 100%)
+./scripts/validate-nutri-mobile-pack.sh
 
-# After config/semantic changes — rebuild pack
+# After config/semantic changes — rebuild pack first
+cd nutri-offline && source venv/bin/activate
+export HF_HOME="${PWD}/models/base"
 python scripts/mobile/build_mobile_index.py --device cuda
 python scripts/mobile/build_mobile_lexicon.py
 python scripts/mobile/build_pack.py
 
-# Household portion smoke (Block A)
-python scripts/mobile/household_portions.py "uma banana"
-python -m unittest tests.test_household_portions -v
-
-# Full benchmark (R10 + B20)
-PYTHONPATH=scripts/mobile:scripts/app python scripts/mobile/run_qa_benchmark.py --set B20 --log
+# Quick benchmark only
+export PYTHONPATH="scripts/mobile:scripts/app"
+python scripts/mobile/run_qa_benchmark.py --set R10
+python scripts/mobile/run_qa_benchmark.py --set B20 --log
 ```
 
 ---

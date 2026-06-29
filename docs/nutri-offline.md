@@ -130,4 +130,4 @@ Fine-tuning teaches reasoning and Brazilian Portuguese tone; **factual macros co
 | [scripts/validate-nutri-app.sh](../scripts/validate-nutri-app.sh) | N-07 |
 | [scripts/validate-nutri-rag-v2.sh](../scripts/validate-nutri-rag-v2.sh) | RAG V2 |
 | [scripts/validate-nutri-production.sh](../scripts/validate-nutri-production.sh) | Production |
-| [scripts/validate-nutri-mobile-pack.sh](../scripts/validate-nutri-mobile-pack.sh) | Phase 8 (planned) |
+| [scripts/validate-nutri-mobile-pack.sh](../scripts/validate-nutri-mobile-pack.sh) | Phases 8–10 (pack + semantic v2 + B20 QA) |

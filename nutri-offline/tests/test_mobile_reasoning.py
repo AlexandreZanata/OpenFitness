@@ -63,18 +63,18 @@ class CompareEngineTest(unittest.TestCase):
 
 
 class SubstituteEngineTest(unittest.TestCase):
-    def test_substitute_finds_lower_carb_taco(self) -> None:
-        original = _hit(record_id="taco:3", name="Arroz branco", carb=28.0, category="Cereals")
-        alternative = _hit(record_id="taco:4", name="Couve flor", carb=4.0, category="Cereals")
+    def test_substitute_finds_lower_carb_staple(self) -> None:
+        original = _hit(record_id="taco:3", name="Arroz branco", carb=28.0, category="Cereais")
+        alternative = _hit(record_id="taco:91", name="Batata, inglesa, cozida", carb=11.9, category="Verduras")
         searcher = MagicMock()
         searcher.search.return_value = [original]
-        searcher.search_category.return_value = [alternative, original]
+        searcher.search_staple_candidates.return_value = [alternative, original]
         engine = SubstituteEngine(searcher)
         result = engine.execute(
             SubstituteIntent(food="arroz", optimize="carb")
         )
         self.assertEqual(result.mode, "substitute")
-        self.assertIn("Couve", result.answer)
+        self.assertIn("Batata", result.answer)
 
 
 if __name__ == "__main__":

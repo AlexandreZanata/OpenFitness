@@ -162,3 +162,9 @@
 - [x] Five v2 golden flows pass (see README)
 - [x] p95 latency ≤500 ms
 - [x] Pack ≤200 MB (`schema_version` 2)
+
+---
+
+## Follow-on: Phase 10
+
+Mobile QA benchmark (B20) closes real-user gaps on top of Phase 9 — see [Phase 10 TASKS](../10-mobile-qa/TASKS.md). Gate extended with B20 100% check.

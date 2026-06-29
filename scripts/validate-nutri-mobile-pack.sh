@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Phase 8–9 gate: mobile pack ≤200 MB, schema v2, semantic golden flows.
+# Phase 8–10 gate: mobile pack ≤200 MB, schema v2, semantic golden flows, B20 QA benchmark.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -8,7 +8,7 @@ PACK="${NUTRI}/indexes/nutri-mobile/nutri-mobile.pack"
 MANIFEST="${NUTRI}/indexes/nutri-mobile/pack.manifest.json"
 LIMIT_BYTES=$((200 * 1024 * 1024))
 
-echo "NutriOffline mobile pack gate (schema v2)"
+echo "NutriOffline mobile pack gate (schema v2 + B20 QA)"
 
 if [[ ! -f "${NUTRI}/docs/MOBILE-CAPABILITY-MATRIX.md" ]]; then
   echo "ERROR: MOBILE-CAPABILITY-MATRIX.md missing"
@@ -42,6 +42,7 @@ fi
 source "${VENV}"
 export HF_HOME="${NUTRI}/models/base"
 export NUTRI_ROOT="${NUTRI}"
+export PYTHONPATH="${NUTRI}/scripts/mobile:${NUTRI}/scripts/app:${PYTHONPATH:-}"
 
 python - <<PY
 import hashlib
@@ -104,10 +105,17 @@ PY
   tests.test_semantic_resolver \
   tests.test_semantic_surfaces \
   tests.test_semantic_v2_golden \
+  tests.test_substitute_rules \
+  tests.test_substitute_golden \
+  tests.test_mobile_qa_benchmark \
   tests.test_intent_regex_gate \
   tests.test_semantic_v2_latency \
   tests.test_pack_budget -v)
 
 (cd "${NUTRI}" && python scripts/mobile/benchmark_semantic_v2.py --json)
+
+echo "Running mobile QA benchmark (B20, 100% required)..."
+(cd "${NUTRI}" && python scripts/mobile/run_qa_benchmark.py --set B20 --fail-under 100 --log)
+echo "OK: B20 QA benchmark 100%"
 
 echo "PASS: NutriOffline mobile pack gate"

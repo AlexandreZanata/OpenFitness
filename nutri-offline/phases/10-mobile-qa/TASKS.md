@@ -2,7 +2,7 @@
 
 > **ID:** N-10 · Close GAP-PORT / GAP-POULTRY / GAP-SUBST  
 > **Quality gate:** 100% on R10 + B20 · pack ≤200 MB · p95 ≤500 ms  
-> **Status:** Blocks A–D complete (R10 + B20 at 100%)  
+> **Status:** Phase 10 complete (Blocks A–E)  
 > **Depends on:** [Phase 9](../09-semantic-engine/TASKS.md)
 
 ---
@@ -15,6 +15,7 @@
 | [B — Poultry disambiguation](#block-b--poultry-disambiguation-gap-poultry) | BR-NORM-004 peito default | ✅ |
 | [C — Substitute semantics](#block-c--substitute-semantics-gap-subst) | BR-SUBST-001 staple filter | ✅ |
 | [D — Measurement harness](#block-d--measurement-harness) | B20 fixture + scorecard script | ✅ |
+| [E — Gate + promotion](#block-e--gate--promotion) | CI gate + docs cross-links | ✅ |
 
 ---
 
@@ -37,57 +38,57 @@
 | QA-13 | Golden: R07, B17 | `substitute_golden.jsonl` | P0 | ✅ |
 | QA-14 | Fixture `mobile_qa_b20.jsonl` | `tests/fixtures/` | P0 | ✅ |
 | QA-15 | Script `run_qa_benchmark.py` | `scripts/mobile/` | P0 | ✅ |
-| QA-16 | Gate subcommand for B20 | `validate-nutri-mobile-pack.sh` | P1 | ⬜ |
+| QA-16 | Gate subcommand for B20 | `validate-nutri-mobile-pack.sh` | P1 | ✅ |
 | QA-17 | Log snapshot after benchmark run | `logs/` | P1 | ✅ |
+| QA-18 | Phase 10 README + TASKS | `phases/10-mobile-qa/` | P1 | ✅ |
+| QA-19 | Benchmark doc | `docs/MOBILE-QA-BENCHMARK.md` | P1 | ✅ |
+| QA-20 | Link from IMPLEMENTATION-PLAN | `IMPLEMENTATION-PLAN.md` | P1 | ✅ |
 
 ---
 
 ## Block A — Household portions v2 (GAP-PORT)
 
-**Business rule BR-PORT-002:** When phrase is article-only (`um|uma|1 <food>`) or bare food with no explicit gram portion, apply the entry `default_unit` grams and cite source.
-
-- [x] `default_unit` + `aliases` on `household_portions.json` entries
-- [x] Golden + intent tests; manual CLI validation
-
-**Exit:** R02, R10, B15, B20 portion semantics ✅
+- [x] BR-PORT-002 implemented; golden + manual validation
 
 ---
 
 ## Block B — Poultry disambiguation (GAP-POULTRY)
 
-**Business rule BR-NORM-004:** Qualified poultry phrases resolve to peito default unless organ/cut named.
-
-- [x] Ontology phrase `frango grelhado` on `meat.poultry.chicken`
-- [x] Manual synonym `frango grelhado` → `taco:410` (rebuild `synonyms.db`)
-- [x] `poultry_rerank_adjustment()` penalizes organ cuts (−0.30) and boosts peito (+0.10)
-- [x] Golden: R05, B13, B19 in `semantic_v2_golden.jsonl`
-- [x] Manual: `frango grelhado` → peito `taco:410` (~32g protein / 100g)
-
-**Exit:** R05, B13, B19 ✅
+- [x] BR-NORM-004 implemented; R05, B13, B19 pass
 
 ---
 
 ## Block C — Substitute semantics (GAP-SUBST)
 
-**Business rule BR-SUBST-001:** Staple substitute must be same meal role (cereal/starch).
-
-- [x] `config/semantic/substitute_rules.json` + `substitute_rules.py`
-- [x] `SubstituteEngine` staple pool + blocklist (no curau) + kcal band (QA-12)
-- [x] Golden: `substitute_golden.jsonl` (R07, B17)
-- [x] Manual: `mais leve que arroz` → cuscuz/arroz integral (not curau); `menos carboidrato` → batata
-
-**Exit:** R07, B17 ✅
+- [x] BR-SUBST-001 implemented; R07, B17 pass
 
 ---
 
 ## Block D — Measurement harness
 
-- [x] `tests/fixtures/mobile_qa_b20.jsonl` (20 rows)
-- [x] `scripts/mobile/run_qa_benchmark.py --set R10|B20 [--log]`
-- [x] Manual run: **R10 10/10 · B20 20/20** (2026-06-29)
-- [ ] CI gate hook (QA-16 — optional follow-up)
+- [x] `mobile_qa_b20.jsonl` + `run_qa_benchmark.py`
+- [x] Manual: R10 10/10 · B20 20/20
 
-**Exit:** Automatable 20/20 scorecard ✅
+---
+
+## Block E — Gate + promotion
+
+- [x] `validate-nutri-mobile-pack.sh` runs B20 with `--fail-under 100 --log`
+- [x] Gate unittest suite includes `test_substitute_*` + `test_mobile_qa_benchmark`
+- [x] `docs/MOBILE-QA-BENCHMARK.md` promoted from local plan
+- [x] `IMPLEMENTATION-PLAN.md` Phase 10 row
+- [x] Manual: full gate green (`./scripts/validate-nutri-mobile-pack.sh`)
+
+---
+
+## Exit criteria (Phase 10 complete)
+
+- [x] **R10:** 10/10 ✅
+- [x] **B20:** 20/20 ✅
+- [x] All new golden tests in CI gate
+- [x] p95 latency ≤500 ms (Phase 9 benchmark in gate)
+- [x] Pack ≤200 MB (gate size check)
+- [x] B20 benchmark enforced in `validate-nutri-mobile-pack.sh`
 
 ---
 
@@ -98,3 +99,4 @@
 | 2026-06-29 | baseline | 5/10 | — | Phase 9 smoke test |
 | 2026-06-29 | Block A | — | — | BR-PORT-002 |
 | 2026-06-29 | Blocks B–D | 10/10 | 20/20 | poultry + substitute + harness |
+| 2026-06-29 | Block E | 10/10 | 20/20 | gate + phase close |
