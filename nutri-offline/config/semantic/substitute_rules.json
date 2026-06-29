@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "description": "Staple-food substitute rules for mobile reasoning (N-10, BR-SUBST-001)",
+  "kcal_band_pct": 30,
+  "staple_groups": {
+    "starch": {
+      "trigger_tokens": ["arroz", "arborio"],
+      "candidate_name_patterns": [
+        "arroz",
+        "batata",
+        "mandioca",
+        "macarrao",
+        "macarrão",
+        "quinoa",
+        "cuscuz",
+        "inhame",
+        "milho"
+      ],
+      "blocked_name_tokens": [
+        "curau",
+        "mingau",
+        "pudim",
+        "bolo",
+        "torta",
+        "canjica",
+        "bolinho",
+        "creme",
+        "molho",
+        "preparado",
+        "baiao",
+        "baião",
+        "carreteiro",
+        "nhoque",
+        "farinha",
+        "instantaneo",
+        "instantâneo",
+        " cru",
+        " po",
+        "pó",
+        "coxinha",
+        "escondidinho",
+        "marmita",
+        "miojo",
+        "enlatado",
+        "enlatada",
+        "drenado",
+        "drenada",
+        "conserva"
+      ]
+    }
+  }
+}

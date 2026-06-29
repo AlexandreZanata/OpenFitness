@@ -27,6 +27,14 @@ from response_templates import (  # noqa: E402
     format_not_found,
     format_substitute_answer,
 )
+from substitute_rules import (  # noqa: E402
+    is_blocked_substitute_name,
+    is_staple_candidate_name,
+    load_substitute_rules,
+    resolve_staple_group,
+    staple_preference_score,
+    within_kcal_band,
+)
 
 
 FIELD_TO_METADATA = {
@@ -125,6 +133,67 @@ class CompareEngine:
 class SubstituteEngine:
     def __init__(self, searcher: MobileSearcher) -> None:
         self.searcher = searcher
+        self._rules = load_substitute_rules()
+
+    def _collect_candidates(self, *, food: str, original: MobileHit) -> list[MobileHit]:
+        staple_group = resolve_staple_group(
+            food_query=food,
+            original_name=original.name,
+            rules=self._rules,
+        )
+        if staple_group is not None:
+            pool = self.searcher.search_staple_candidates(exclude_id=original.id)
+            return [
+                candidate
+                for candidate in pool
+                if is_staple_candidate_name(candidate.name, staple_group)
+            ]
+
+        category = original.metadata.get("category") or original.name.split(",")[0]
+        return self.searcher.search_category(category, exclude_id=original.id, top_k=30)
+
+    def _rank_substitute(
+        self,
+        *,
+        candidates: list[MobileHit],
+        original_value: float,
+        optimize: str,
+        original_kcal: float | None,
+    ) -> tuple[MobileHit | None, float | None]:
+        band_pct = float(self._rules.get("kcal_band_pct", 30))
+        best: MobileHit | None = None
+        best_rank: tuple[float, float] | None = None
+        best_in_band: MobileHit | None = None
+        best_in_band_rank: tuple[float, float] | None = None
+
+        for candidate in candidates:
+            if candidate.source not in {"taco", "tbca"}:
+                continue
+            value = candidate.metadata.get(
+                FIELD_TO_METADATA.get(optimize, ("energy_kcal", "calorias"))[0]
+            )
+            if value is None or value >= original_value:
+                continue
+
+            pref = staple_preference_score(candidate.name)
+            rank = (float(value), -pref)
+
+            if best_rank is None or rank < best_rank:
+                best = candidate
+                best_rank = rank
+
+            if optimize == "kcal" and original_kcal is not None:
+                if within_kcal_band(
+                    original_kcal=float(original_kcal),
+                    candidate_kcal=float(value),
+                    band_pct=band_pct,
+                ) and (best_in_band_rank is None or rank < best_in_band_rank):
+                    best_in_band = candidate
+                    best_in_band_rank = rank
+
+        if optimize == "kcal" and best_in_band is not None:
+            return best_in_band, best_in_band_rank[0] if best_in_band_rank else None
+        return best, best_rank[0] if best_rank else None
 
     def execute(self, intent: SubstituteIntent) -> ReasoningResult:
         original = retrieve_mobile_item(self.searcher, intent.food, portion_g=intent.portion_g)
@@ -140,21 +209,27 @@ class SubstituteEngine:
                 mode="substitute",
             )
 
-        category = original.metadata.get("category") or original.name.split(",")[0]
-        candidates = self.searcher.search_category(category, exclude_id=original.id, top_k=30)
-        best: MobileHit | None = None
-        best_value = float(original_value)
-        for candidate in candidates:
-            if candidate.source not in {"taco", "tbca"}:
-                continue
-            value = candidate.metadata.get(meta_key)
-            if value is None:
-                continue
-            if value < best_value:
-                best = candidate
-                best_value = float(value)
+        staple_group = resolve_staple_group(
+            food_query=intent.food,
+            original_name=original.name,
+            rules=self._rules,
+        )
+        candidates = self._collect_candidates(food=intent.food, original=original)
+        if staple_group is not None:
+            candidates = [
+                candidate
+                for candidate in candidates
+                if not is_blocked_substitute_name(candidate.name, staple_group)
+            ]
 
-        if best is None:
+        best, best_value = self._rank_substitute(
+            candidates=candidates,
+            original_value=float(original_value),
+            optimize=intent.optimize,
+            original_kcal=original.metadata.get("energy_kcal"),
+        )
+
+        if best is None or best_value is None:
             return ReasoningResult(
                 answer=(
                     f"Não encontrei substituto com menos {optimize_label} que {original.name} "

@@ -41,6 +41,20 @@ def extract_portion_g(answer: str) -> int | None:
     return int(match.group(1)) if match else None
 
 
+def extract_table_protein(answer: str) -> list[float]:
+    rows = [line for line in answer.split("\n") if line.startswith("|") and "prote" not in line.lower()]
+    values: list[float] = []
+    for row in rows:
+        cells = [cell.strip() for cell in row.split("|") if cell.strip()]
+        if len(cells) >= 5 and cells[0] not in {"**Total**", "Alimento"}:
+            protein_cell = cells[4].lower().replace("g", "").strip()
+            try:
+                values.append(float(protein_cell.replace(",", ".")))
+            except ValueError:
+                continue
+    return values
+
+
 @unittest.skipUnless(VECTORS_DB.is_file(), "mobile vectors.db required")
 class SemanticV2GoldenTest(unittest.TestCase):
     @classmethod
@@ -80,6 +94,13 @@ class SemanticV2GoldenTest(unittest.TestCase):
             if row.get("expected_portion_g") is not None:
                 portion = extract_portion_g(result.answer)
                 self.assertEqual(portion, row["expected_portion_g"], row["query"])
+
+            if row.get("expected_protein") is not None:
+                proteins = extract_table_protein(result.answer)
+                self.assertTrue(
+                    any(within_tolerance(p, row["expected_protein"]) for p in proteins),
+                    f"{row['query']}: expected ~{row['expected_protein']}g protein, got {proteins}",
+                )
 
             if row.get("expected_clarify_note"):
                 self.assertIn("patinho", result.answer.lower(), row["query"])

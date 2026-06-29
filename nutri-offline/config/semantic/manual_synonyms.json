@@ -49,6 +49,12 @@
       "default_record_id": "taco:432",
       "label": "queijo muçarela",
       "candidates": ["taco:432"]
+    },
+    {
+      "phrase": "frango grelhado",
+      "default_record_id": "taco:410",
+      "label": "frango peito grelhado",
+      "candidates": ["taco:410", "taco:411", "taco:412"]
     }
   ]
 }

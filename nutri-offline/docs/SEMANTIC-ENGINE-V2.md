@@ -153,6 +153,8 @@ Storage: `config/semantic/food_ontology.json` (~50–100 KB).
 
 **Business rule BR-NORM-003:** category phrases resolve through the ontology when the synonym layer has no exact match; ambiguous groups attach a clarify note to the lookup footer.
 
+**Business rule BR-NORM-004:** qualified poultry phrases (`frango grelhado`, `frango`) resolve to peito default (`taco:410`) via synonym/ontology; organ cuts are penalized in mobile rerank unless named in the query.
+
 ---
 
 ### Layer 4 — Multi-surface embeddings
@@ -304,7 +306,7 @@ Still fits mobile budget if:
 | `intent_parser` + compare/substitute | ✅ | Layer 0 intent — extend, don’t replace |
 | `mobile_search.py` hybrid scoring | ✅ | Becomes layer 4 resolver |
 | `scale_nutrient()` / BR-RET-002 | ✅ | Final numeric step |
-| `CompareEngine` / `SubstituteEngine` | ✅ | Rule templates after entity resolution |
+| `CompareEngine` / `SubstituteEngine` | ✅ | Rule templates after entity resolution; staple filter (BR-SUBST-001) |
 | `nutri-mobile.pack` builder | ✅ | New manifest sections for surfaces |
 | bge-small ONNX embedder | ✅ | Encode query + surface texts at build; query-only at runtime |
 | LanceDB desktop index | ✅ desktop only | Unchanged |

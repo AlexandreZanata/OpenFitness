@@ -23,10 +23,35 @@ from semantic_resolver import SemanticResolver  # noqa: E402
 from spell_normalize import SpellNormalizer  # noqa: E402
 from synonym_resolver import SynonymResolver  # noqa: E402
 
+POULTRY_ORGAN_TOKENS = frozenset(
+    {
+        "coracao",
+        "figado",
+        "moela",
+        "rim",
+        "rins",
+        "pescoco",
+        "mocoto",
+    }
+)
+
 
 def _normalize_lookup_key(text: str) -> str:
     normalized = unicodedata.normalize("NFKD", text.strip().lower())
     return "".join(ch for ch in normalized if not unicodedata.combining(ch))
+
+
+def poultry_rerank_adjustment(query: str, hit_name: str) -> float:
+    """BR-NORM-004: penalize organ cuts when the query does not name an organ."""
+    query_key = _normalize_lookup_key(query)
+    name_key = _normalize_lookup_key(hit_name)
+    query_names_organ = any(token in query_key for token in POULTRY_ORGAN_TOKENS)
+    hit_is_organ = any(token in name_key for token in POULTRY_ORGAN_TOKENS)
+    if hit_is_organ and not query_names_organ:
+        return -0.30
+    if "peito" in name_key and "frango" in query_key and not query_names_organ:
+        return 0.10
+    return 0.0
 
 
 @dataclass
@@ -523,6 +548,7 @@ class MobileSearcher:
         for hit in merged.values():
             bonus = keyword_match_bonus(food, hit.name) + keyword_match_bonus(query, hit.name)
             bonus += preparation_bonus(hit.name)
+            bonus += poultry_rerank_adjustment(food, hit.name)
             if hit.metadata.get("energy_kcal") is not None:
                 bonus += 0.08
             else:
@@ -564,3 +590,25 @@ class MobileSearcher:
         if exclude_id:
             hits = [hit for hit in hits if hit.id != exclude_id]
         return hits[:top_k]
+
+    def search_staple_candidates(
+        self,
+        *,
+        exclude_id: str | None = None,
+    ) -> list[MobileHit]:
+        """Return Tier A/B rows for staple substitute filtering (BR-SUBST-001)."""
+        connection = connect(str(self._vectors_db), readonly=True)
+        rows = connection.execute(
+            """
+            SELECT id, source, name, energy_kcal, protein_g, carbohydrate_g, fat_g,
+                   fiber_g, serving_basis, category, brand
+            FROM food_meta
+            WHERE source IN ('taco', 'tbca')
+            ORDER BY CASE source WHEN 'taco' THEN 0 ELSE 1 END, name
+            """
+        ).fetchall()
+        connection.close()
+        hits = [self._row_to_hit(row, score=0.5, match_kind="staple") for row in rows]
+        if exclude_id:
+            hits = [hit for hit in hits if hit.id != exclude_id]
+        return hits

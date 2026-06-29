@@ -3,3 +3,6 @@
 {"query": "cacetinho", "expected_source": "taco", "expected_record_id": "taco:53", "expected_name_contains": "franc"}
 {"query": "Quantas calorias tem uma manga inteira?", "expected_source": "taco", "expected_name_contains": "Manga", "expected_kcal": 146, "expected_portion_g": 230}
 {"query": "100g carne bovina", "expected_source": "taco", "expected_record_id": "taco:377", "expected_clarify_note": true}
+{"query": "Quanto de proteína tem 100g de frango grelhado?", "expected_source": "taco", "expected_record_id": "taco:410", "expected_name_contains": "peito", "expected_protein": 32}
+{"query": "Quantas calorias tem 100g de frango?", "expected_source": "taco", "expected_record_id": "taco:410", "expected_name_contains": "peito"}
+{"query": "Quantas calorias tem 100g de peito de frango grelhado?", "expected_source": "taco", "expected_record_id": "taco:410", "expected_name_contains": "peito"}

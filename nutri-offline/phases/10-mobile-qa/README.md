@@ -1,6 +1,6 @@
 # Phase 10 — Mobile QA benchmark (B20)
 
-> **Status:** In progress (Block A complete) · **Parent:** [Phase 9](../09-semantic-engine/README.md)  
+> **Status:** Blocks A–D complete · **R10 + B20: 100%** · **Parent:** [Phase 9](../09-semantic-engine/README.md)  
 > **Goal:** Reach **100% pass** on regression **R10** and full benchmark **B20** for grounded, semantically correct, portion-realistic mobile answers.
 
 ---
@@ -11,9 +11,9 @@ Phase 9 ships the five-layer semantic engine. Real-user smoke tests (2026-06-29)
 
 | Gap | Symptom | Fix block |
 |-----|---------|-----------|
-| GAP-PORT | `uma banana`, `um cacetinho` → 100g default | Block A — household portions v2 |
-| GAP-POULTRY | `frango grelhado` → coração | Block B — poultry disambiguation |
-| GAP-SUBST | `mais leve que arroz` → curau | Block C — substitute semantics |
+| GAP-PORT | `uma banana`, `um cacetinho` → 100g default | Block A — household portions v2 ✅ |
+| GAP-POULTRY | `frango grelhado` → coração | Block B — poultry disambiguation ✅ |
+| GAP-SUBST | `mais leve que arroz` → curau | Block C — substitute semantics ✅ |
 
 Full plan: [MOBILE-QA-BENCHMARK.md](../../docs/MOBILE-QA-BENCHMARK.md)
 
@@ -31,10 +31,11 @@ Full plan: [MOBILE-QA-BENCHMARK.md](../../docs/MOBILE-QA-BENCHMARK.md)
 
 ## Exit criteria
 
-- [ ] **R10:** 10/10 ✅ (100% regression)
-- [ ] **B20:** 20/20 ✅ (100% full benchmark)
-- [ ] Measurement harness (`run_qa_benchmark.py`) in CI gate
-- [ ] p95 latency still ≤500 ms; pack still ≤200 MB
+- [x] **R10:** 10/10 ✅ (100% regression)
+- [x] **B20:** 20/20 ✅ (100% full benchmark)
+- [x] Measurement harness (`run_qa_benchmark.py`)
+- [ ] CI gate integration (QA-16 — optional)
+- [ ] p95 latency still ≤500 ms; pack still ≤200 MB (unchanged from Phase 9)
 
 ---
 
@@ -42,11 +43,14 @@ Full plan: [MOBILE-QA-BENCHMARK.md](../../docs/MOBILE-QA-BENCHMARK.md)
 
 ```bash
 cd nutri-offline && source venv/bin/activate
+export HF_HOME="${PWD}/models/base"
 
-# Household portions (Block A)
-python scripts/mobile/household_portions.py "uma banana"
-python -m unittest tests.test_household_portions -v
+# Rebuild synonyms after manual_synonyms.json changes
+python scripts/mobile/build_synonyms.py
 
-# Full benchmark (after harness — Block D)
-python scripts/mobile/run_qa_benchmark.py --set B20
+# Full benchmark
+PYTHONPATH=scripts/mobile:scripts/app python scripts/mobile/run_qa_benchmark.py --set B20 --log
+
+# Unit + integration golden tests
+python -m unittest tests.test_substitute_golden tests.test_semantic_v2_golden -v
 ```

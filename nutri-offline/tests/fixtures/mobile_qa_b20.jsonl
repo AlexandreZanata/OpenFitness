@@ -1,0 +1,20 @@
+{"id": "R01", "question": "100g de arror", "set": "R10", "expected_mode": "lookup", "expected_record_id": "taco:3", "expected_kcal": 128, "kcal_tolerance_pct": 5}
+{"id": "R02", "question": "Quantas calorias tem um cacetinho?", "set": "R10", "expected_mode": "lookup", "expected_record_id": "taco:53", "expected_portion_g": 50, "expected_kcal": 150, "kcal_tolerance_pct": 5}
+{"id": "R03", "question": "100g de carne vermelha", "set": "R10", "expected_mode": "lookup", "expected_record_id": "taco:377", "expected_kcal": 219, "kcal_tolerance_pct": 5}
+{"id": "R04", "question": "Quantas calorias tem uma manga inteira?", "set": "R10", "expected_mode": "lookup", "expected_record_id": "taco:228", "expected_portion_g": 230, "expected_kcal": 146, "kcal_tolerance_pct": 5}
+{"id": "R05", "question": "Quanto de proteína tem 100g de frango grelhado?", "set": "R10", "expected_mode": "lookup", "expected_record_id": "taco:410", "expected_protein": 32, "kcal_tolerance_pct": 5}
+{"id": "R06", "question": "Qual tem mais proteína: frango ou ovo?", "set": "R10", "expected_mode": "compare", "expected_winner_contains": "frango"}
+{"id": "R07", "question": "Existe opção mais leve que arroz?", "set": "R10", "expected_mode": "substitute", "forbidden_substitute_ids": ["taco:29"], "expected_substitute_name_contains_any": ["arroz", "batata", "cuscuz", "mandioca"]}
+{"id": "R08", "question": "Quantas calorias tem 170g de iogurte vigor?", "set": "R10", "expected_mode": "lookup", "expected_source": "off"}
+{"id": "R09", "question": "arroz 100g, feijão 100g", "set": "R10", "expected_mode": "lookup", "expected_item_count": 2, "expected_kcal_total": 205, "kcal_tolerance_pct": 5}
+{"id": "R10", "question": "Quantas calorias tem uma banana?", "set": "R10", "expected_mode": "lookup", "expected_record_id": "taco:182", "expected_portion_g": 86, "expected_kcal": 84, "kcal_tolerance_pct": 5}
+{"id": "B11", "question": "pao de sal", "set": "B20", "expected_mode": "lookup", "expected_record_id": "taco:53", "expected_name_contains": "franc"}
+{"id": "B12", "question": "100g carne bovina", "set": "B20", "expected_mode": "lookup", "expected_record_id": "taco:377", "expected_clarify_note": true}
+{"id": "B13", "question": "Quantas calorias tem 100g de frango?", "set": "B20", "expected_mode": "lookup", "expected_record_id": "taco:410", "expected_name_contains": "peito"}
+{"id": "B14", "question": "Quantas calorias tem uma banana media?", "set": "B20", "expected_mode": "lookup", "expected_record_id": "taco:182", "expected_portion_g": 86, "expected_kcal": 84, "kcal_tolerance_pct": 5}
+{"id": "B15", "question": "Quantas calorias tem um ovo?", "set": "B20", "expected_mode": "lookup", "expected_record_id": "taco:488", "expected_portion_g": 50, "expected_kcal": 73, "kcal_tolerance_pct": 5}
+{"id": "B16", "question": "Qual tem mais calorias: arroz ou feijão?", "set": "B20", "expected_mode": "compare", "expected_winner_contains": "arroz"}
+{"id": "B17", "question": "arroz com menos carboidrato", "set": "B20", "expected_mode": "substitute", "forbidden_substitute_ids": ["taco:29"], "expected_substitute_name_contains": "batata"}
+{"id": "B18", "question": "100g de feijao preto", "set": "B20", "expected_mode": "lookup", "expected_name_contains": "Feijão", "expected_kcal": 77, "kcal_tolerance_pct": 8}
+{"id": "B19", "question": "Quantas calorias tem 100g de peito de frango grelhado?", "set": "B20", "expected_mode": "lookup", "expected_record_id": "taco:410", "expected_name_contains": "peito"}
+{"id": "B20", "question": "arroz 100g, banana, feijão 80g", "set": "B20", "expected_mode": "lookup", "expected_item_count": 3, "expected_answer_contains": "Banana", "expected_portion_g": 86}

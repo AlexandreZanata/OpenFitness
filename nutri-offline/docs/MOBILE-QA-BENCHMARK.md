@@ -1,6 +1,6 @@
 # Mobile QA benchmark (B20)
 
-> **Phase:** [10 — Mobile QA](../phases/10-mobile-qa/README.md) · **Status:** Block A complete  
+> **Phase:** [10 — Mobile QA](../phases/10-mobile-qa/README.md) · **Status:** R10 + B20 **100%** (2026-06-29)  
 > **Baseline (2026-06-29):** R10 **50%** (5/10 ✅) · **Target:** R10 + B20 **100%**
 
 ---
@@ -64,8 +64,8 @@ python scripts/mobile/build_pack.py
 python scripts/mobile/household_portions.py "uma banana"
 python -m unittest tests.test_household_portions -v
 
-# Full benchmark (Block D — pending)
-python scripts/mobile/run_qa_benchmark.py --set B20
+# Full benchmark (R10 + B20)
+PYTHONPATH=scripts/mobile:scripts/app python scripts/mobile/run_qa_benchmark.py --set B20 --log
 ```
 
 ---

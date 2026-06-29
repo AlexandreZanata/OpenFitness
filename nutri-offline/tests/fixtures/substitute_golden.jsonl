@@ -1,0 +1,2 @@
+{"query": "Existe opção mais leve que arroz?", "expected_mode": "substitute", "forbidden_substitute_ids": ["taco:29"], "expected_substitute_name_contains_any": ["arroz", "batata", "cuscuz", "mandioca"]}
+{"query": "arroz com menos carboidrato", "expected_mode": "substitute", "forbidden_substitute_ids": ["taco:29"], "expected_substitute_name_contains": "batata"}
