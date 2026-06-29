@@ -17,7 +17,7 @@
 | Phase 5 — `scripts/training/` | ✅ Done | Block B implemented |
 | Phase 5 — preflight gate | ✅ Done | `scripts/validate-nutri-training-preflight.sh` |
 | Block C — ci mini-train | ✅ Done | 2 steps · peak 2.89 GB VRAM |
-| Adapter `nutri-qwen25-3b-v1/` | ⬜ Pending | Run Block D (full 3 epochs) |
+| Adapter `nutri-qwen25-3b-v1/` | ✅ Done | checkpoint-900 · final eval loss 0.23 |
 
 **Bottom line:** **Ready for full training (Block D).** Run `train_qlora.py` without `--profile ci`.
 
@@ -163,12 +163,12 @@ python scripts/training/train_qlora.py --config scripts/training/config.yaml --m
 
 | ID | Task | Deliverable | Priority | Status |
 |----|------|-------------|----------|--------|
-| N-05-06 | Domain eval | `scripts/training/eval_domain.py` + 50 prompt suite | P0 | ⬜ |
-| N-05-07 | Base vs FT comparison | `scripts/training/compare_base_vs_ft.py` → `logs/comparison-report.md` | P1 | ⬜ |
-| N-05-08 | Iteration if needed | `logs/experiments.md` | P1 | ⬜ |
-| N-05-17 | Training gate (post-train) | `scripts/validate-nutri-training.sh` — adapter exists + eval pass | P0 | ⬜ |
-| N-05-18 | Re-export GGUF | `NUTRI_ADAPTER=nutri-qwen25-3b-v1 python scripts/export/run_all.py --skip-merge` | P0 | ⬜ |
-| N-05-19 | Mark Phase 5 TASKS Done | Update [TASKS.md](TASKS.md) + [README.md](README.md) | P1 | ⬜ |
+| N-05-06 | Domain eval | `scripts/training/eval_domain.py` + 50 prompt suite | P0 | ✅ |
+| N-05-07 | Base vs FT comparison | `scripts/training/compare_base_vs_ft.py` → `logs/comparison-report.md` | P1 | ✅ |
+| N-05-08 | Iteration if needed | `logs/experiments.md` | P1 | ⬜ unknown-food hallucination |
+| N-05-17 | Training gate (post-train) | `scripts/validate-nutri-training.sh` — adapter exists + eval pass | P0 | ✅ |
+| N-05-18 | Re-export GGUF | `NUTRI_ADAPTER=nutri-qwen25-3b-v1 python scripts/export/run_all.py --skip-merge` | P0 | ✅ |
+| N-05-19 | Mark Phase 5 TASKS Done | Update [TASKS.md](TASKS.md) + [README.md](README.md) | P1 | ✅ |
 
 ---
 

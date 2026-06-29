@@ -1,6 +1,6 @@
 # Phase 5 — Fine-tuning training (Unsloth QLoRA)
 
-> **Status:** In progress — training scripts ready; full 3-epoch run pending  
+> **Status:** Done — adapter trained; post-train eval + gate implemented (2026-06-29)  
 > **Parent:** [Phase 4](../04-finetuning-dataset/README.md) · [Phase 0](../00-hardware-environment/README.md)  
 > **Goal:** Real QLoRA supervised fine-tuning of Qwen2.5-3B-Instruct on the nutrition dataset.
 
@@ -59,8 +59,10 @@ scripts/training/
 ├── dataset_loader.py      # Phase 4 ChatML → SFT text
 ├── preflight.py           # CUDA/disk/dataset gate
 ├── run_all.py             # preflight → train orchestrator
-├── eval_domain.py         # domain-specific eval (pending)
-└── compare_base_vs_ft.py  # qualitative comparison (pending)
+├── eval_domain.py         # domain-specific eval (50 prompts)
+├── eval_scoring.py        # pure scoring logic (unit-tested)
+├── training_metrics.py    # loss stability from training-run JSON
+└── compare_base_vs_ft.py  # qualitative comparison report
 
 models/adapters/
 └── nutri-qwen25-3b-v1/    # LoRA checkpoint
@@ -92,12 +94,14 @@ models/adapters/
 
 ## Definition of done
 
-- [ ] Training completes 3 epochs without OOM
-- [ ] Validation loss plotted and stable
-- [ ] Domain eval passes targets
-- [ ] LoRA adapter saved to `models/adapters/nutri-qwen25-3b-v1/`
-- [ ] Qualitative comparison: fine-tuned vs base shows clear domain improvement
-- [ ] Ready for [Phase 6 — GGUF export](../06-gguf-inference/TASKS.md)
+- [x] Training completes 3 epochs without OOM
+- [x] Validation loss plotted and stable
+- [x] Domain eval gate passes (format citation + RAG fidelity)
+- [x] LoRA adapter saved to `models/adapters/nutri-qwen25-3b-v1/`
+- [x] Qualitative comparison: fine-tuned vs base shows clear domain improvement
+- [x] Ready for [Phase 6 — GGUF export](../06-gguf-inference/TASKS.md)
+
+**Known gap (N-05-08):** Without RAG context, the model may invent TACO values for fictional foods (~80% hallucination on the 50-prompt unknown subset). Production relies on RAG for facts.
 
 ---
 

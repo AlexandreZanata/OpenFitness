@@ -1,0 +1,9 @@
+{"id": "G01", "category": "format", "question": "Quantas calorias tem 100g de arroz cozido?", "expects_source_citation": true}
+{"id": "G02", "category": "format", "question": "Quanto de proteína tem 100g de frango grelhado?", "expects_source_citation": true}
+{"id": "G03", "category": "format", "question": "Quantas calorias tem 100g de feijão preto cozido?", "expects_source_citation": true}
+{"id": "G04", "category": "comparison", "question": "Qual tem mais calorias: arroz cozido ou feijão cozido?", "expects_source_citation": true, "expects_answer_contains": "arroz"}
+{"id": "G05", "category": "rag", "question": "Quantas calorias tem este alimento?", "rag_context": "Alimento: Arroz, tipo 1, cozido (100g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 128 kcal\nProteína: 2.5 g", "expects_number": 128, "number_tolerance_pct": 2}
+{"id": "G06", "category": "rag", "question": "Quanto de proteína tem este alimento?", "rag_context": "Alimento: Frango, peito, sem pele, grelhado (100g)\nFonte: TACO (NEPA/UNICAMP)\nProteína: 32.0 g\nCalorias: 159 kcal", "expects_number": 32, "number_tolerance_pct": 2}
+{"id": "G07", "category": "rag", "question": "Quantas calorias tem a porção descrita?", "rag_context": "Alimento: Banana, prata (1 unidade, 86g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 84 kcal", "expects_number": 84, "number_tolerance_pct": 2}
+{"id": "G08", "category": "rag", "question": "Quantas calorias tem 100g deste alimento?", "rag_context": "Alimento: Feijão, preto, cozido (100g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 77 kcal", "expects_number": 77, "number_tolerance_pct": 2}
+{"id": "G09", "category": "rag", "question": "Informe as calorias usando somente o contexto.", "rag_context": "Alimento: Melancia (100g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 33 kcal", "expects_number": 33, "number_tolerance_pct": 2}

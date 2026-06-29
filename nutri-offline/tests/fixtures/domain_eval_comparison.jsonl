@@ -1,0 +1,20 @@
+{"id": "C01", "category": "format", "question": "Quantas calorias tem 100g de arroz cozido?", "expects_source_citation": true, "expects_number": 128, "number_tolerance_pct": 5}
+{"id": "C02", "category": "format", "question": "Quanto de proteína tem 100g de frango grelhado?", "expects_source_citation": true, "expects_number": 32, "number_tolerance_pct": 5}
+{"id": "C03", "category": "format", "question": "Quantas calorias tem uma banana média?", "expects_source_citation": true, "expects_number": 84, "number_tolerance_pct": 5}
+{"id": "C04", "category": "format", "question": "Quantas calorias tem um ovo cozido?", "expects_source_citation": true, "expects_number": 73, "number_tolerance_pct": 5}
+{"id": "C05", "category": "format", "question": "Quantas calorias tem 100g de feijão preto cozido?", "expects_source_citation": true, "expects_number": 77, "number_tolerance_pct": 8}
+{"id": "C06", "category": "comparison", "question": "Qual tem mais proteína: frango grelhado ou ovo cozido?", "expects_source_citation": true, "expects_answer_contains": "frango"}
+{"id": "C07", "category": "comparison", "question": "Qual tem mais calorias: arroz cozido ou feijão cozido?", "expects_source_citation": true, "expects_answer_contains": "arroz"}
+{"id": "C08", "category": "substitution", "question": "Existe opção mais leve que arroz branco cozido?", "expects_source_citation": true}
+{"id": "C09", "category": "numeric", "question": "Quantas calorias tem 100g de aveia em flocos?", "expects_source_citation": true, "expects_number": 394, "number_tolerance_pct": 5}
+{"id": "C10", "category": "numeric", "question": "Quantas calorias tem 100g de carne bovina magra grelhada?", "expects_source_citation": true, "expects_number": 219, "number_tolerance_pct": 5}
+{"id": "C11", "category": "unknown", "question": "Quantas calorias tem 100g de fruta-do-sol amazônica rara?"}
+{"id": "C12", "category": "unknown", "question": "Qual o valor proteico do supergrão andino fictício X9?"}
+{"id": "C13", "category": "unknown", "question": "Quantas calorias tem 100g de legume espacial Zorb?"}
+{"id": "C14", "category": "rag", "question": "Quantas calorias tem este alimento?", "rag_context": "Alimento: Arroz, tipo 1, cozido (100g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 128 kcal\nProteína: 2.5 g", "expects_number": 128, "number_tolerance_pct": 2}
+{"id": "C15", "category": "rag", "question": "Quanto de proteína tem este alimento?", "rag_context": "Alimento: Frango, peito, sem pele, grelhado (100g)\nFonte: TACO (NEPA/UNICAMP)\nProteína: 32.0 g\nCalorias: 159 kcal", "expects_number": 32, "number_tolerance_pct": 2}
+{"id": "C16", "category": "rag", "question": "Quantas calorias tem a porção descrita?", "rag_context": "Alimento: Banana, prata (1 unidade, 86g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 84 kcal", "expects_number": 84, "number_tolerance_pct": 2}
+{"id": "C17", "category": "format", "question": "Quantas calorias tem 100g de melancia?", "expects_source_citation": true, "expects_number": 33, "number_tolerance_pct": 10}
+{"id": "C18", "category": "format", "question": "Quantas calorias tem 100g de abacate?", "expects_source_citation": true, "expects_number": 96, "number_tolerance_pct": 8}
+{"id": "C19", "category": "format", "question": "Quantas calorias tem 100g de mandioca cozida?", "expects_source_citation": true, "expects_number": 125, "number_tolerance_pct": 8}
+{"id": "C20", "category": "format", "question": "Quantas calorias tem 100g de brócolis cozido?", "expects_source_citation": true, "expects_number": 25, "number_tolerance_pct": 10}

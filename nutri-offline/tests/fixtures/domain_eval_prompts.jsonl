@@ -1,0 +1,50 @@
+{"id": "D01", "category": "format", "question": "Quantas calorias tem 100g de arroz cozido?", "expects_source_citation": true, "expects_number": 128, "number_tolerance_pct": 5}
+{"id": "D02", "category": "format", "question": "Quanto de proteína tem 100g de frango grelhado?", "expects_source_citation": true, "expects_number": 32, "number_tolerance_pct": 5}
+{"id": "D03", "category": "format", "question": "Quantas calorias tem uma banana média?", "expects_source_citation": true, "expects_number": 84, "number_tolerance_pct": 5}
+{"id": "D04", "category": "format", "question": "Quantas calorias tem um ovo cozido?", "expects_source_citation": true, "expects_number": 73, "number_tolerance_pct": 5}
+{"id": "D05", "category": "format", "question": "Quantas calorias tem 100g de feijão preto cozido?", "expects_source_citation": true, "expects_number": 77, "number_tolerance_pct": 8}
+{"id": "D06", "category": "format", "question": "Quantas calorias tem 100g de batata cozida?", "expects_source_citation": true, "expects_number": 52, "number_tolerance_pct": 8}
+{"id": "D07", "category": "format", "question": "Quanto de carboidrato tem 100g de macarrão cozido?", "expects_source_citation": true}
+{"id": "D08", "category": "format", "question": "Quantas calorias tem 100g de peito de frango grelhado?", "expects_source_citation": true, "expects_number": 159, "number_tolerance_pct": 5}
+{"id": "D09", "category": "format", "question": "Quantas calorias tem uma manga inteira?", "expects_source_citation": true, "expects_number": 146, "number_tolerance_pct": 5}
+{"id": "D10", "category": "format", "question": "Quantas calorias tem 50g de pão francês?", "expects_source_citation": true, "expects_number": 150, "number_tolerance_pct": 5}
+{"id": "D11", "category": "numeric", "question": "Informe as calorias de 100g de arroz branco cozido segundo a TACO.", "expects_source_citation": true, "expects_number": 128, "number_tolerance_pct": 5, "source_label": "TACO"}
+{"id": "D12", "category": "numeric", "question": "Qual o valor energético de 100g de lentilha cozida?", "expects_source_citation": true, "expects_number": 93, "number_tolerance_pct": 8}
+{"id": "D13", "category": "numeric", "question": "Quantos gramas de proteína há em 100g de atum em conserva?", "expects_source_citation": true}
+{"id": "D14", "category": "numeric", "question": "Quantas calorias tem 100g de queijo minas frescal?", "expects_source_citation": true, "expects_number": 264, "number_tolerance_pct": 8}
+{"id": "D15", "category": "numeric", "question": "Quantas calorias tem 100g de aveia em flocos?", "expects_source_citation": true, "expects_number": 394, "number_tolerance_pct": 5}
+{"id": "D16", "category": "comparison", "question": "Qual tem mais proteína: frango grelhado ou ovo cozido?", "expects_source_citation": true, "expects_answer_contains": "frango"}
+{"id": "D17", "category": "comparison", "question": "Qual tem mais calorias: arroz cozido ou feijão cozido?", "expects_source_citation": true, "expects_answer_contains": "arroz"}
+{"id": "D18", "category": "comparison", "question": "Banana ou maçã: qual tem mais carboidrato por 100g?", "expects_source_citation": true}
+{"id": "D19", "category": "comparison", "question": "Compare as calorias de 100g de batata doce e batata inglesa cozidas.", "expects_source_citation": true}
+{"id": "D20", "category": "substitution", "question": "Existe opção mais leve que arroz branco cozido?", "expects_source_citation": true}
+{"id": "D21", "category": "format", "question": "Quantas calorias tem 100g de carne bovina magra grelhada?", "expects_source_citation": true, "expects_number": 219, "number_tolerance_pct": 5}
+{"id": "D22", "category": "format", "question": "Quantas calorias tem 100g de iogurte natural?", "expects_source_citation": true}
+{"id": "D23", "category": "format", "question": "Quanto de fibra tem 100g de aveia?", "expects_source_citation": true}
+{"id": "D24", "category": "format", "question": "Quantas calorias tem 100g de melancia?", "expects_source_citation": true, "expects_number": 33, "number_tolerance_pct": 10}
+{"id": "D25", "category": "format", "question": "Quantas calorias tem 100g de abacate?", "expects_source_citation": true, "expects_number": 96, "number_tolerance_pct": 8}
+{"id": "D26", "category": "numeric", "question": "Quantas calorias tem 100g de mandioca cozida?", "expects_source_citation": true, "expects_number": 125, "number_tolerance_pct": 8}
+{"id": "D27", "category": "numeric", "question": "Quantas calorias tem 100g de cuscuz de milho?", "expects_source_citation": true, "expects_number": 113, "number_tolerance_pct": 8}
+{"id": "D28", "category": "numeric", "question": "Quantas calorias tem 100g de sardinha em conserva?", "expects_source_citation": true}
+{"id": "D29", "category": "numeric", "question": "Quantas calorias tem 100g de leite integral?", "expects_source_citation": true, "expects_number": 61, "number_tolerance_pct": 8}
+{"id": "D30", "category": "numeric", "question": "Quantas calorias tem 100g de brócolis cozido?", "expects_source_citation": true, "expects_number": 25, "number_tolerance_pct": 10}
+{"id": "D31", "category": "unknown", "question": "Quantas calorias tem 100g de fruta-do-sol amazônica rara?"}
+{"id": "D32", "category": "unknown", "question": "Qual o valor proteico do supergrão andino fictício X9?"}
+{"id": "D33", "category": "unknown", "question": "Quantas calorias tem 100g de legume espacial Zorb?"}
+{"id": "D34", "category": "unknown", "question": "Informe os macros do alimento NutriMax 9000 inexistente."}
+{"id": "D35", "category": "unknown", "question": "Quantas calorias tem 100g de peixe-lua do Atlântico Norte profundo?"}
+{"id": "D36", "category": "unknown", "question": "Qual a tabela TACO para o cereal QuasarBlend?"}
+{"id": "D37", "category": "unknown", "question": "Quantas calorias tem 100g de fruta holográfica?"}
+{"id": "D38", "category": "unknown", "question": "Me diga os nutrientes do grão lunar cultivado em Marte."}
+{"id": "D39", "category": "unknown", "question": "Quantas calorias tem 100g de batata azul do Himalaia fictícia?"}
+{"id": "D40", "category": "unknown", "question": "Qual o teor de proteína do queijo Vulcan Prime?"}
+{"id": "D41", "category": "rag", "question": "Quantas calorias tem este alimento?", "rag_context": "Alimento: Arroz, tipo 1, cozido (100g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 128 kcal\nProteína: 2.5 g", "expects_number": 128, "number_tolerance_pct": 2}
+{"id": "D42", "category": "rag", "question": "Quanto de proteína tem este alimento?", "rag_context": "Alimento: Frango, peito, sem pele, grelhado (100g)\nFonte: TACO (NEPA/UNICAMP)\nProteína: 32.0 g\nCalorias: 159 kcal", "expects_number": 32, "number_tolerance_pct": 2}
+{"id": "D43", "category": "rag", "question": "Quantas calorias tem a porção descrita?", "rag_context": "Alimento: Banana, prata (1 unidade, 86g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 84 kcal", "expects_number": 84, "number_tolerance_pct": 2}
+{"id": "D44", "category": "rag", "question": "Use os dados do contexto: quantas calorias?", "rag_context": "Alimento: Ovo, de galinha, cozido (50g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 73 kcal\nProteína: 6.3 g", "expects_number": 73, "number_tolerance_pct": 2}
+{"id": "D45", "category": "rag", "question": "Quantas calorias tem 100g deste alimento?", "rag_context": "Alimento: Feijão, preto, cozido (100g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 77 kcal", "expects_number": 77, "number_tolerance_pct": 2}
+{"id": "D46", "category": "rag", "question": "Qual o valor energético informado no contexto?", "rag_context": "Alimento: Batata, inglesa, cozida (100g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 52 kcal", "expects_number": 52, "number_tolerance_pct": 2}
+{"id": "D47", "category": "rag", "question": "Quantas calorias tem a porção abaixo?", "rag_context": "Alimento: Manga, palmer (1 unidade, 230g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 146 kcal", "expects_number": 146, "number_tolerance_pct": 2}
+{"id": "D48", "category": "rag", "question": "Quantas calorias tem 100g conforme o contexto?", "rag_context": "Alimento: Aveia, em flocos (100g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 394 kcal", "expects_number": 394, "number_tolerance_pct": 2}
+{"id": "D49", "category": "rag", "question": "Quantas calorias tem este item?", "rag_context": "Alimento: Pão, francês (50g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 150 kcal", "expects_number": 150, "number_tolerance_pct": 2}
+{"id": "D50", "category": "rag", "question": "Informe as calorias usando somente o contexto.", "rag_context": "Alimento: Melancia (100g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 33 kcal", "expects_number": 33, "number_tolerance_pct": 2}

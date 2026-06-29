@@ -49,6 +49,9 @@ cd nutri-offline && source venv/bin/activate
 export HF_HOME="$(pwd)/models/base" UNSLOTH_USE_FP16=1
 python scripts/training/train_qlora.py --config scripts/training/config.yaml --profile ci   # 2-step smoke
 python scripts/training/train_qlora.py --config scripts/training/config.yaml               # full 3 epochs
+python scripts/training/eval_domain.py --config scripts/training/config.yaml               # 50-prompt domain eval
+python scripts/training/compare_base_vs_ft.py --config scripts/training/config.yaml         # base vs FT report
+./scripts/validate-nutri-training.sh                                                         # post-train gate (N-05)
 
 # GGUF export + inference (Phase 6)
 export NUTRI_ADAPTER=nutri-qwen25-3b-v1
@@ -125,7 +128,8 @@ Fine-tuning teaches reasoning and Brazilian Portuguese tone; **factual macros co
 | [scripts/validate-nutri-normalization.sh](../scripts/validate-nutri-normalization.sh) | N-02 |
 | [scripts/validate-nutri-rag.sh](../scripts/validate-nutri-rag.sh) | N-03 |
 | [scripts/validate-nutri-dataset.sh](../scripts/validate-nutri-dataset.sh) | N-04 |
-| [scripts/validate-nutri-training-preflight.sh](../scripts/validate-nutri-training-preflight.sh) | N-05 |
+| [scripts/validate-nutri-training-preflight.sh](../scripts/validate-nutri-training-preflight.sh) | N-05 preflight |
+| [scripts/validate-nutri-training.sh](../scripts/validate-nutri-training.sh) | N-05 post-train |
 | [scripts/validate-nutri-inference.sh](../scripts/validate-nutri-inference.sh) | N-06 |
 | [scripts/validate-nutri-app.sh](../scripts/validate-nutri-app.sh) | N-07 |
 | [scripts/validate-nutri-rag-v2.sh](../scripts/validate-nutri-rag-v2.sh) | RAG V2 |
