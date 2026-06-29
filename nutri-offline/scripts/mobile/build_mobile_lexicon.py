@@ -12,15 +12,9 @@ import duckdb
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from mobile_paths import (  # noqa: E402
-    FOOD_ALIASES_PARQUET,
-    LOG_DIR,
-    MOBILE_INDEX_DIR,
-    MOBILE_RECORD_IDS_PARQUET,
-    VECTORS_DB,
-    LEXICON_DB,
-)
+from mobile_paths import FOOD_ALIASES_PARQUET, LOG_DIR, MOBILE_INDEX_DIR, MOBILE_RECORD_IDS_PARQUET, VECTORS_DB, LEXICON_DB, INTENT_PROTOTYPES_JSON  # noqa: E402
 from mobile_sqlite import connect  # noqa: E402
+from semantic_surfaces import load_intent_prototypes  # noqa: E402
 
 
 def build_lexicon(
@@ -89,10 +83,40 @@ def build_lexicon(
         )
         alias_count = len(alias_rows)
 
+    intent_count = 0
+    if INTENT_PROTOTYPES_JSON.is_file():
+        connection.execute(
+            """
+            CREATE TABLE intent_prototypes (
+                id TEXT PRIMARY KEY,
+                intent_kind TEXT NOT NULL,
+                regex TEXT NOT NULL,
+                search_text TEXT NOT NULL
+            )
+            """
+        )
+        prototypes = load_intent_prototypes(INTENT_PROTOTYPES_JSON)
+        connection.executemany(
+            """
+            INSERT INTO intent_prototypes(id, intent_kind, regex, search_text)
+            VALUES (?, ?, ?, ?)
+            """,
+            [
+                (item["id"], item["intent_kind"], item["regex"], item["search_text"])
+                for item in prototypes
+            ],
+        )
+        intent_count = len(prototypes)
+
     connection.commit()
     size_bytes = output_path.stat().st_size
     connection.close()
-    return {"alias_rows": alias_count, "fts_rows": len(rows), "size_bytes": size_bytes}
+    return {
+        "alias_rows": alias_count,
+        "fts_rows": len(rows),
+        "intent_prototype_rows": intent_count,
+        "size_bytes": size_bytes,
+    }
 
 
 def main() -> int:

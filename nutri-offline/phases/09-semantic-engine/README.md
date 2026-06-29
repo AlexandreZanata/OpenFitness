@@ -1,6 +1,6 @@
 # Phase 9 — Semantic nutrition engine (v2)
 
-> **Status:** In progress (N-09-01–03, N-09-05–06 done) · **Parent:** [Phase 8](../08-mobile-pack/README.md)  
+> **Status:** In progress (N-09-01–06 done) · **Parent:** [Phase 8](../08-mobile-pack/README.md)  
 > **Goal:** Replace classic single-surface RAG as the primary mobile resolution path with a **five-layer semantic engine**: spell-fix → synonyms → ontology → multi-surface vectors → portion rules → deterministic SQLite lookup.
 
 ---
@@ -25,7 +25,7 @@ Intent parser (Phase 8 — extended)
 Layer 1 — spell-fix (N-09-01) ✅
 Layer 2 — synonyms (N-09-02) ✅
 Layer 3 — ontology (N-09-03) ✅
-Layer 4 — multi-surface vectors (N-09-04)
+Layer 4 — multi-surface vectors (N-09-04) ✅
 Layer 5 — household portions (N-09-05) ✅
         │
         ▼
@@ -43,6 +43,7 @@ SQLite ground truth → scale_nutrient → template answer
 | BR-NORM-002 | Colloquial phrase resolves via synonym map before vector search; default candidate when ambiguous |
 | BR-NORM-003 | Category phrase resolves via ontology when synonyms miss; clarify note when multiple candidates |
 | BR-PORT-001 | Household weights must cite source in debug metadata (Layer 5) |
+| BR-SURF-001 | Tier A/B/C surface caps (40/30/3); int8 vectors stay within 90 MB index budget |
 | BR-RET-001/002 | Source boost + numeric grounding unchanged from Phase 8 |
 
 ---
@@ -77,11 +78,16 @@ python scripts/mobile/ontology_resolver.py "carne bovina"
 python scripts/mobile/household_portions.py "uma manga inteira"
 python scripts/app/nutri_cli.py ask "Quantas calorias tem uma manga inteira?" --runtime mobile
 
+# Layer 4 — multi-surface build (manual)
+python scripts/mobile/build_semantic_surfaces.py --json
+python scripts/mobile/build_semantic_surfaces.py --record-id taco:3
+python scripts/mobile/build_mobile_index.py --device cuda
+
 # Semantic pipeline — layers 1–3 (manual)
 python scripts/mobile/semantic_resolver.py "de arror" --json
 python scripts/app/nutri_cli.py ask "100g de arror" --runtime mobile --debug --json
 
 # Tests
-python -m unittest tests.test_spell_normalize tests.test_synonym_resolver tests.test_ontology_resolver tests.test_household_portions tests.test_semantic_resolver -v
+python -m unittest tests.test_spell_normalize tests.test_synonym_resolver tests.test_ontology_resolver tests.test_household_portions tests.test_semantic_resolver tests.test_semantic_surfaces -v
 ./scripts/validate-nutri-mobile-pack.sh
 ```

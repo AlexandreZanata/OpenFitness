@@ -30,6 +30,7 @@ from mobile_paths import (  # noqa: E402
 from embed import encode_texts, load_embedder, resolve_device  # noqa: E402
 from mobile_sqlite import connect  # noqa: E402
 from quantize import quantize_int8  # noqa: E402
+from semantic_surfaces import SemanticSurface, generate_surfaces_for_record  # noqa: E402
 from text_builder import build_embedding_text  # noqa: E402
 
 
@@ -102,12 +103,32 @@ def load_mobile_records(
     return records
 
 
+def build_surface_rows(records: list[dict]) -> list[SemanticSurface]:
+    surfaces: list[SemanticSurface] = []
+    for record in records:
+        surfaces.extend(
+            generate_surfaces_for_record(
+                record_id=record["id"],
+                name=record["name"],
+                name_normalized=record["name_normalized"],
+                category=record["category"],
+                source=record["source"],
+                brand=record["brand"],
+                tier=record["tier"],
+                aliases=record.get("aliases", []),
+            )
+        )
+    return surfaces
+
+
 def build_vectors_db(
     records: list[dict],
     vectors: list[list[float]],
     *,
     output_path: Path,
     dims: int = MOBILE_EMBED_DIM,
+    surfaces: list[SemanticSurface] | None = None,
+    surface_vectors: list[list[float]] | None = None,
 ) -> dict:
     if output_path.exists():
         output_path.unlink()
@@ -176,10 +197,62 @@ def build_vectors_db(
             (index, np.asarray(vector, dtype=np.float32)),
         )
 
+    surface_count = 0
+    if surfaces and surface_vectors:
+        connection.execute(
+            """
+            CREATE TABLE food_surfaces (
+                rowid INTEGER PRIMARY KEY,
+                surface_id TEXT NOT NULL UNIQUE,
+                record_id TEXT NOT NULL,
+                surface_kind TEXT NOT NULL,
+                search_text TEXT NOT NULL,
+                embedding_int8 BLOB,
+                quant_scale REAL
+            )
+            """
+        )
+        connection.execute(
+            f"CREATE VIRTUAL TABLE food_surface_vec USING vec0(embedding float32[{dims}])"
+        )
+        connection.execute(
+            "CREATE INDEX idx_food_surfaces_record ON food_surfaces(record_id)"
+        )
+        for index, (surface, vector) in enumerate(
+            zip(surfaces, surface_vectors, strict=True), start=1
+        ):
+            int8_blob, scale = quantize_int8(vector)
+            connection.execute(
+                """
+                INSERT INTO food_surfaces (
+                    rowid, surface_id, record_id, surface_kind, search_text,
+                    embedding_int8, quant_scale
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    index,
+                    surface.surface_id,
+                    surface.record_id,
+                    surface.surface_kind,
+                    surface.search_text,
+                    int8_blob,
+                    scale,
+                ),
+            )
+            connection.execute(
+                "INSERT INTO food_surface_vec(rowid, embedding) VALUES (?, ?)",
+                (index, np.asarray(vector, dtype=np.float32)),
+            )
+        surface_count = len(surfaces)
+
     connection.commit()
     size_bytes = output_path.stat().st_size
     connection.close()
-    return {"record_count": len(records), "size_bytes": size_bytes}
+    return {
+        "record_count": len(records),
+        "surface_count": surface_count,
+        "size_bytes": size_bytes,
+    }
 
 
 def recall_at_k(
@@ -245,6 +318,12 @@ def main() -> int:
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--output", type=Path, default=VECTORS_DB)
+    parser.add_argument(
+        "--multi-surface",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Build food_surfaces + food_surface_vec tables (N-09-04)",
+    )
     args = parser.parse_args()
 
     if not MOBILE_RECORD_IDS_PARQUET.is_file():
@@ -263,8 +342,21 @@ def main() -> int:
     model = load_embedder(device, model_name=MOBILE_EMBED_MODEL)
     vectors = encode_texts(model, texts, batch_size=args.batch_size)
 
+    surfaces: list[SemanticSurface] = []
+    surface_vectors: list[list[float]] | None = None
+    if args.multi_surface:
+        surfaces = build_surface_rows(records)
+        surface_texts = [surface.search_text for surface in surfaces]
+        surface_vectors = encode_texts(model, surface_texts, batch_size=args.batch_size)
+
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    summary = build_vectors_db(records, vectors, output_path=args.output)
+    summary = build_vectors_db(
+        records,
+        vectors,
+        output_path=args.output,
+        surfaces=surfaces if args.multi_surface else None,
+        surface_vectors=surface_vectors,
+    )
 
     probes = [
         "arroz cozido",

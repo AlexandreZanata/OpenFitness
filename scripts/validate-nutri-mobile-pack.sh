@@ -91,6 +91,7 @@ PY
   tests.test_synonym_resolver \
   tests.test_ontology_resolver \
   tests.test_household_portions \
-  tests.test_semantic_resolver -v)
+  tests.test_semantic_resolver \
+  tests.test_semantic_surfaces -v)
 
 echo "PASS: NutriOffline mobile pack gate"

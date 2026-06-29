@@ -2,7 +2,7 @@
 
 > **ID:** N-09 · Normalization-first mobile retrieval  
 > **Quality gate:** typo/ontology/portion golden set + pack ≤200 MB  
-> **Status:** Block F complete (N-09-06 done)  
+> **Status:** Block D complete (N-09-04 done)  
 > **Depends on:** [Phase 8](../08-mobile-pack/TASKS.md)
 
 ---
@@ -14,7 +14,7 @@
 | [A — Spell-fix](#block-a--spell-fix) | Layer 1 orthographic correction | ✅ |
 | [B — Synonyms](#block-b--synonyms) | Layer 2 alias graph v2 | ✅ |
 | [C — Ontology](#block-c--ontology) | Layer 3 food hierarchy | ✅ |
-| [D — Multi-surface index](#block-d--multi-surface-index) | Layer 4 semantic surfaces | ⬜ |
+| [D — Multi-surface index](#block-d--multi-surface-index) | Layer 4 semantic surfaces | ✅ |
 | [E — Household portions](#block-e--household-portions) | Layer 5 portion rules | ✅ |
 | [F — Resolver pipeline](#block-f--resolver-pipeline) | SemanticResolver entry point | ✅ |
 | [G — Pack v2 + gate](#block-g--pack-v2--gate) | schema_version 2 rebuild | ⬜ |
@@ -28,7 +28,7 @@
 | N-09-01 | Spell-fix lexicon | `scripts/mobile/spell_normalize.py` | P0 | ✅ |
 | N-09-02 | Synonym graph v2 | Expand `food_aliases` + `synonyms.db` | P0 | ✅ |
 | N-09-03 | Ontology | `config/semantic/food_ontology.json` + resolver | P0 | ✅ |
-| N-09-04 | Multi-surface builder | `build_semantic_surfaces.py` → ~24k rows | P0 | ⬜ |
+| N-09-04 | Multi-surface builder | `build_semantic_surfaces.py` → ~24k rows | P0 | ✅ |
 | N-09-05 | Household portions | `config/semantic/household_portions.json` + rules | P0 | ✅ |
 | N-09-06 | Resolver pipeline | `SemanticResolver` replaces direct `mobile_search` entry | P0 | ✅ |
 | N-09-07 | Pack v2 + gate | Rebuild pack; golden typo/portion cases | P0 | ⬜ |
@@ -39,6 +39,7 @@
 | N-09-12 | Unit tests — ontology | `tests/test_ontology_resolver.py` | P0 | ✅ |
 | N-09-13 | Unit tests — household portions | `tests/test_household_portions.py` | P0 | ✅ |
 | N-09-14 | Unit tests — semantic resolver | `tests/test_semantic_resolver.py` | P0 | ✅ |
+| N-09-15 | Unit tests — semantic surfaces | `tests/test_semantic_surfaces.py` | P0 | ✅ |
 
 ---
 
@@ -87,9 +88,13 @@
 
 ### N-09-04 Multi-surface builder
 
-- [ ] Per-record K semantic surfaces (alias, category, prep, FAQ-style)
-- [ ] int8 vectors within 90 MB budget
-- [ ] Intent prototype table (regex first; embed later if needed)
+- [x] `semantic_surfaces.py` — per-record surfaces (canonical, alias, category, prep, FAQ) with tier caps (BR-SURF-001)
+- [x] `build_semantic_surfaces.py` — export parquet + stats (~28k surfaces, int8 ≤90 MB)
+- [x] `config/semantic/intent_prototypes.json` + `intent_prototypes` table in lexicon (regex-first)
+- [x] `build_mobile_index.py --multi-surface` → `food_surfaces` + `food_surface_vec`
+- [x] `MobileSearcher` prefers surface vector index when present
+- [x] Golden fixture: `tests/fixtures/semantic_surfaces.jsonl`
+- [x] Manual validation: `build_semantic_surfaces.py --record-id taco:3` + CLI lookup
 
 ---
 

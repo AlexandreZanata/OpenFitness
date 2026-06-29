@@ -71,6 +71,20 @@ class MobileSearcher:
             ontology_resolver=self._ontology_resolver,
         )
         self._last_resolution = None
+        self._has_surface_index: bool | None = None
+
+    def _surface_index_available(self) -> bool:
+        if self._has_surface_index is None:
+            connection = connect(str(self._vectors_db), readonly=True)
+            row = connection.execute(
+                """
+                SELECT name FROM sqlite_master
+                WHERE type='table' AND name='food_surface_vec'
+                """
+            ).fetchone()
+            connection.close()
+            self._has_surface_index = row is not None
+        return self._has_surface_index
 
     @property
     def last_resolution(self):
@@ -304,6 +318,85 @@ class MobileSearcher:
             )
         return hits
 
+    def _surface_vector_hits(
+        self,
+        vector: list[float],
+        *,
+        top_k: int,
+        source_filter: str | None,
+        sources: tuple[str, ...] | None,
+    ) -> list[MobileHit]:
+        connection = connect(str(self._vectors_db), readonly=True)
+        vec_rows = connection.execute(
+            """
+            SELECT rowid, distance FROM food_surface_vec
+            WHERE embedding MATCH ?
+            ORDER BY distance
+            LIMIT ?
+            """,
+            (np.asarray(vector, dtype=np.float32), top_k * 8),
+        ).fetchall()
+        if not vec_rows:
+            connection.close()
+            return []
+
+        best_by_record: dict[str, tuple[float, str]] = {}
+        for rowid, distance in vec_rows:
+            surface_row = connection.execute(
+                """
+                SELECT record_id, surface_kind
+                FROM food_surfaces
+                WHERE rowid = ?
+                """,
+                (rowid,),
+            ).fetchone()
+            if surface_row is None:
+                continue
+            record_id = str(surface_row[0])
+            surface_kind = str(surface_row[1])
+            existing = best_by_record.get(record_id)
+            if existing is None or distance < existing[0]:
+                best_by_record[record_id] = (float(distance), surface_kind)
+
+        if not best_by_record:
+            connection.close()
+            return []
+
+        record_ids = list(best_by_record.keys())
+        placeholders = ", ".join("?" for _ in record_ids)
+        meta_rows = connection.execute(
+            f"""
+            SELECT id, source, name, energy_kcal, protein_g, carbohydrate_g, fat_g,
+                   fiber_g, serving_basis, category, brand
+            FROM food_meta
+            WHERE id IN ({placeholders})
+            """,
+            record_ids,
+        ).fetchall()
+        connection.close()
+
+        hits: list[MobileHit] = []
+        meta_by_id = {str(row[0]): row for row in meta_rows}
+        for record_id, (distance, surface_kind) in sorted(
+            best_by_record.items(), key=lambda item: item[1][0]
+        ):
+            row = meta_by_id.get(record_id)
+            if row is None:
+                continue
+            source = str(row[1])
+            if source_filter and source != source_filter:
+                continue
+            if sources and source not in sources:
+                continue
+            score = max(0.0, 1.0 - distance)
+            if surface_kind in {"alias", "faq", "canonical"}:
+                score += 0.02
+            hits.append(
+                self._row_to_hit(row, score=score, match_kind="surface")
+            )
+        hits.sort(key=lambda item: item.score, reverse=True)
+        return hits[:top_k]
+
     def _vector_hits(
         self,
         vector: list[float],
@@ -312,6 +405,16 @@ class MobileSearcher:
         source_filter: str | None,
         sources: tuple[str, ...] | None,
     ) -> list[MobileHit]:
+        if self._surface_index_available():
+            surface_hits = self._surface_vector_hits(
+                vector,
+                top_k=top_k,
+                source_filter=source_filter,
+                sources=sources,
+            )
+            if surface_hits:
+                return surface_hits
+
         connection = connect(str(self._vectors_db), readonly=True)
         vec_rows = connection.execute(
             """

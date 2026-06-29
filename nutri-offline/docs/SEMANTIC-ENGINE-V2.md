@@ -314,7 +314,7 @@ Still fits mobile budget if:
 | N-09-01 | Spell-fix lexicon | `scripts/mobile/spell_normalize.py` + tests | 2d | ✅ |
 | N-09-02 | Synonym graph v2 | Expand `food_aliases` + `synonyms.db` | 3d | ✅ |
 | N-09-03 | Ontology | `config/semantic/food_ontology.json` + resolver | 3d | ✅ |
-| N-09-04 | Multi-surface builder | `build_semantic_surfaces.py` → 24k rows | 5d | ⬜ |
+| N-09-04 | Multi-surface builder | `build_semantic_surfaces.py` → 24k rows | 5d | ✅ |
 | N-09-05 | Household portions | `config/semantic/household_portions.json` + rules | 3d | ✅ |
 | N-09-06 | Resolver pipeline | `SemanticResolver` replaces direct `mobile_search` entry | 4d | ✅ |
 | N-09-07 | Pack v2 + gate | Rebuild pack; golden set includes typo/portion cases | 2d | ⬜ |
@@ -422,5 +422,7 @@ Phase 8 already proves regex + rules cover 95% NL parity on a curated set — **
 - Synonym Layer 2: `nutri-offline/scripts/mobile/synonym_resolver.py`
 - Ontology Layer 3: `nutri-offline/scripts/mobile/ontology_resolver.py`
 - Semantic pipeline (layers 1–3): `nutri-offline/scripts/mobile/semantic_resolver.py`
+- Multi-surface Layer 4: `nutri-offline/scripts/mobile/semantic_surfaces.py`, `build_semantic_surfaces.py`
+- Intent prototypes: `nutri-offline/config/semantic/intent_prototypes.json`
 - Household portions Layer 5: `nutri-offline/scripts/mobile/household_portions.py`
 - BR-RET-002 grounding: `nutri-offline/scripts/dataset/answers.py` → `scale_nutrient()`

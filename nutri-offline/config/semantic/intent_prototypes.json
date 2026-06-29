@@ -1,0 +1,32 @@
+[
+  {
+    "id": "intent_calories",
+    "intent_kind": "lookup",
+    "regex": "(?i)quantas?\\s+calorias?",
+    "search_text": "quantas calorias tem"
+  },
+  {
+    "id": "intent_protein",
+    "intent_kind": "lookup",
+    "regex": "(?i)quanto\\s+de\\s+prote[ií]na",
+    "search_text": "quanto de proteina tem"
+  },
+  {
+    "id": "intent_compare",
+    "intent_kind": "compare",
+    "regex": "(?i)qual\\s+(?:tem\\s+)?mais",
+    "search_text": "qual tem mais"
+  },
+  {
+    "id": "intent_substitute",
+    "intent_kind": "substitute",
+    "regex": "(?i)(?:op[cç][aã]o|alternativa)\\s+mais\\s+leve",
+    "search_text": "opcao mais leve"
+  },
+  {
+    "id": "intent_portion",
+    "intent_kind": "lookup",
+    "regex": "(?i)(?:uma|um)\\s+\\w+\\s+inteir[ao]",
+    "search_text": "porcao inteira quantas calorias"
+  }
+]
