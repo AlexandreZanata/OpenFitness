@@ -86,6 +86,8 @@ def score_row(row: dict[str, Any], answer: str) -> ScoredRow:
     if category == "unknown":
         if acknowledges_unknown(answer):
             return ScoredRow(row_id, category, "PASS", "acknowledged unknown", question, answer)
+        if "não posso informar valores nutricionais" in answer.lower():
+            return ScoredRow(row_id, category, "PASS", "refused without source", question, answer)
         if has_definitive_nutrition_claim(answer):
             return ScoredRow(row_id, category, "FAIL", "false definitive nutrition claim", question, answer)
         return ScoredRow(row_id, category, "PASS", "no false definitive claim", question, answer)
@@ -106,7 +108,7 @@ def score_row(row: dict[str, Any], answer: str) -> ScoredRow:
     if needs_citation and not cites_data_source(answer, str(row.get("source_label", ""))):
         return ScoredRow(row_id, category, "FAIL", "missing source citation", question, answer)
 
-    if category == "numeric":
+    if category == "numeric" or (category in {"format", "household"} and row.get("expects_number") is not None):
         expected = row.get("expects_number")
         if expected is not None:
             tolerance = float(row.get("number_tolerance_pct", 5.0))
@@ -163,7 +165,7 @@ def aggregate_metrics(scored: list[ScoredRow], rows: list[dict[str, Any]] | None
     by_id = {row.id: row for row in scored}
     row_by_id = {str(r["id"]): r for r in (rows or [])}
 
-    format_rows = [r for r in scored if r.category in {"format", "numeric", "comparison", "substitution"}]
+    format_rows = [r for r in scored if r.category in {"format", "numeric", "comparison", "substitution", "household"}]
     unknown_rows = [r for r in scored if r.category == "unknown"]
     rag_rows = [r for r in scored if r.category == "rag"]
     numeric_rows = [

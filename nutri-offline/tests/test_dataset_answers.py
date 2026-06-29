@@ -2,13 +2,21 @@
 
 from __future__ import annotations
 
+import sys
 import unittest
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "dataset"))
 
 from answers import (
     fmt_g,
     fmt_kcal,
+    fmt_nutrient,
+    generate_comparison,
     generate_direct_lookup,
+    generate_household_portion,
     generate_portion_math,
+    generate_unknown_refusal,
     source_label,
 )
 
@@ -55,6 +63,53 @@ class AnswersTest(unittest.TestCase):
         self.assertIn("150g", answer)
         self.assertEqual(grounding["values"]["energy_kcal"], 150.0)
         self.assertIn("150 kcal", answer)
+
+    def test_unknown_refusal_does_not_invent_macros(self) -> None:
+        answer, grounding = generate_unknown_refusal("fruta holográfica", "pt")
+        self.assertIn("Não encontrei", answer)
+        self.assertIn("TACO", answer)
+        self.assertNotIn("kcal", answer)
+        self.assertTrue(grounding.get("refusal"))
+
+    def test_household_portion_uses_unit_grams(self) -> None:
+        record = {
+            "id": "taco:182",
+            "source": "taco",
+            "name": "Banana, prata",
+            "energy_kcal": 98.0,
+            "protein_g": 1.3,
+            "carbohydrate_g": 26.0,
+            "fat_g": 0.1,
+            "fiber_g": 2.0,
+            "serving_basis": "100g",
+        }
+        answer, grounding = generate_household_portion(
+            record,
+            portion_g=86,
+            unit_label="uma banana média",
+            template_language="pt",
+        )
+        self.assertIn("86g", answer)
+        self.assertIn("84 kcal", answer)
+        self.assertEqual(grounding["portion_g"], 86)
+
+    def test_comparison_energy_uses_kcal_not_grams(self) -> None:
+        record_a = {
+            "id": "taco:3",
+            "source": "taco",
+            "name": "Arroz cozido",
+            "energy_kcal": 128.0,
+        }
+        record_b = {
+            "id": "taco:5",
+            "source": "taco",
+            "name": "Feijão cozido",
+            "energy_kcal": 77.0,
+        }
+        answer, _ = generate_comparison(record_a, record_b, "energy_kcal", "calorias", "pt")
+        self.assertIn("128 kcal", answer)
+        self.assertIn("77 kcal", answer)
+        self.assertNotIn("128g", answer)
 
 
 if __name__ == "__main__":

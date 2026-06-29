@@ -156,6 +156,50 @@ def _en_reason_1(food_name: str, source: str, **_kwargs: object) -> str:
     return f"Explain the approximate glycemic impact of {food_name} using {source} data."
 
 
+def _pt_unknown_1(food_name: str, **_kwargs: object) -> str:
+    return f"Quantas calorias tem 100g de {food_name}?"
+
+
+def _pt_unknown_2(food_name: str, **_kwargs: object) -> str:
+    return f"Qual o valor proteico de {food_name}?"
+
+
+def _pt_unknown_3(food_name: str, **_kwargs: object) -> str:
+    return f"Informe os macros de {food_name} segundo a TACO."
+
+
+def _pt_unknown_4(food_name: str, **_kwargs: object) -> str:
+    return f"Me diga a composição nutricional de {food_name}."
+
+
+def _pt_unknown_5(food_name: str, **_kwargs: object) -> str:
+    return f"Existe {food_name} na tabela TACO?"
+
+
+def _en_unknown_1(food_name: str, **_kwargs: object) -> str:
+    return f"How many calories are in 100g of {food_name}?"
+
+
+def _pt_household_1(food_name: str, unit_label: str, **_kwargs: object) -> str:
+    return f"Quantas calorias tem {unit_label} de {food_name}?"
+
+
+def _pt_household_2(food_name: str, unit_label: str, **_kwargs: object) -> str:
+    return f"Quanto de proteína tem {unit_label} de {food_name}?"
+
+
+def _pt_household_3(food_name: str, unit_label: str, source: str, **_kwargs: object) -> str:
+    return f"Segundo a {source}, quantas calorias tem {unit_label} de {food_name}?"
+
+
+def _pt_household_4(food_name: str, unit_label: str, **_kwargs: object) -> str:
+    return f"Qual a porção caseira de {food_name} em gramas e calorias?"
+
+
+def _pt_household_5(food_name: str, unit_label: str, **_kwargs: object) -> str:
+    return f"Calcule os nutrientes para {unit_label} de {food_name}."
+
+
 TEMPLATES: list[QuestionTemplate] = [
     QuestionTemplate("direct_pt_1", "direct_lookup", "pt", _pt_direct_1),
     QuestionTemplate("direct_pt_2", "direct_lookup", "pt", _pt_direct_2),
@@ -192,6 +236,17 @@ TEMPLATES: list[QuestionTemplate] = [
     QuestionTemplate("reason_pt_4", "reasoning", "pt", _pt_reason_4),
     QuestionTemplate("reason_pt_5", "reasoning", "pt", _pt_reason_5),
     QuestionTemplate("reason_en_1", "reasoning", "en", _en_reason_1),
+    QuestionTemplate("unknown_pt_1", "unknown_refusal", "pt", _pt_unknown_1),
+    QuestionTemplate("unknown_pt_2", "unknown_refusal", "pt", _pt_unknown_2),
+    QuestionTemplate("unknown_pt_3", "unknown_refusal", "pt", _pt_unknown_3),
+    QuestionTemplate("unknown_pt_4", "unknown_refusal", "pt", _pt_unknown_4),
+    QuestionTemplate("unknown_pt_5", "unknown_refusal", "pt", _pt_unknown_5),
+    QuestionTemplate("unknown_en_1", "unknown_refusal", "en", _en_unknown_1),
+    QuestionTemplate("household_pt_1", "household_portion", "pt", _pt_household_1),
+    QuestionTemplate("household_pt_2", "household_portion", "pt", _pt_household_2),
+    QuestionTemplate("household_pt_3", "household_portion", "pt", _pt_household_3),
+    QuestionTemplate("household_pt_4", "household_portion", "pt", _pt_household_4),
+    QuestionTemplate("household_pt_5", "household_portion", "pt", _pt_household_5),
 ]
 
 

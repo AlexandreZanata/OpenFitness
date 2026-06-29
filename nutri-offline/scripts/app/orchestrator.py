@@ -7,7 +7,7 @@ from collections.abc import Iterator
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-from app_paths import DEFAULT_TOP_K, LLM_MAX_TOKENS, MODEL_NAME
+from app_paths import DEFAULT_TOP_K, LLM_MAX_TOKENS, MODEL_NAME, NO_RAG_HITS_REFUSAL
 from intent_parser import IntentKind, parse_intent
 from llm_client import LlmClient
 from lookup_orchestrator import LookupOrchestrator, LookupResult
@@ -53,6 +53,18 @@ class NutriAssistant:
         return {
             "lookup": self._lookup_cache.stats(),
             "embedding": self.rag.embed_cache_stats(),
+        }
+
+    def health(self) -> dict[str, bool]:
+        rag_ok = False
+        try:
+            self.rag._table  # noqa: SLF001
+            rag_ok = True
+        except Exception:
+            rag_ok = False
+        return {
+            "rag_index": rag_ok,
+            "llm_server": self.llm.health_check(),
         }
 
     def _lookup_response(
@@ -104,6 +116,18 @@ class NutriAssistant:
         context = ""
         if use_rag:
             hits, context = self.rag.query(question, top_k=top_k)
+            if not hits:
+                elapsed_ms = (time.perf_counter() - started) * 1000
+                return NutriResponse(
+                    answer=NO_RAG_HITS_REFUSAL,
+                    sources=[],
+                    rag_context="",
+                    rag_context_used=False,
+                    model=MODEL_NAME,
+                    latency_ms=round(elapsed_ms, 1),
+                    mode="llm",
+                    debug={"cache_hit": False, "rag_hits": 0},
+                )
 
         messages, used_hits = build_messages(question, hits, use_rag=use_rag)
         if history:
@@ -235,6 +259,19 @@ class NutriAssistant:
             context = ""
             if use_rag:
                 hits, context = self.rag.query(question, top_k=k)
+                if not hits:
+                    elapsed_ms = (time.perf_counter() - started) * 1000
+                    payload = {
+                        "answer": NO_RAG_HITS_REFUSAL,
+                        "sources": [],
+                        "rag_context_used": False,
+                        "model": MODEL_NAME,
+                        "latency_ms": round(elapsed_ms, 1),
+                        "mode": "llm",
+                        "cache_hit": False,
+                    }
+                    yield {"type": "done", "data": payload}
+                    return
 
             messages, used_hits = build_messages(question, hits, use_rag=use_rag)
             if history:

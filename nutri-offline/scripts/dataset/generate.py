@@ -17,9 +17,11 @@ from answers import (
     generate_allergen,
     generate_comparison,
     generate_direct_lookup,
+    generate_household_portion,
     generate_portion_math,
     generate_reasoning,
     generate_substitution,
+    generate_unknown_refusal,
     source_label,
 )
 from constants import STRATEGY_WEIGHTS, SYSTEM_PROMPT, TARGET_TOTAL
@@ -30,9 +32,11 @@ from records import (
     fetch_fdc_foundation,
     fetch_off_brazil,
     fetch_off_with_ingredients,
+    fetch_records_by_ids,
     fetch_substitution_pairs,
     fetch_taco,
 )
+from unknown_foods import UNKNOWN_FOOD_NAMES
 from templates import QuestionTemplate, templates_for_category
 
 PORTION_GRAMS = [30, 50, 80, 100, 120, 150, 200, 250]
@@ -293,6 +297,102 @@ def generate_reasoning_examples(
     return examples
 
 
+def generate_unknown_refusal_examples(count: int, rng: random.Random) -> list[dict[str, Any]]:
+    examples: list[dict[str, Any]] = []
+    templates_pt = templates_for_category("unknown_refusal", "pt")
+    templates_en = templates_for_category("unknown_refusal", "en")
+    foods = list(UNKNOWN_FOOD_NAMES)
+    rng.shuffle(foods)
+    index = 0
+    while len(examples) < count and foods:
+        food_name = foods[index % len(foods)]
+        index += 1
+        use_en = rng.random() < 0.05
+        template = rng.choice(templates_en if use_en else templates_pt)
+        language = template.language
+        question = template.format_question(food_name=food_name)
+        answer, grounding = generate_unknown_refusal(food_name, language)
+        example = build_example(
+            user_content=question,
+            assistant_content=answer,
+            template=template,
+            grounding=grounding,
+            language=language,
+        )
+        if not validate_example(example):
+            examples.append(example)
+    return examples
+
+
+def load_household_entries() -> list[dict[str, Any]]:
+    path = Path(__file__).resolve().parents[2] / "config" / "semantic" / "household_portions.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return list(payload.get("entries", []))
+
+
+def generate_household_portion_examples(
+    connection,
+    count: int,
+    rng: random.Random,
+) -> list[dict[str, Any]]:
+    examples: list[dict[str, Any]] = []
+    templates = templates_for_category("household_portion", "pt")
+    entries = load_household_entries()
+    record_ids = [entry["default_record_id"] for entry in entries if entry.get("default_record_id")]
+    by_id = fetch_records_by_ids(connection, record_ids)
+    slots: list[tuple[dict[str, Any], dict[str, Any]]] = []
+    for entry in entries:
+        record = by_id.get(entry.get("default_record_id", ""))
+        if not record:
+            continue
+        for unit in entry.get("units", []):
+            slots.append((entry, unit))
+    rng.shuffle(slots)
+    index = 0
+    while len(examples) < count and slots:
+        entry, unit = slots[index % len(slots)]
+        index += 1
+        record = by_id.get(entry["default_record_id"])
+        if not record:
+            continue
+        unit_label = str(unit.get("unit", "unidade"))
+        if unit_label == "un":
+            unit_label = "uma unidade"
+        elif unit_label == "unidade":
+            unit_label = "uma unidade"
+        elif unit_label == "media":
+            unit_label = "uma média"
+        elif unit_label == "inteira":
+            unit_label = "uma inteira"
+        else:
+            unit_label = f"uma {unit_label}"
+        portion_g = int(unit["grams"])
+        template = rng.choice(templates)
+        food_display = entry.get("food", record["name"])
+        label = source_label(record["source"])
+        question = template.format_question(
+            food_name=food_display,
+            unit_label=unit_label,
+            source=label,
+        )
+        answer, grounding = generate_household_portion(
+            record,
+            portion_g=portion_g,
+            unit_label=unit_label,
+            template_language="pt",
+        )
+        example = build_example(
+            user_content=question,
+            assistant_content=answer,
+            template=template,
+            grounding=grounding,
+            language="pt",
+        )
+        if not validate_example(example):
+            examples.append(example)
+    return examples
+
+
 def strategy_counts(total: int) -> dict[str, int]:
     counts = {name: int(total * weight) for name, weight in STRATEGY_WEIGHTS.items()}
     delta = total - sum(counts.values())
@@ -331,6 +431,8 @@ def generate_dataset(*, target: int, seed: int) -> list[dict[str, Any]]:
     examples.extend(generate_substitution_examples(subst_pairs, counts["substitution"], rng))
     examples.extend(generate_allergen_examples(off_ingredients, counts["allergen"], rng))
     examples.extend(generate_reasoning_examples(taco_pool + mixed_pool, counts["reasoning"], rng))
+    examples.extend(generate_unknown_refusal_examples(counts["unknown_refusal"], rng))
+    examples.extend(generate_household_portion_examples(connection, counts["household_portion"], rng))
 
     rng.shuffle(examples)
     return examples[:target]

@@ -54,7 +54,7 @@ python scripts/training/compare_base_vs_ft.py --config scripts/training/config.y
 ./scripts/validate-nutri-training.sh                                                         # post-train gate (N-05)
 
 # GGUF export + inference (Phase 6)
-export NUTRI_ADAPTER=nutri-qwen25-3b-v1
+export NUTRI_ADAPTER=nutri-qwen25-3b-v2
 export NUTRI_GGUF_QUANT=q4_k_m
 python scripts/export/run_all.py --skip-merge
 python scripts/inference/run_all.py --skip-export

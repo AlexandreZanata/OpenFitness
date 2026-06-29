@@ -44,21 +44,27 @@ def macro_parts(record: dict[str, Any], portion_g: int = 100) -> list[str]:
     factor = portion_g / 100.0 if (record.get("serving_basis") or "100g") == "100g" else 1.0
     parts: list[str] = []
     energy = record.get("energy_kcal")
-    if energy is not None:
+    if _is_valid_number(energy):
         parts.append(f"{fmt_kcal(energy * factor)} kcal")
     protein = record.get("protein_g")
-    if protein is not None:
+    if _is_valid_number(protein):
         parts.append(f"{fmt_g(protein * factor)}g de proteína")
     carbs = record.get("carbohydrate_g")
-    if carbs is not None:
+    if _is_valid_number(carbs):
         parts.append(f"{fmt_g(carbs * factor)}g de carboidratos")
     fat = record.get("fat_g")
-    if fat is not None:
+    if _is_valid_number(fat):
         parts.append(f"{fmt_g(fat * factor)}g de gordura")
     fiber = record.get("fiber_g")
-    if fiber is not None:
+    if _is_valid_number(fiber):
         parts.append(f"{fmt_g(fiber * factor)}g de fibras")
     return parts
+
+
+def fmt_nutrient(nutrient_key: str, value: float) -> str:
+    if nutrient_key == "energy_kcal":
+        return f"{fmt_kcal(value)} kcal"
+    return f"{fmt_g(value)}g"
 
 
 def generate_direct_lookup(record: dict[str, Any], template_language: str) -> tuple[str, dict[str, Any]]:
@@ -140,23 +146,24 @@ def generate_comparison(
         raise ValueError("comparison requires both nutrient values")
 
     if val_a > val_b:
-        winner, loser, w_val, l_val = record_a["name"], record_b["name"], val_a, val_b
+        winner, w_val, l_val = record_a["name"], val_a, val_b
     elif val_b > val_a:
-        winner, loser, w_val, l_val = record_b["name"], record_a["name"], val_b, val_a
+        winner, w_val, l_val = record_b["name"], val_b, val_a
     else:
-        winner, loser, w_val, l_val = record_a["name"], record_b["name"], val_a, val_b
+        winner, w_val, l_val = record_a["name"], val_a, val_b
 
     if template_language == "en":
         answer = (
-            f"According to {label}, {record_a['name']} has {fmt_g(val_a)}g {nutrient_label_pt} "
-            f"and {record_b['name']} has {fmt_g(val_b)}g per 100g. "
-            f"{winner} has more ({fmt_g(w_val)}g vs {fmt_g(l_val)}g)."
+            f"According to {label}, {record_a['name']} has {fmt_nutrient(nutrient_key, val_a)} "
+            f"and {record_b['name']} has {fmt_nutrient(nutrient_key, val_b)} per 100g. "
+            f"{winner} has more ({fmt_nutrient(nutrient_key, w_val)} vs {fmt_nutrient(nutrient_key, l_val)})."
         )
     else:
+        nutrient_pt = "calorias" if nutrient_key == "energy_kcal" else nutrient_label_pt
         answer = (
-            f"Segundo a {label}, {record_a['name']} tem {fmt_g(val_a)}g de {nutrient_label_pt} "
-            f"e {record_b['name']} tem {fmt_g(val_b)}g por 100g. "
-            f"{winner} tem mais ({fmt_g(w_val)}g contra {fmt_g(l_val)}g)."
+            f"Segundo a {label}, {record_a['name']} tem {fmt_nutrient(nutrient_key, val_a)} de {nutrient_pt} "
+            f"e {record_b['name']} tem {fmt_nutrient(nutrient_key, val_b)} por 100g. "
+            f"{winner} tem mais ({fmt_nutrient(nutrient_key, w_val)} contra {fmt_nutrient(nutrient_key, l_val)})."
         )
     grounding = {
         "record_ids": [record_a["id"], record_b["id"]],
@@ -236,7 +243,7 @@ def generate_reasoning(record: dict[str, Any], template_language: str) -> tuple[
         )
     else:
         fiber_note = ""
-        if fiber is not None:
+        if _is_valid_number(fiber):
             fiber_note = f" Com {fmt_g(fiber)}g de fibras por 100g, pode contribuir para saciedade."
         carb_protein = ""
         if carbs is not None and protein is not None:
@@ -257,6 +264,67 @@ def generate_reasoning(record: dict[str, Any], template_language: str) -> tuple[
             "protein_g": protein,
             "carbohydrate_g": carbs,
             "fiber_g": fiber,
+        },
+        "source_label": label,
+    }
+    return answer, grounding
+
+
+def generate_unknown_refusal(food_name: str, template_language: str) -> tuple[str, dict[str, Any]]:
+    if template_language == "en":
+        answer = (
+            f"I did not find {food_name} in TACO, USDA FoodData Central, or Open Food Facts. "
+            f"I cannot provide nutritional values without a reliable source."
+        )
+    else:
+        answer = (
+            f"Não encontrei {food_name} na base de dados "
+            f"(TACO, USDA FoodData Central ou Open Food Facts). "
+            f"Não posso informar valores nutricionais sem uma fonte confiável."
+        )
+    grounding = {
+        "record_ids": [],
+        "refusal": True,
+        "unknown_food": food_name,
+        "source_label": "",
+    }
+    return answer, grounding
+
+
+def generate_household_portion(
+    record: dict[str, Any],
+    *,
+    portion_g: int,
+    unit_label: str,
+    template_language: str,
+) -> tuple[str, dict[str, Any]]:
+    label = source_label(record["source"])
+    name = record["name"]
+    parts = macro_parts(record, portion_g=portion_g)
+    if template_language == "en":
+        answer = (
+            f"According to {label}, one {unit_label} of {name} ({portion_g}g) provides approximately "
+            + ", ".join(parts)
+            + "."
+        )
+    else:
+        answer = (
+            f"Segundo a {label}, {unit_label} de {name} ({portion_g}g) fornece aproximadamente "
+            + ", ".join(parts)
+            + "."
+        )
+    factor = portion_g / 100.0
+    grounding = {
+        "record_ids": [record["id"]],
+        "portion_g": portion_g,
+        "household_unit": unit_label,
+        "values": {
+            "energy_kcal": None if not _is_valid_number(record.get("energy_kcal")) else record["energy_kcal"] * factor,
+            "protein_g": None if not _is_valid_number(record.get("protein_g")) else record["protein_g"] * factor,
+            "carbohydrate_g": None
+            if not _is_valid_number(record.get("carbohydrate_g"))
+            else record["carbohydrate_g"] * factor,
+            "fat_g": None if not _is_valid_number(record.get("fat_g")) else record["fat_g"] * factor,
         },
         "source_label": label,
     }

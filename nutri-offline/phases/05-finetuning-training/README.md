@@ -101,7 +101,7 @@ models/adapters/
 - [x] Qualitative comparison: fine-tuned vs base shows clear domain improvement
 - [x] Ready for [Phase 6 — GGUF export](../06-gguf-inference/TASKS.md)
 
-**Known gap (N-05-08):** Without RAG context, the model may invent TACO values for fictional foods (~80% hallucination on the 50-prompt unknown subset). Production relies on RAG for facts.
+**Production adapter:** `nutri-qwen25-3b-v2` (full eval 50/50 pass, 2026-06-29)
 
 ---
 

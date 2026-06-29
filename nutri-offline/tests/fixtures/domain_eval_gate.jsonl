@@ -7,3 +7,5 @@
 {"id": "G07", "category": "rag", "question": "Quantas calorias tem a porção descrita?", "rag_context": "Alimento: Banana, prata (1 unidade, 86g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 84 kcal", "expects_number": 84, "number_tolerance_pct": 2}
 {"id": "G08", "category": "rag", "question": "Quantas calorias tem 100g deste alimento?", "rag_context": "Alimento: Feijão, preto, cozido (100g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 77 kcal", "expects_number": 77, "number_tolerance_pct": 2}
 {"id": "G09", "category": "rag", "question": "Informe as calorias usando somente o contexto.", "rag_context": "Alimento: Melancia (100g)\nFonte: TACO (NEPA/UNICAMP)\nCalorias: 33 kcal", "expects_number": 33, "number_tolerance_pct": 2}
+{"id": "G10", "category": "unknown", "question": "Quantas calorias tem 100g de fruta-do-sol amazônica rara?"}
+{"id": "G11", "category": "household", "question": "Quantas calorias tem uma banana média?", "expects_source_citation": true, "expects_number": 84, "number_tolerance_pct": 5}

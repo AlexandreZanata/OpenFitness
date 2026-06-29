@@ -36,9 +36,17 @@ def validate_example(example: dict[str, Any]) -> list[str]:
     log_entry = example.get("generation_log") or {}
     grounding = log_entry.get("grounding") or {}
     answer = example["messages"][-1]["content"]
-    source_label = grounding.get("source_label", "")
 
-    if not has_source_citation(answer, source_label):
+    if grounding.get("refusal"):
+        lowered = answer.lower()
+        if "não encontrei" in lowered or "did not find" in lowered:
+            if not re.search(r"\d+(?:\.\d+)?\s*kcal", lowered):
+                return []
+        errors.append("refusal answer must acknowledge unknown without inventing kcal")
+        return errors
+
+    source_label_text = grounding.get("source_label", "")
+    if not has_source_citation(answer, source_label_text):
         errors.append("missing source citation")
 
     values = grounding.get("values") or {}

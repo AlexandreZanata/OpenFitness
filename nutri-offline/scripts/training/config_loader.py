@@ -29,9 +29,15 @@ def load_training_config(
     merged["_profile"] = active
     merged["_config_path"] = str(config_path)
 
-    for key in ("train_jsonl", "val_jsonl", "output_dir"):
+    for key in ("train_jsonl", "val_jsonl", "output_dir", "base_model"):
         value = merged.get(key)
-        if value and not Path(value).is_absolute():
-            merged[key] = str((ROOT / value).resolve())
+        if not value:
+            continue
+        text = str(value)
+        if "/" in text and not text.startswith("models/"):
+            continue
+        path = Path(text)
+        if not path.is_absolute():
+            merged[key] = str((ROOT / path).resolve())
 
     return merged

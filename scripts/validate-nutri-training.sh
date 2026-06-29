@@ -6,7 +6,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 NUTRI="${ROOT}/nutri-offline"
 VENV="${NUTRI}/venv/bin/activate"
-ADAPTER="${NUTRI}/models/adapters/nutri-qwen25-3b-v1"
+ADAPTER="${NUTRI_ADAPTER_DIR:-${NUTRI}/models/adapters/nutri-qwen25-3b-v2}"
 EVAL="${NUTRI}/scripts/training/eval_domain.py"
 CONFIG="${NUTRI}/scripts/training/config.yaml"
 GATE_PROMPTS="${NUTRI}/tests/fixtures/domain_eval_gate.jsonl"

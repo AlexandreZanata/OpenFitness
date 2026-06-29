@@ -2,7 +2,7 @@
 
 > **ID:** N-05 · Unsloth QLoRA SFT  
 > **Quality gate:** Training completes; domain eval targets met; adapter saved  
-> **Status:** Done (2026-06-29) — adapter + GGUF exported; post-train gate passes; unknown-food hallucination tracked in N-05-08  
+> **Status:** Done (2026-06-29) — adapter `nutri-qwen25-3b-v2`; full eval 50/50 pass  
 > **Depends on:** [Phase 0](../00-hardware-environment/TASKS.md), [Phase 4](../04-finetuning-dataset/TASKS.md)
 
 ---
@@ -55,7 +55,7 @@
 | N-05-05 | Training metrics log | `logs/training-run-*.json` | P0 | ✅ |
 | N-05-06 | Domain evaluation | `scripts/training/eval_domain.py` | P0 | ✅ |
 | N-05-07 | Base vs fine-tuned comparison | `scripts/training/compare_base_vs_ft.py` | P1 | ✅ |
-| N-05-08 | Iterate if quality insufficient | adjust epochs / lr / data | P1 | ⬜ (unknown-food hallucination 80% — see full eval log) |
+| N-05-08 | Iterate if quality insufficient | adjust epochs / lr / data | P1 | ✅ v2 + 192 refusal + RAG boost |
 | N-05-10 | Training paths module | `scripts/training/_paths.py` | P0 | ✅ |
 | N-05-11 | Preflight validator | `scripts/training/preflight.py` | P0 | ✅ |
 | N-05-12 | Orchestrator | `scripts/training/run_all.py` | P1 | ✅ |
@@ -125,7 +125,7 @@ Readiness-only tasks (N-05-R01 … R15): see [TRAINING-READINESS.md](TRAINING-RE
 - [x] Metrics: source citation, numeric accuracy, hallucination on unknown food
 - [x] Output: `logs/eval-domain-{timestamp}.json`
 - [x] Pass criteria per README targets (gate fixture: format 100%, RAG 100%)
-- [ ] Full 50-prompt unknown-food hallucination ≤ 10% — **80% observed** (N-05-08)
+- [x] Full 50-prompt unknown-food hallucination ≤ 10% — **0% observed (v2)**
 
 ---
 

@@ -39,6 +39,24 @@ def fetch_taco(connection: duckdb.DuckDBPyConnection) -> list[dict[str, Any]]:
     return fetch_records(connection, "source = 'taco'")
 
 
+def fetch_records_by_ids(
+    connection: duckdb.DuckDBPyConnection,
+    record_ids: list[str],
+) -> dict[str, dict[str, Any]]:
+    if not record_ids:
+        return {}
+    placeholders = ", ".join("?" for _ in record_ids)
+    rows = connection.execute(
+        f"""
+        SELECT *
+        FROM read_parquet('{FOODS_PARQUET.as_posix()}')
+        WHERE id IN ({placeholders})
+        """,
+        record_ids,
+    ).fetchdf()
+    return {row["id"]: row for row in rows.to_dict(orient="records")}
+
+
 def fetch_fdc_foundation(connection: duckdb.DuckDBPyConnection, limit: int = 800) -> list[dict[str, Any]]:
     return fetch_records(connection, FDC_FOUNDATION_SQL.strip(), limit=limit)
 
