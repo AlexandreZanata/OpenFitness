@@ -17,6 +17,7 @@ DEFAULT_TOP_K = 5
 MAX_CONTEXT_TOKENS = 3500  # leave room for question + answer in 4096 window
 LLM_MAX_TOKENS = 128  # RAG V2: shorter generation for reasoning fallback
 MODEL_NAME = os.environ.get("NUTRI_MODEL_NAME", "nutri-qwen25-3b-v1-q4_k_m")
+INDEX_SCOPE = os.environ.get("NUTRI_INDEX_SCOPE", "v1")
 
 NO_RAG_HITS_REFUSAL = (
     "Não encontrei esse alimento na base de dados "

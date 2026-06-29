@@ -75,6 +75,11 @@ python scripts/app/test_mobile_chat_api.py --runtime mobile   # 20 NL API querie
 ./scripts/validate-nutri-app.sh
 ./scripts/validate-nutri-rag-v2.sh   # RAG V2 alias + hybrid + cache + benchmark gate
 
+# Phase 11 — full catalog (smoke gate on v1 index; strict after scope=all build)
+./scripts/validate-nutri-full-catalog.sh smoke
+# cd nutri-offline && python scripts/rag/build_index_v2.py --scope all --device cuda
+# ./scripts/validate-nutri-full-catalog.sh full
+
 # RAG V2 benchmarks (optional)
 # cd nutri-offline && python scripts/app/benchmark_v2.py --skip-llm
 # cd nutri-offline && python scripts/rag/embedder_benchmark.py --device cpu
@@ -98,13 +103,15 @@ Run gate scripts from the **repository root** (they `cd` into `nutri-offline/` a
 | Document | Purpose |
 |----------|---------|
 | [nutri-offline/README.md](../nutri-offline/README.md) | Project entry point |
-| [nutri-offline/IMPLEMENTATION-PLAN.md](../nutri-offline/IMPLEMENTATION-PLAN.md) | Master roadmap (phases 0–9) |
+| [nutri-offline/IMPLEMENTATION-PLAN.md](../nutri-offline/IMPLEMENTATION-PLAN.md) | Master roadmap (phases 0–11) |
 | [nutri-offline/ENVIRONMENT.md](../nutri-offline/ENVIRONMENT.md) | Pinned versions and reproduce steps |
 | [nutri-offline/phases/](../nutri-offline/phases/) | Per-phase README + TASKS checklists |
 | [nutri-offline/docs/README-RAG-V2.md](../nutri-offline/docs/README-RAG-V2.md) | RAG V2 — speed, accuracy, shorthand UX |
 | [nutri-offline/docs/MOBILE-CAPABILITY-MATRIX.md](../nutri-offline/docs/MOBILE-CAPABILITY-MATRIX.md) | Desktop parity at ≤200 MB |
 | [nutri-offline/phases/08-mobile-pack/](../nutri-offline/phases/08-mobile-pack/) | Mobile pack tasks |
-| [nutri-offline/phases/09-semantic-engine/](../nutri-offline/phases/09-semantic-engine/) | Semantic engine v2 (normalization-first) |
+| [nutri-offline/docs/FULL-CATALOG-INDEX.md](../nutri-offline/docs/FULL-CATALOG-INDEX.md) | Phase 11 full catalog index |
+| [nutri-offline/phases/10-mobile-qa/](../nutri-offline/phases/10-mobile-qa/) | Mobile QA B20 |
+| [nutri-offline/phases/11-full-catalog-index/](../nutri-offline/phases/11-full-catalog-index/) | Full catalog index tasks |
 | [nutri-offline/docs/SEMANTIC-ENGINE-V2.md](../nutri-offline/docs/SEMANTIC-ENGINE-V2.md) | Semantic engine design |
 | [nutri-offline/docs/UC-nutri-query.md](../nutri-offline/docs/UC-nutri-query.md) | Use case draft |
 | [nutri-offline/docs/android-integration.md](../nutri-offline/docs/android-integration.md) | Android integration options |
@@ -135,3 +142,4 @@ Fine-tuning teaches reasoning and Brazilian Portuguese tone; **factual macros co
 | [scripts/validate-nutri-rag-v2.sh](../scripts/validate-nutri-rag-v2.sh) | RAG V2 |
 | [scripts/validate-nutri-production.sh](../scripts/validate-nutri-production.sh) | Production |
 | [scripts/validate-nutri-mobile-pack.sh](../scripts/validate-nutri-mobile-pack.sh) | Phases 8–10 (pack + semantic v2 + B20 QA) |
+| [scripts/validate-nutri-full-catalog.sh](../scripts/validate-nutri-full-catalog.sh) | Phase 11 smoke / full catalog gate |

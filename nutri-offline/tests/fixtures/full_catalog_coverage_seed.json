@@ -1,0 +1,5 @@
+{
+  "round_trip_sample_size": 200,
+  "round_trip_seed": 110629,
+  "description": "Deterministic sample for G-COV-03 ID round-trip (Phase 11)"
+}

@@ -30,7 +30,7 @@ See [docs/nutri-offline.md](../docs/nutri-offline.md) for the full phase workflo
 
 ```
 nutri-offline/
-├── IMPLEMENTATION-PLAN.md   # Master roadmap (phases 0–9)
+├── IMPLEMENTATION-PLAN.md   # Master roadmap (phases 0–11)
 ├── ENVIRONMENT.md           # Pinned stack and reproduce steps
 ├── phases/                  # Per-phase README + TASKS
 ├── scripts/                 # Pipeline code
@@ -56,6 +56,8 @@ nutri-offline/
 | 7 — App integration | [phases/07-app-integration/TASKS.md](phases/07-app-integration/TASKS.md) |
 | 8 — Mobile pack ≤200 MB | [phases/08-mobile-pack/TASKS.md](phases/08-mobile-pack/TASKS.md) |
 | 9 — Semantic engine v2 | [phases/09-semantic-engine/TASKS.md](phases/09-semantic-engine/TASKS.md) |
+| 10 — Mobile QA B20 | [phases/10-mobile-qa/TASKS.md](phases/10-mobile-qa/TASKS.md) |
+| 11 — Full catalog index | [phases/11-full-catalog-index/TASKS.md](phases/11-full-catalog-index/TASKS.md) |
 
 ## Hardware baseline
 

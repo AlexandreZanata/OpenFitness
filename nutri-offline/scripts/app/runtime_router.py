@@ -8,6 +8,11 @@ from typing import Any, Literal
 
 from orchestrator import NutriAssistant, NutriResponse
 
+RAG_DIR = Path(__file__).resolve().parents[1] / "rag"
+sys.path.insert(0, str(RAG_DIR))
+
+from index_catalog import index_snapshot  # noqa: E402
+
 MOBILE_DIR = Path(__file__).resolve().parents[1] / "mobile"
 sys.path.insert(0, str(MOBILE_DIR))
 
@@ -70,13 +75,24 @@ class NutriRuntimeRouter:
         except Exception:
             rag_ok = False
         llm_ok = desktop.llm.health_check()
-        return {
+        index = index_snapshot()
+        payload: dict[str, Any] = {
             "runtime": "desktop",
             "rag_index": rag_ok,
             "llm_server": llm_ok,
             "mobile_pack": PACK_ARTIFACT.is_file(),
             "ready": rag_ok,
         }
+        if index is not None:
+            payload["index_scope"] = index.scope
+            payload["index_records"] = index.record_count
+            payload["index_source_counts"] = index.source_counts
+            if index.index_size_mb is not None:
+                payload["index_size_mb"] = index.index_size_mb
+        else:
+            payload["index_scope"] = None
+            payload["index_records"] = 0
+        return payload
 
     def cache_stats(self, *, runtime: RuntimeName = "desktop") -> dict[str, Any]:
         if runtime == "mobile":

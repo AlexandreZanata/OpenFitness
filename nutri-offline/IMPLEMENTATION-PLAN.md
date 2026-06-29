@@ -48,8 +48,9 @@ User question → local embedding → vector DB (top-k)
 | **8** | [Mobile pack ≤200 MB](phases/08-mobile-pack/README.md) | 4–6 weeks | Phases 3, 7, RAG V2 |
 | **9** | [Semantic engine v2](phases/09-semantic-engine/README.md) | 3–4 weeks | Phase 8 |
 | **10** | [Mobile QA benchmark B20](phases/10-mobile-qa/README.md) | 3–4 days | Phase 9 |
+| **11** | [Full catalog index](phases/11-full-catalog-index/README.md) | 3–5 days + overnight build | Phases 2, 3, 5, 7 |
 
-**Total estimate:** 8–14 weeks part-time (Phases 0–7 desktop + Phases 8–10 mobile).
+**Total estimate:** 8–14 weeks part-time (Phases 0–7 desktop + Phases 8–11 mobile + full catalog).
 
 ---
 
@@ -120,6 +121,8 @@ Details: [phases/01-data-acquisition/OFFICIAL-REFERENCE.md](phases/01-data-acqui
 - [ ] End-to-end offline test: airplane mode, factual macro answer with source citation
 - [ ] **Phase 8:** Mobile pack ≤200 MB with desktop capability parity (lookup + rule-based reasoning)
 - [ ] **Phase 9:** Semantic engine v2 — typo/ontology/portion normalization before vector search
+- [ ] **Phase 10:** Mobile QA B20 — 100% R10 + B20
+- [ ] **Phase 11:** Full catalog LanceDB index (`scope=all`) + four-layer benchmark gate
 
 ---
 
@@ -133,5 +136,7 @@ Details: [phases/01-data-acquisition/OFFICIAL-REFERENCE.md](phases/01-data-acqui
 Mobile achieves parity via **expanded intent parser + hybrid RAG + rule engine** — not by compressing the 3B model. See [phases/08-mobile-pack/README.md](phases/08-mobile-pack/README.md).
 
 **Phase 9** improves retrieval quality with a normalization-first semantic engine (spell-fix, synonyms, ontology, multi-surface vectors). See [phases/09-semantic-engine/README.md](phases/09-semantic-engine/README.md) and [docs/SEMANTIC-ENGINE-V2.md](docs/SEMANTIC-ENGINE-V2.md).
+
+**Phase 11** indexes the full `foods.parquet` catalog (~2M rows) for desktop RAG and adds G-COV/G-RET/G-DOM/G-PERF benchmarks. See [phases/11-full-catalog-index/README.md](phases/11-full-catalog-index/README.md) and [docs/FULL-CATALOG-INDEX.md](docs/FULL-CATALOG-INDEX.md).
 
 **References:** [README.md](README.md) · [Unsloth docs](https://unsloth.ai/docs) · [LanceDB](https://lancedb.github.io/lancedb/) · [llama.cpp](https://github.com/ggml-org/llama.cpp)

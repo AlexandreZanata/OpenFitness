@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
+import math
 import shutil
 import subprocess
 import sys
@@ -75,6 +75,14 @@ def ensure_aliases() -> None:
     subprocess.run([sys.executable, str(script)], check=True)
 
 
+def _text(value: object) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, float) and math.isnan(value):
+        return ""
+    return str(value).strip()
+
+
 def records_to_rows_v2(
     records: list[dict],
     vectors: list[list[float]],
@@ -101,15 +109,14 @@ def records_to_rows_v2(
     for record, vector in zip(records, vectors, strict=True):
         record_id = str(record["id"])
         aliases = alias_map.get(record_id, [])
-        name_normalized = str(record.get("name_normalized") or "")
+        name_normalized = _text(record.get("name_normalized"))
+        name = _text(record.get("name"))
         search_text = " ".join(
-            part
-            for part in [record.get("name", ""), name_normalized, " ".join(aliases)]
-            if part
+            part for part in [name, name_normalized, " ".join(aliases)] if part
         )
         rows["id"].append(record_id)
         rows["vector"].append(vector)
-        rows["name"].append(str(record["name"]) if record["name"] is not None else "")
+        rows["name"].append(name)
         rows["name_normalized"].append(name_normalized)
         rows["source"].append(str(record["source"]))
         rows["source_tier"].append(source_tier(str(record["source"])))
@@ -238,12 +245,25 @@ def main() -> int:
     if built > 100_000:
         table.create_index(metric="cosine", vector_column_name="vector", replace=True)
 
-    table.create_fts_index("search_text", replace=True, language="Portuguese")
+    table.create_fts_index("search_text", replace=True)
 
     elapsed = time.monotonic() - started
     index_size_mb = sum(
         file.stat().st_size for file in INDEX_DIR.rglob("*") if file.is_file()
     ) / (1024 * 1024)
+
+    source_counts = {
+        str(row[0]): int(row[1])
+        for row in connection.execute(
+            f"""
+            SELECT source, count(*) AS n
+            FROM read_parquet('{parquet}')
+            WHERE {scope_sql(args.scope)}
+            GROUP BY source
+            ORDER BY source
+            """
+        ).fetchall()
+    }
 
     metadata = {
         "schema_version": SCHEMA_VERSION_V2,
@@ -251,6 +271,7 @@ def main() -> int:
         "embedding_dim": EMBEDDING_DIM,
         "record_count": built,
         "scope": args.scope,
+        "source_counts": source_counts,
         "device": device,
         "batch_size": args.batch_size,
         "build_timestamp": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
