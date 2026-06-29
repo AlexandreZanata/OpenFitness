@@ -132,6 +132,10 @@
     }
     .badge.lookup { background: #1a3d2e; color: var(--accent); }
     .badge.llm { background: #2a2844; color: #a78bfa; }
+    .badge.mobile { background: #1a3344; color: #38bdf8; }
+    .badge.compare { background: #3d2a1a; color: #fb923c; }
+    .badge.substitute { background: #2a3d1a; color: #a3e635; }
+    .badge.clarify { background: #3d3a1a; color: #fbbf24; }
     .badge.cache { background: #3d3a1a; color: #fbbf24; }
     .meta {
       font-size: 0.72rem;
@@ -223,6 +227,13 @@
       <span id="health-text">Checking…</span>
     </div>
     <div class="controls">
+      <label>
+        Runtime
+        <select id="runtime" style="background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:0.4rem;padding:0.2rem 0.4rem;">
+          <option value="desktop">Desktop (LLM)</option>
+          <option value="mobile">Mobile pack</option>
+        </select>
+      </label>
       <label><input type="checkbox" id="use-rag" checked /> RAG</label>
       <label><input type="checkbox" id="debug" /> Debug</label>
       <button type="button" id="clear-btn" style="background:var(--surface-2);color:var(--text);padding:0.4rem 0.75rem;font-size:0.8rem;">Clear</button>
@@ -239,8 +250,9 @@
         Exemplos:<br />
         <code>arroz 100g</code> ·
         <code>banana | feijão 80g</code> ·
-        <code>iogurte vigor 170g</code><br />
-        Perguntas abertas usam o LLM local com contexto RAG.
+        <code>Quantas calorias tem 100g de arroz?</code><br />
+        <strong>Mobile pack:</strong> lookup + compare/substitute sem LLM (~35 MB).
+        <strong>Desktop:</strong> LLM local + RAG LanceDB.
       </p>
     </div>
   </main>
@@ -259,6 +271,7 @@
     const sendBtn = document.getElementById("send-btn");
     const useRag = document.getElementById("use-rag");
     const debugMode = document.getElementById("debug");
+    const runtimeSelect = document.getElementById("runtime");
     const healthDot = document.getElementById("health-dot");
     const healthText = document.getElementById("health-text");
     const errorBanner = document.getElementById("error-banner");
@@ -356,14 +369,26 @@
     }
 
     async function checkHealth() {
+      if (busy) return;
+      const runtime = runtimeSelect.value;
       try {
-        const res = await fetch("/v1/nutri/health");
+        const res = await fetch(`/v1/nutri/health?runtime=${runtime}`);
         const data = await res.json();
-        const ok = data.rag_index && data.llm_server;
+        let ok = false;
+        let label = "";
+        if (runtime === "mobile") {
+          ok = data.ready && data.rag_index;
+          label = ok
+            ? `Mobile pack online (${data.mobile_pack ? "artifact ok" : "db only"})`
+            : "Mobile pack missing — run build_pack.py";
+        } else {
+          ok = data.rag_index && data.llm_server;
+          label = ok
+            ? "Desktop RAG + LLM online"
+            : `Desktop — RAG:${data.rag_index ? "ok" : "no"} LLM:${data.llm_server ? "ok" : "no"}`;
+        }
         healthDot.className = ok ? "dot ok" : "dot err";
-        healthText.textContent = ok
-          ? "RAG + LLM online"
-          : `Offline — RAG:${data.rag_index ? "ok" : "no"} LLM:${data.llm_server ? "ok" : "no"}`;
+        healthText.textContent = label;
       } catch {
         healthDot.className = "dot err";
         healthText.textContent = "API unreachable";
@@ -389,6 +414,7 @@
             use_rag: useRag.checked,
             debug: debugMode.checked,
             top_k: 5,
+            runtime: runtimeSelect.value,
           }),
         });
         removeTyping();
@@ -448,13 +474,20 @@
 
         if (!finalData) throw new Error("Stream ended without response");
 
-        const modeBadge = finalData.mode === "lookup"
-          ? '<span class="badge lookup">lookup</span>'
-          : '<span class="badge llm">llm</span>';
+        const modeBadge = {
+          lookup: '<span class="badge lookup">lookup</span>',
+          llm: '<span class="badge llm">llm</span>',
+          compare: '<span class="badge compare">compare</span>',
+          substitute: '<span class="badge substitute">substitute</span>',
+          clarify: '<span class="badge clarify">clarify</span>',
+        }[finalData.mode] || `<span class="badge">${finalData.mode}</span>`;
+        const runtimeBadge = finalData.runtime === "mobile"
+          ? '<span class="badge mobile">mobile</span>'
+          : "";
         const cacheBadge = finalData.cache_hit
           ? '<span class="badge cache">cache</span>'
           : "";
-        let meta = `${modeBadge}${cacheBadge}${finalData.latency_ms.toFixed(0)} ms · ${finalData.model}`;
+        let meta = `${runtimeBadge}${modeBadge}${cacheBadge}${finalData.latency_ms.toFixed(0)} ms · ${finalData.model}`;
         if (finalData.rag_context_used) meta += " · RAG";
         if (finalData.sources?.length) {
           const src = finalData.sources
@@ -524,15 +557,17 @@
           <p style="margin-top:0.75rem;font-size:0.8rem;line-height:1.6;">
             Exemplos:<br />
             <code>arroz 100g</code> ·
-            <code>banana | feijão 80g</code> ·
-            <code>iogurte vigor 170g</code>
+            <code>Quantas calorias tem 100g de arroz?</code> ·
+            <code>Qual tem mais proteína: frango ou ovo?</code>
           </p>
         </div>`;
       hideError();
     });
 
+    runtimeSelect.addEventListener("change", checkHealth);
+
     checkHealth();
-    setInterval(checkHealth, 15000);
+    setInterval(checkHealth, 30000);
   </script>
 </body>
 </html>

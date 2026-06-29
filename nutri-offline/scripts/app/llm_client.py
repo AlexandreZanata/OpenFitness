@@ -27,6 +27,7 @@ class LlmClient:
             raise ValueError("NutriOffline LLM client is offline-only — localhost URLs only")
         self.base_url = base_url
         self.timeout = timeout
+        self._health_url = base_url.replace("/v1/chat/completions", "/health")
 
     def _build_payload(
         self,
@@ -107,12 +108,14 @@ class LlmClient:
                 "llama-server not reachable — start it with: bash scripts/inference/serve.sh"
             ) from exc
 
-    def health_check(self) -> bool:
-        health_url = self.base_url.replace("/v1/chat/completions", "/health")
+    def health_check(self, *, probe_chat: bool = False) -> bool:
+        """Lightweight GET /health only — avoids 429 when slots are busy."""
         try:
-            urllib.request.urlopen(health_url, timeout=3.0)
-            return True
+            with urllib.request.urlopen(self._health_url, timeout=3.0) as response:
+                return 200 <= response.status < 300
         except Exception:
+            if not probe_chat:
+                return False
             try:
                 self.chat([{"role": "user", "content": "ping"}], max_tokens=4)
                 return True

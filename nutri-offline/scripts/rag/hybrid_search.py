@@ -162,6 +162,99 @@ class KeywordSearcher:
             )
         return hits
 
+    def search_staple_candidates(
+        self,
+        *,
+        exclude_id: str | None = None,
+    ) -> list[HybridHit]:
+        """Tier A/B staple rows for substitute filtering (BR-SUBST-001)."""
+        if not self.parquet.is_file():
+            return []
+
+        rows = self._connection.execute(
+            f"""
+            SELECT
+                id, source, name, serving_basis, category,
+                energy_kcal, protein_g, carbohydrate_g, fat_g, fiber_g
+            FROM read_parquet('{self.parquet.as_posix()}')
+            WHERE source IN ('taco', 'tbca')
+            ORDER BY CASE source WHEN 'taco' THEN 0 ELSE 1 END, name
+            """
+        ).fetchall()
+        hits: list[HybridHit] = []
+        for row in rows:
+            if exclude_id and row[0] == exclude_id:
+                continue
+            hits.append(
+                HybridHit(
+                    score=0.5,
+                    id=row[0],
+                    name=row[2],
+                    source=row[1],
+                    rag_context="",
+                    metadata={
+                        "energy_kcal": row[5],
+                        "protein_g": row[6],
+                        "carbohydrate_g": row[7],
+                        "fat_g": row[8],
+                        "fiber_g": row[9],
+                        "serving_basis": row[3] or "100g",
+                        "category": row[4],
+                    },
+                    match_kind="staple",
+                )
+            )
+        return hits
+
+    def search_category(
+        self,
+        category: str,
+        *,
+        exclude_id: str | None = None,
+        top_k: int = 30,
+    ) -> list[HybridHit]:
+        if not self.parquet.is_file() or not category.strip():
+            return []
+
+        rows = self._connection.execute(
+            f"""
+            SELECT
+                id, source, name, serving_basis, category,
+                energy_kcal, protein_g, carbohydrate_g, fat_g, fiber_g
+            FROM read_parquet('{self.parquet.as_posix()}')
+            WHERE category != '' AND lower(category) LIKE '%' || lower(?) || '%'
+            ORDER BY CASE source WHEN 'taco' THEN 0 WHEN 'tbca' THEN 1 ELSE 2 END
+            LIMIT ?
+            """,
+            (category, top_k * 3),
+        ).fetchall()
+        hits: list[HybridHit] = []
+        for row in rows:
+            if exclude_id and row[0] == exclude_id:
+                continue
+            hits.append(
+                HybridHit(
+                    score=0.5,
+                    id=row[0],
+                    name=row[2],
+                    source=row[1],
+                    rag_context="",
+                    metadata={
+                        "energy_kcal": row[5],
+                        "protein_g": row[6],
+                        "carbohydrate_g": row[7],
+                        "fat_g": row[8],
+                        "fiber_g": row[9],
+                        "serving_basis": row[3] or "100g",
+                        "category": row[4],
+                    },
+                    match_kind="category",
+                )
+            )
+            if len(hits) >= top_k:
+                break
+        return hits
+
 
 def index_supports_hybrid_fts() -> bool:
     if not INDEX_METADATA.is_file():

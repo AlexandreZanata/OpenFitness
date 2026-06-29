@@ -36,4 +36,5 @@ bash "${STOP}" 2>/dev/null || true
 bash "${START}" > /dev/null
 
 python "${E2E}"
+python -m unittest tests.test_admin_mobile_parity -q
 echo "PASS: NutriOffline app integration gate (N-07)"

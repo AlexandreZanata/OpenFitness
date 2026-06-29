@@ -4,10 +4,17 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 QUANT="${NUTRI_GGUF_QUANT:-q4_k_m}"
-ADAPTER="${NUTRI_ADAPTER:-smoke-test}"
-GGUF="${NUTRI_GGUF:-${ROOT}/models/gguf/nutri-qwen25-3b-${ADAPTER}-${QUANT}.gguf}"
+ADAPTER="${NUTRI_ADAPTER:-nutri-qwen25-3b-v1}"
+if [[ "${ADAPTER}" == nutri-qwen25-3b-* ]]; then
+  STEM="${ADAPTER}"
+else
+  STEM="nutri-qwen25-3b-${ADAPTER}"
+fi
+GGUF="${NUTRI_GGUF:-${ROOT}/models/gguf/${STEM}-${QUANT}.gguf}"
 HOST="${NUTRI_INFERENCE_HOST:-127.0.0.1}"
 PORT="${NUTRI_INFERENCE_PORT:-8080}"
+# Allow chat + health probes concurrently (default single slot → HTTP 429 when busy).
+PARALLEL="${NUTRI_LLM_PARALLEL:-4}"
 SERVER="${ROOT}/llama.cpp/build/bin/llama-server"
 
 if [[ ! -f "${GGUF}" ]]; then
@@ -32,4 +39,5 @@ exec "${SERVER}" \
     --host "${HOST}" \
     --port "${PORT}" \
     -c 4096 \
-    -ngl 99
+    -ngl 99 \
+    --parallel "${PARALLEL}"

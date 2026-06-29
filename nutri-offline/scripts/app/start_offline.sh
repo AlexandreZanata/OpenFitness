@@ -7,10 +7,21 @@ PID_DIR="${ROOT}/run"
 LOG_DIR="${ROOT}/logs"
 mkdir -p "${PID_DIR}" "${LOG_DIR}"
 
-GGUF="$(find "${ROOT}/models/gguf" -name '*.gguf' -type f 2>/dev/null | head -1)"
-if [[ -z "${GGUF}" ]]; then
-    echo "ERROR: GGUF missing — run scripts/export/run_all.py"
-    exit 1
+ADAPTER="${NUTRI_ADAPTER:-nutri-qwen25-3b-v1}"
+QUANT="${NUTRI_GGUF_QUANT:-q4_k_m}"
+if [[ "${ADAPTER}" == nutri-qwen25-3b-* ]]; then
+  GGUF_STEM="${ADAPTER}"
+else
+  GGUF_STEM="nutri-qwen25-3b-${ADAPTER}"
+fi
+GGUF="${NUTRI_GGUF:-${ROOT}/models/gguf/${GGUF_STEM}-${QUANT}.gguf}"
+
+if [[ ! -f "${GGUF}" ]]; then
+  GGUF="$(find "${ROOT}/models/gguf" -name '*.gguf' -type f 2>/dev/null | head -1)"
+fi
+if [[ -z "${GGUF}" || ! -f "${GGUF}" ]]; then
+  echo "ERROR: GGUF missing — run: NUTRI_ADAPTER=${ADAPTER} python scripts/export/run_all.py --skip-merge"
+  exit 1
 fi
 
 export HF_HOME="${ROOT}/models/base"

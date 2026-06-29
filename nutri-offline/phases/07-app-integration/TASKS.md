@@ -41,6 +41,9 @@
 | N-07-08 | Android integration guide | `docs/android-integration.md` | P1 | ✅ |
 | N-07-09 | OpenFitness use case draft | `docs/UC-nutri-query.md` | P2 | ✅ |
 | N-07-10 | Mobile runtime adapter | `scripts/mobile/mobile_assistant.py` | P1 | ✅ |
+| N-07-11 | Admin chat runtime router | `scripts/app/runtime_router.py` | P1 | ✅ |
+| N-07-12 | Desktop compare/substitute parity | `scripts/app/orchestrator.py`, `reasoning_adapter.py` | P0 | ✅ |
+| N-07-13 | Admin ↔ mobile parity tests | `tests/test_admin_mobile_parity.py`, `test_admin_mobile_parity.py` | P0 | ✅ |
 
 ---
 
@@ -80,8 +83,19 @@
 ## 5. FastAPI server (N-07-05)
 
 - [x] `POST /v1/nutri/ask` per README API design
-- [x] `GET /v1/nutri/health`
+- [x] `POST /v1/nutri/chat` + `/v1/nutri/chat/stream` (SSE)
+- [x] `GET /v1/nutri/health?runtime=desktop|mobile`
+- [x] Chat UI (`static/chat.html`) with runtime selector (desktop LLM vs mobile pack)
 - [x] Bind 127.0.0.1 only (port 8090)
+
+---
+
+## 5b. Admin ↔ mobile parity (N-07-11 … N-07-13)
+
+- [x] `NutriRuntimeRouter` routes `runtime` field on all chat endpoints
+- [x] Desktop uses same rule engines as mobile for lookup / compare / substitute (no LLM)
+- [x] llama-server `--parallel` (default 4) + lightweight health probe to avoid HTTP 429
+- [x] Manual validation: compare/substitute/lookup modes match on both runtimes
 
 ---
 

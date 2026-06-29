@@ -35,12 +35,14 @@ bash scripts/app/start_offline.sh
 python scripts/app/nutri_cli.py ask "Quantas calorias tem banana prata?" --debug
 python scripts/app/nutri_cli.py repl
 
-# FastAPI (optional)
-pip install fastapi uvicorn
-START_FASTAPI=1 bash scripts/app/start_offline.sh
-curl -X POST http://127.0.0.1:8090/v1/nutri/ask \
-  -H 'Content-Type: application/json' \
-  -d '{"question":"Quantas calorias tem arroz branco?","debug":true}'
+# Chat UI + API (optional)
+bash scripts/app/start_chat.sh
+# Runtime: desktop (LLM + LanceDB) | mobile pack (rule engine)
+
+# Admin ↔ mobile mode parity (FastAPI must be running)
+python scripts/app/test_admin_mobile_parity.py
+python scripts/app/test_mobile_chat_api.py --runtime mobile
+python scripts/app/test_mobile_chat_api.py --runtime desktop
 
 # E2E acceptance
 python scripts/app/test_offline_e2e.py
@@ -58,10 +60,27 @@ bash scripts/app/stop_offline.sh
 
 ```
 POST /v1/nutri/ask
-GET  /v1/nutri/health
+POST /v1/nutri/chat
+POST /v1/nutri/chat/stream
+GET  /v1/nutri/health?runtime=desktop|mobile
+GET  /                        → chat UI
 ```
 
+Request body accepts `"runtime": "desktop" | "mobile"` (default `desktop`).
+
 Bind `127.0.0.1:8090` only. llama-server on `:8080`.
+
+### HTTP 429 (Too Many Requests) on desktop
+
+llama-server rejects concurrent requests when all inference **slots** are busy (default was effectively single-slot). Mitigations in this repo:
+
+| Control | Default | Purpose |
+|---------|---------|---------|
+| `NUTRI_LLM_PARALLEL` | `4` | `--parallel` slots in `scripts/inference/serve.sh` |
+| Health probe | GET `/health` only | No chat `ping` fallback while streaming (avoids slot contention) |
+| Chat UI poll | 30s, skipped while busy | Reduces background load during generation |
+
+Restart llama-server after changing `NUTRI_LLM_PARALLEL`.
 
 ---
 

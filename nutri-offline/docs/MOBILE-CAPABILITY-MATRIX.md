@@ -15,9 +15,9 @@ This document maps **desktop NutriOffline behaviour** to the **mobile implementa
 | Q3 | `arroz 100g, carne 200g` | Lookup multi-item | Same + Python totals | G3 |
 | Q4 | `nutrixyz 100g` | Lookup → not found | Same confidence gate | G4 |
 | Q5 | `iogurte vigor 170g` | Lookup OFF | Same if product in Tier C | G5 |
-| Q6 | `Quantas calorias tem 100g de arroz branco cozido?` | LLM (slow, often wrong OFF) | NL intent → lookup | **Beat desktop:** TACO 128 kcal |
-| Q7 | `Qual tem mais proteína: frango ou ovo?` | LLM compare | `CompareEngine` | Correct winner + values from RAG |
-| Q8 | `Existe opção mais leve que arroz?` | LLM | `SubstituteEngine` (lower carb/kcal) | Plausible substitute from Tier A/B |
+| Q6 | `Quantas calorias tem 100g de arroz branco cozido?` | Lookup (NL intent) | NL intent → lookup | **Beat desktop LLM:** TACO 128 kcal |
+| Q7 | `Qual tem mais proteína: frango ou ovo?` | **CompareEngine** (rule) | `CompareEngine` | Correct winner + values from RAG |
+| Q8 | `Existe opção mais leve que arroz?` | **SubstituteEngine** (rule) | `SubstituteEngine` (lower carb/kcal) | Plausible substitute from Tier A/B |
 | Q9 | `Quanto de fibra tem feijão 80g?` | LLM / lookup | Lookup + field highlight | Fiber from retrieved row |
 | Q10 | Open-ended chat (“me ajude a emagrecer”) | LLM free-form | **Unsupported** → clarify template | Honest scope message |
 

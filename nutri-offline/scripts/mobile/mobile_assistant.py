@@ -136,7 +136,7 @@ class MobileNutriAssistant:
     ) -> MobileNutriResponse:
         return MobileNutriResponse(
             answer=result.answer,
-            sources=self._sources_from_mobile_hits(result.hits),
+            sources=self._sources_from_reasoning_hits(result.hits),
             model="mobile-rules",
             latency_ms=round((time.perf_counter() - started) * 1000, 1),
             mode=result.mode,
@@ -151,7 +151,7 @@ class MobileNutriAssistant:
         ]
 
     @staticmethod
-    def _sources_from_mobile_hits(hits: list[MobileHit]) -> list[dict[str, str]]:
+    def _sources_from_reasoning_hits(hits) -> list[dict[str, str]]:
         return [
             {"id": h.id, "name": h.name, "source": h.source, "score": f"{h.score:.3f}"}
             for h in hits

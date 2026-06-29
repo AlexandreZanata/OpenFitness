@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import sys
 import time
 from collections.abc import Iterator
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Literal
 
 from app_paths import DEFAULT_TOP_K, LLM_MAX_TOKENS, MODEL_NAME, NO_RAG_HITS_REFUSAL
@@ -13,9 +15,15 @@ from llm_client import LlmClient
 from lookup_orchestrator import LookupOrchestrator, LookupResult
 from prompt_builder import build_messages, estimate_tokens
 from rag_pipeline import RagHit, RagPipeline
+from reasoning_adapter import RagReasoningSearcher
 from response_cache import DEFAULT_LOOKUP_TTL_SECONDS, TTLCache, lookup_cache_key
 
-ResponseMode = Literal["lookup", "llm", "auto"]
+MOBILE_DIR = Path(__file__).resolve().parents[1] / "mobile"
+sys.path.insert(0, str(MOBILE_DIR))
+
+from reasoning_engine import CompareEngine, ReasoningResult, SubstituteEngine  # noqa: E402
+
+ResponseMode = Literal["lookup", "llm", "auto", "compare", "substitute", "clarify"]
 
 
 @dataclass
@@ -48,6 +56,9 @@ class NutriAssistant:
             max_size=512,
             ttl_seconds=DEFAULT_LOOKUP_TTL_SECONDS,
         )
+        reasoning_search = RagReasoningSearcher(rag=self.rag)
+        self._compare = CompareEngine(reasoning_search, catalog="desktop")
+        self._substitute = SubstituteEngine(reasoning_search, catalog="desktop")
 
     def cache_stats(self) -> dict[str, Any]:
         return {
@@ -66,6 +77,31 @@ class NutriAssistant:
             "rag_index": rag_ok,
             "llm_server": self.llm.health_check(),
         }
+
+    def _reasoning_response(
+        self,
+        result: ReasoningResult,
+        *,
+        started: float,
+        debug: bool,
+    ) -> NutriResponse:
+        sources = [
+            {"id": h.id, "name": h.name, "source": h.source, "score": f"{h.score:.3f}"}
+            for h in result.hits
+        ]
+        debug_info: dict = {"cache_hit": False}
+        if debug:
+            debug_info["hits"] = len(result.hits)
+        return NutriResponse(
+            answer=result.answer,
+            sources=sources,
+            rag_context="",
+            rag_context_used=bool(result.hits),
+            model="rule-engine",
+            latency_ms=round((time.perf_counter() - started) * 1000, 1),
+            mode=result.mode,  # type: ignore[arg-type]
+            debug=debug_info,
+        )
 
     def _lookup_response(
         self,
@@ -196,6 +232,20 @@ class NutriAssistant:
         k = top_k or self.top_k
         intent = parse_intent(question)
 
+        if intent.kind == IntentKind.COMPARE and intent.compare is not None:
+            return self._reasoning_response(
+                self._compare.execute(intent.compare),
+                started=started,
+                debug=debug,
+            )
+
+        if intent.kind == IntentKind.SUBSTITUTE and intent.substitute is not None:
+            return self._reasoning_response(
+                self._substitute.execute(intent.substitute),
+                started=started,
+                debug=debug,
+            )
+
         if mode in {"auto", "lookup"} and self.lookup.can_handle(intent):
             cache_key = lookup_cache_key(question, mode=mode, top_k=k)
             cached = self._lookup_cache.get(cache_key)
@@ -239,6 +289,24 @@ class NutriAssistant:
         intent = parse_intent(question)
 
         try:
+            if intent.kind == IntentKind.COMPARE and intent.compare is not None:
+                result = self._reasoning_response(
+                    self._compare.execute(intent.compare),
+                    started=started,
+                    debug=debug,
+                )
+                yield {"type": "done", "data": self._response_payload(result, debug=debug)}
+                return
+
+            if intent.kind == IntentKind.SUBSTITUTE and intent.substitute is not None:
+                result = self._reasoning_response(
+                    self._substitute.execute(intent.substitute),
+                    started=started,
+                    debug=debug,
+                )
+                yield {"type": "done", "data": self._response_payload(result, debug=debug)}
+                return
+
             if mode in {"auto", "lookup"} and self.lookup.can_handle(intent):
                 result = self.ask(
                     question,

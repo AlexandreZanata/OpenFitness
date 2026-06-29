@@ -91,7 +91,12 @@ def format_substitute_answer(
     )
 
 
-def format_not_found(food: str) -> str:
+def format_not_found(food: str, *, catalog: str = "mobile") -> str:
+    if catalog == "desktop":
+        return (
+            f"Não encontrei \"{food}\" no catálogo indexado. "
+            "Tente um alimento genérico (TACO) ou uma marca incluída no índice."
+        )
     return (
         f"Não encontrei \"{food}\" no pacote mobile. "
         "Tente um alimento genérico (TACO) ou uma marca popular incluída no índice."
