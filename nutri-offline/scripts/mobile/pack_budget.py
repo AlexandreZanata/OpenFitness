@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 PACK_SIZE_LIMIT_BYTES = 200 * 1024 * 1024
+PACK_SCHEMA_VERSION = 2
 EMBEDDER_MAX_BYTES = 35 * 1024 * 1024
 
 COMPONENT_BUDGETS: dict[str, int] = {
@@ -123,5 +124,18 @@ def validate_manifest(manifest: dict) -> list[str]:
             errors.append(
                 f"files aggregate for '{component}' is {used} bytes; limit {limit}"
             )
+
+    schema_version = manifest.get("schema_version")
+    if schema_version == PACK_SCHEMA_VERSION:
+        index = manifest.get("index") or {}
+        if not index.get("multi_surface"):
+            errors.append("schema_version 2 requires index.multi_surface=true")
+        surface_count = index.get("surface_count")
+        if not isinstance(surface_count, int) or surface_count < 5000:
+            errors.append(
+                f"schema_version 2 requires index.surface_count >= 5000, got {surface_count!r}"
+            )
+        if index.get("semantic_engine") != "v2":
+            errors.append("schema_version 2 requires index.semantic_engine='v2'")
 
     return errors

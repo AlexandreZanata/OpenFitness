@@ -2,7 +2,7 @@
 
 > **ID:** N-09 · Normalization-first mobile retrieval  
 > **Quality gate:** typo/ontology/portion golden set + pack ≤200 MB  
-> **Status:** Block D complete (N-09-04 done)  
+> **Status:** Block G complete (N-09-07 done) — Phase 9 P0 tasks complete  
 > **Depends on:** [Phase 8](../08-mobile-pack/TASKS.md)
 
 ---
@@ -17,7 +17,7 @@
 | [D — Multi-surface index](#block-d--multi-surface-index) | Layer 4 semantic surfaces | ✅ |
 | [E — Household portions](#block-e--household-portions) | Layer 5 portion rules | ✅ |
 | [F — Resolver pipeline](#block-f--resolver-pipeline) | SemanticResolver entry point | ✅ |
-| [G — Pack v2 + gate](#block-g--pack-v2--gate) | schema_version 2 rebuild | ⬜ |
+| [G — Pack v2 + gate](#block-g--pack-v2--gate) | schema_version 2 rebuild | ✅ |
 
 ---
 
@@ -31,7 +31,7 @@
 | N-09-04 | Multi-surface builder | `build_semantic_surfaces.py` → ~24k rows | P0 | ✅ |
 | N-09-05 | Household portions | `config/semantic/household_portions.json` + rules | P0 | ✅ |
 | N-09-06 | Resolver pipeline | `SemanticResolver` replaces direct `mobile_search` entry | P0 | ✅ |
-| N-09-07 | Pack v2 + gate | Rebuild pack; golden typo/portion cases | P0 | ⬜ |
+| N-09-07 | Pack v2 + gate | Rebuild pack; golden typo/portion cases | P0 | ✅ |
 | N-09-08 | Optional intent embedder | 50 prototype vectors if regex < 90% | P1 | ⬜ |
 | N-09-09 | Unit tests — spell-fix | `tests/test_spell_normalize.py` | P0 | ✅ |
 | N-09-10 | Phase docs + cross-links | IMPLEMENTATION-PLAN, SEMANTIC-ENGINE-V2 | P1 | ✅ |
@@ -40,6 +40,7 @@
 | N-09-13 | Unit tests — household portions | `tests/test_household_portions.py` | P0 | ✅ |
 | N-09-14 | Unit tests — semantic resolver | `tests/test_semantic_resolver.py` | P0 | ✅ |
 | N-09-15 | Unit tests — semantic surfaces | `tests/test_semantic_surfaces.py` | P0 | ✅ |
+| N-09-16 | Unit tests — v2 golden gate | `tests/test_semantic_v2_golden.py` | P0 | ✅ |
 
 ---
 
@@ -127,15 +128,16 @@
 
 ### N-09-07 Pack v2
 
-- [ ] Bump `pack.manifest.json` `schema_version` to 2
-- [ ] Extend `validate-nutri-mobile-pack.sh` with typo/portion golden cases
-- [ ] Rebuild pack; assert ≤200 MB
+- [x] Bump `pack.manifest.json` `schema_version` to 2 with `surface_count` + `semantic_engine: v2`
+- [x] Extend `validate-nutri-mobile-pack.sh` with schema v2 check + `test_semantic_v2_golden`
+- [x] Rebuild pack (70.9 MB compressed); assert ≤200 MB
+- [x] Golden fixture: `tests/fixtures/semantic_v2_golden.jsonl` (arror, carne vermelha, cacetinho, manga, ontology)
 
 ---
 
 ## Exit criteria (Phase 9 complete)
 
-- [ ] All Block A–G tasks done
-- [ ] Five v2 golden flows pass (see README)
+- [x] All Block A–G P0 tasks done (N-09-08 optional)
+- [x] Five v2 golden flows pass (see README)
 - [ ] p95 latency ≤500 ms
-- [ ] Pack ≤200 MB
+- [x] Pack ≤200 MB (`schema_version` 2)

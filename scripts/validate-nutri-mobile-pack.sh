@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Phase 8 gate: mobile pack ≤200 MB + manifest checksums + parity tests.
+# Phase 8–9 gate: mobile pack ≤200 MB, schema v2, semantic golden flows.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -8,7 +8,7 @@ PACK="${NUTRI}/indexes/nutri-mobile/nutri-mobile.pack"
 MANIFEST="${NUTRI}/indexes/nutri-mobile/pack.manifest.json"
 LIMIT_BYTES=$((200 * 1024 * 1024))
 
-echo "Phase 8 mobile pack gate"
+echo "NutriOffline mobile pack gate (schema v2)"
 
 if [[ ! -f "${NUTRI}/docs/MOBILE-CAPABILITY-MATRIX.md" ]]; then
   echo "ERROR: MOBILE-CAPABILITY-MATRIX.md missing"
@@ -57,14 +57,24 @@ pack_path = nutri / "indexes/nutri-mobile/nutri-mobile.pack"
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
 sys.path.insert(0, str(nutri / "scripts/mobile"))
-from pack_budget import validate_manifest, validate_pack_size
+from pack_budget import PACK_SCHEMA_VERSION, validate_manifest, validate_pack_size
 
 errors = validate_manifest(manifest)
 if errors:
     print("FAIL: manifest validation:", errors)
     sys.exit(1)
 
+if manifest.get("schema_version") != PACK_SCHEMA_VERSION:
+    print(
+        "FAIL: schema_version must be",
+        PACK_SCHEMA_VERSION,
+        "got",
+        manifest.get("schema_version"),
+    )
+    sys.exit(1)
+
 validate_pack_size(manifest["size_bytes"])
+print("OK: manifest schema_version", PACK_SCHEMA_VERSION)
 
 with tarfile.open(pack_path, "r:xz") as archive:
     members = {member.name: member for member in archive.getmembers() if member.isfile()}
@@ -92,6 +102,8 @@ PY
   tests.test_ontology_resolver \
   tests.test_household_portions \
   tests.test_semantic_resolver \
-  tests.test_semantic_surfaces -v)
+  tests.test_semantic_surfaces \
+  tests.test_semantic_v2_golden \
+  tests.test_pack_budget -v)
 
 echo "PASS: NutriOffline mobile pack gate"

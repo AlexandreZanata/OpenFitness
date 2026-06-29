@@ -1,6 +1,6 @@
 # Phase 9 — Semantic nutrition engine (v2)
 
-> **Status:** In progress (N-09-01–06 done) · **Parent:** [Phase 8](../08-mobile-pack/README.md)  
+> **Status:** P0 complete (N-09-01–07 done; N-09-08 optional) · **Parent:** [Phase 8](../08-mobile-pack/README.md)  
 > **Goal:** Replace classic single-surface RAG as the primary mobile resolution path with a **five-layer semantic engine**: spell-fix → synonyms → ontology → multi-surface vectors → portion rules → deterministic SQLite lookup.
 
 ---
@@ -55,7 +55,7 @@ SQLite ground truth → scale_nutrient → template answer
 - [x] `pão francês` / `cacetinho` → same canonical bread row (TACO pão francês)
 - [x] `uma manga inteira` → kcal scaled to ~230g (146 kcal TACO Haden)
 - [ ] p95 latency ≤500 ms on mid-range CPU
-- [ ] Pack still ≤200 MB (`schema_version` 2)
+- [x] Pack still ≤200 MB (`schema_version` 2, ~71 MB artifact)
 
 ---
 
@@ -87,7 +87,11 @@ python scripts/mobile/build_mobile_index.py --device cuda
 python scripts/mobile/semantic_resolver.py "de arror" --json
 python scripts/app/nutri_cli.py ask "100g de arror" --runtime mobile --debug --json
 
+# Pack v2 build + gate (manual)
+python scripts/mobile/build_pack.py
+./scripts/validate-nutri-mobile-pack.sh
+
 # Tests
-python -m unittest tests.test_spell_normalize tests.test_synonym_resolver tests.test_ontology_resolver tests.test_household_portions tests.test_semantic_resolver tests.test_semantic_surfaces -v
+python -m unittest tests.test_spell_normalize tests.test_synonym_resolver tests.test_ontology_resolver tests.test_household_portions tests.test_semantic_resolver tests.test_semantic_surfaces tests.test_semantic_v2_golden tests.test_pack_budget -v
 ./scripts/validate-nutri-mobile-pack.sh
 ```

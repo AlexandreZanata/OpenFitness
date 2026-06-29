@@ -317,7 +317,7 @@ Still fits mobile budget if:
 | N-09-04 | Multi-surface builder | `build_semantic_surfaces.py` → 24k rows | 5d | ✅ |
 | N-09-05 | Household portions | `config/semantic/household_portions.json` + rules | 3d | ✅ |
 | N-09-06 | Resolver pipeline | `SemanticResolver` replaces direct `mobile_search` entry | 4d | ✅ |
-| N-09-07 | Pack v2 + gate | Rebuild pack; golden set includes typo/portion cases | 2d | ⬜ |
+| N-09-07 | Pack v2 + gate | Rebuild pack; golden set includes typo/portion cases | 2d | ✅ |
 | N-09-08 | Optional intent embedder | 50 prototype vectors if regex < 90% | 3d | ⬜ |
 
 **Exit criteria:**
@@ -408,7 +408,7 @@ Phase 8 already proves regex + rules cover 95% NL parity on a curated set — **
 - [x] Add golden tests: typo (`tests/fixtures/spell_corrections.jsonl`)
 - [ ] Add golden tests: ontology, household portions
 - [ ] Update `MOBILE-CAPABILITY-MATRIX.md` query types Q11+
-- [ ] Bump `pack.manifest.json` `schema_version` to 2
+- [x] Bump `pack.manifest.json` `schema_version` to 2
 
 ---
 

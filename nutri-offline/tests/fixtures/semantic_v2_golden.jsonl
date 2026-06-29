@@ -1,0 +1,5 @@
+{"query": "100g de arror", "expected_source": "taco", "expected_name_contains": "Arroz", "expected_kcal": 128}
+{"query": "100g carne vermelha", "expected_source": "taco", "expected_record_id": "taco:377", "expected_name_contains": "patinho", "expected_kcal": 219}
+{"query": "cacetinho", "expected_source": "taco", "expected_record_id": "taco:53", "expected_name_contains": "franc"}
+{"query": "Quantas calorias tem uma manga inteira?", "expected_source": "taco", "expected_name_contains": "Manga", "expected_kcal": 146, "expected_portion_g": 230}
+{"query": "100g carne bovina", "expected_source": "taco", "expected_record_id": "taco:377", "expected_clarify_note": true}

@@ -27,6 +27,7 @@ from mobile_paths import (  # noqa: E402
     VECTORS_DB,
 )
 from pack_budget import (  # noqa: E402
+    PACK_SCHEMA_VERSION,
     PACK_SIZE_LIMIT_BYTES,
     classify_component,
     validate_component_budget,
@@ -48,6 +49,7 @@ def build_manifest(
     pack_files: list[Path],
     tier_counts: dict[str, int],
     record_count: int,
+    surface_count: int,
     total_size: int,
 ) -> dict:
     files = []
@@ -65,7 +67,7 @@ def build_manifest(
             embedder_size = size
 
     return {
-        "schema_version": 1,
+        "schema_version": PACK_SCHEMA_VERSION,
         "pack_id": "nutri-mobile",
         "build_timestamp": datetime.now(timezone.utc).isoformat(),
         "size_bytes": total_size,
@@ -78,8 +80,11 @@ def build_manifest(
         },
         "index": {
             "record_count": record_count,
+            "surface_count": surface_count,
             "tiers": tier_counts,
             "vector_format": "int8",
+            "multi_surface": True,
+            "semantic_engine": "v2",
         },
         "files": files,
     }
@@ -130,6 +135,18 @@ def main() -> int:
         FROM food_meta
         """
     ).fetchone()
+    surface_row = connection.execute(
+        """
+        SELECT name FROM sqlite_master
+        WHERE type='table' AND name='food_surfaces'
+        """
+    ).fetchone()
+    if surface_row:
+        surface_count = int(
+            connection.execute("SELECT COUNT(*) FROM food_surfaces").fetchone()[0]
+        )
+    else:
+        surface_count = 0
     connection.close()
 
     tier_counts = {
@@ -152,6 +169,7 @@ def main() -> int:
         pack_files=staged_files,
         tier_counts=tier_counts,
         record_count=record_count,
+        surface_count=surface_count,
         total_size=total_size,
     )
     errors = validate_manifest(manifest)
@@ -167,6 +185,8 @@ def main() -> int:
         "manifest": str(args.manifest),
         "size_bytes": total_size,
         "record_count": record_count,
+        "surface_count": surface_count,
+        "schema_version": PACK_SCHEMA_VERSION,
         "tiers": tier_counts,
     }
     LOG_DIR.mkdir(parents=True, exist_ok=True)
