@@ -67,6 +67,7 @@ python scripts/app/nutri_cli.py ask "arroz 100g"    # lookup path (~90 ms, no LL
 python scripts/app/nutri_cli.py ask "100g de arror" --runtime mobile   # spell-fix → TACO arroz
 python scripts/mobile/spell_normalize.py "de arror"                    # Layer 1 only
 python scripts/app/nutri_cli.py ask "100g cacetinho" --runtime mobile  # Layer 2 synonym
+python scripts/app/nutri_cli.py ask "Quantas calorias tem uma manga inteira?" --runtime mobile  # Layer 5 portion
 python scripts/app/test_mobile_chat_api.py --runtime mobile   # 20 NL API queries
 ./scripts/validate-nutri-app.sh
 ./scripts/validate-nutri-rag-v2.sh   # RAG V2 alias + hybrid + cache + benchmark gate

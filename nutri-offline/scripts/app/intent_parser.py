@@ -27,6 +27,7 @@ class PortionItem:
     food: str
     portion_g: int
     source_hint: str | None = None
+    portion_source: str | None = None
 
 
 @dataclass(frozen=True)
@@ -100,6 +101,36 @@ def _mobile_intent_modules():
     from intents_substitute import parse_substitute  # noqa: E402
 
     return parse_compare, parse_substitute
+
+
+def _household_portion_resolver():
+    mobile_dir = Path(__file__).resolve().parents[1] / "mobile"
+    if str(mobile_dir) not in sys.path:
+        sys.path.insert(0, str(mobile_dir))
+    from household_portions import HouseholdPortionResolver  # noqa: E402
+
+    return HouseholdPortionResolver.from_json()
+
+
+def _apply_household_portions(items: list[PortionItem]) -> list[PortionItem]:
+    if not items:
+        return items
+    resolver = _household_portion_resolver()
+    resolved_items: list[PortionItem] = []
+    for item in items:
+        match = resolver.resolve(item.food)
+        if match is None:
+            resolved_items.append(item)
+            continue
+        resolved_items.append(
+            PortionItem(
+                food=match.food,
+                portion_g=match.grams,
+                source_hint=item.source_hint,
+                portion_source=match.source,
+            )
+        )
+    return resolved_items
 
 
 def _parse_nl_lookup(raw: str) -> tuple[list[PortionItem], str | None]:
@@ -224,7 +255,7 @@ def parse_intent(text: str) -> ParsedIntent:
     if nl_items:
         return ParsedIntent(
             kind=IntentKind.LOOKUP,
-            items=nl_items,
+            items=_apply_household_portions(nl_items),
             raw=raw,
             highlight_field=highlight,
         )
@@ -238,6 +269,8 @@ def parse_intent(text: str) -> ParsedIntent:
         item = _parse_segment(segment)
         if item is not None:
             items.append(item)
+
+    items = _apply_household_portions(items)
 
     kind = (
         IntentKind.LOOKUP

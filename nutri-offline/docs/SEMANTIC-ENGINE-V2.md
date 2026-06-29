@@ -1,6 +1,6 @@
 # NutriOffline — Semantic nutrition engine (v2 proposal)
 
-> **Status:** Phase 9 in progress (N-09-01–03 ✅) · **Author:** product/architecture review  
+> **Status:** Phase 9 in progress (N-09-01–03, N-09-05 ✅) · **Author:** product/architecture review  
 > **Context:** Phase 8 mobile pack works (≤200 MB, ~37 MB artifact) but retrieval quality gaps come from **normalization**, not model size.  
 > **Recommendation:** Do **not** invest further in classic RAG as the primary mechanism. Invest in a **specialized semantic engine** with structured lookup at the end.
 
@@ -315,7 +315,7 @@ Still fits mobile budget if:
 | N-09-02 | Synonym graph v2 | Expand `food_aliases` + `synonyms.db` | 3d | ✅ |
 | N-09-03 | Ontology | `config/semantic/food_ontology.json` + resolver | 3d | ✅ |
 | N-09-04 | Multi-surface builder | `build_semantic_surfaces.py` → 24k rows | 5d | ⬜ |
-| N-09-05 | Household portions | `data/semantic/household_portions.json` + rules | 3d | ⬜ |
+| N-09-05 | Household portions | `config/semantic/household_portions.json` + rules | 3d | ✅ |
 | N-09-06 | Resolver pipeline | `SemanticResolver` replaces direct `mobile_search` entry | 4d | ⬜ |
 | N-09-07 | Pack v2 + gate | Rebuild pack; golden set includes typo/portion cases | 2d | ⬜ |
 | N-09-08 | Optional intent embedder | 50 prototype vectors if regex < 90% | 3d | ⬜ |
@@ -324,7 +324,7 @@ Still fits mobile budget if:
 
 - [x] `arror` → arroz 100g TACO 128 kcal (N-09-01)
 - `carne vermelha` → plausible bovine cut with source label
-- `uma manga inteira` → kcal scaled to ~230g
+- [x] `uma manga inteira` → kcal scaled to ~230g (N-09-05)
 - `pão francês` / `cacetinho` → same canonical bread row
 - p95 latency still ≤500 ms on mid-range CPU
 - Pack still ≤200 MB
@@ -421,4 +421,5 @@ Phase 8 already proves regex + rules cover 95% NL parity on a curated set — **
 - Spell-fix Layer 1: `nutri-offline/scripts/mobile/spell_normalize.py`
 - Synonym Layer 2: `nutri-offline/scripts/mobile/synonym_resolver.py`
 - Ontology Layer 3: `nutri-offline/scripts/mobile/ontology_resolver.py`
+- Household portions Layer 5: `nutri-offline/scripts/mobile/household_portions.py`
 - BR-RET-002 grounding: `nutri-offline/scripts/dataset/answers.py` → `scale_nutrient()`

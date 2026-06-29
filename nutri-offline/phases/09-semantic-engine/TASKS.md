@@ -2,7 +2,7 @@
 
 > **ID:** N-09 · Normalization-first mobile retrieval  
 > **Quality gate:** typo/ontology/portion golden set + pack ≤200 MB  
-> **Status:** Block C complete (N-09-03 done)  
+> **Status:** Block E complete (N-09-05 done)  
 > **Depends on:** [Phase 8](../08-mobile-pack/TASKS.md)
 
 ---
@@ -15,7 +15,7 @@
 | [B — Synonyms](#block-b--synonyms) | Layer 2 alias graph v2 | ✅ |
 | [C — Ontology](#block-c--ontology) | Layer 3 food hierarchy | ✅ |
 | [D — Multi-surface index](#block-d--multi-surface-index) | Layer 4 semantic surfaces | ⬜ |
-| [E — Household portions](#block-e--household-portions) | Layer 5 portion rules | ⬜ |
+| [E — Household portions](#block-e--household-portions) | Layer 5 portion rules | ✅ |
 | [F — Resolver pipeline](#block-f--resolver-pipeline) | SemanticResolver entry point | ⬜ |
 | [G — Pack v2 + gate](#block-g--pack-v2--gate) | schema_version 2 rebuild | ⬜ |
 
@@ -29,7 +29,7 @@
 | N-09-02 | Synonym graph v2 | Expand `food_aliases` + `synonyms.db` | P0 | ✅ |
 | N-09-03 | Ontology | `config/semantic/food_ontology.json` + resolver | P0 | ✅ |
 | N-09-04 | Multi-surface builder | `build_semantic_surfaces.py` → ~24k rows | P0 | ⬜ |
-| N-09-05 | Household portions | `data/semantic/household_portions.json` + rules | P0 | ⬜ |
+| N-09-05 | Household portions | `config/semantic/household_portions.json` + rules | P0 | ✅ |
 | N-09-06 | Resolver pipeline | `SemanticResolver` replaces direct `mobile_search` entry | P0 | ⬜ |
 | N-09-07 | Pack v2 + gate | Rebuild pack; golden typo/portion cases | P0 | ⬜ |
 | N-09-08 | Optional intent embedder | 50 prototype vectors if regex < 90% | P1 | ⬜ |
@@ -37,6 +37,7 @@
 | N-09-10 | Phase docs + cross-links | IMPLEMENTATION-PLAN, SEMANTIC-ENGINE-V2 | P1 | ✅ |
 | N-09-11 | Unit tests — synonyms | `tests/test_synonym_resolver.py` | P0 | ✅ |
 | N-09-12 | Unit tests — ontology | `tests/test_ontology_resolver.py` | P0 | ✅ |
+| N-09-13 | Unit tests — household portions | `tests/test_household_portions.py` | P0 | ✅ |
 
 ---
 
@@ -95,9 +96,12 @@
 
 ### N-09-05 Household portions
 
-- [ ] `data/semantic/household_portions.json` (~200–500 rows)
-- [ ] Extend `PORTION_PATTERN` / NL patterns — never invent grams (BR-PORT-001)
-- [ ] Golden: `uma manga inteira` → 230g scaled macros
+- [x] `config/semantic/household_portions.json` (mango, banana, apple, egg seeds)
+- [x] `HouseholdPortionResolver` — unit phrase → grams with source (BR-PORT-001)
+- [x] Extend `intent_parser.py` NL + shorthand paths via `_apply_household_portions`
+- [x] Portion source cited in lookup footer via `response_formatter.py`
+- [x] Golden fixture: `tests/fixtures/household_portions.jsonl`
+- [x] Manual validation: `Quantas calorias tem uma manga inteira?` → 230g / ~146 kcal TACO
 
 ---
 

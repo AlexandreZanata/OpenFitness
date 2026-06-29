@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "description": "Household portion weights for mobile NL queries (N-09-05, BR-PORT-001)",
+  "entries": [
+    {
+      "food": "manga",
+      "default_record_id": "taco:228",
+      "units": [
+        {
+          "unit": "inteira",
+          "grams": 230,
+          "source": "manual BR default (medium whole mango)"
+        },
+        {
+          "unit": "media",
+          "grams": 200,
+          "source": "manual BR default"
+        }
+      ]
+    },
+    {
+      "food": "banana prata",
+      "default_record_id": "taco:182",
+      "units": [
+        {
+          "unit": "pequena",
+          "grams": 65,
+          "source": "TACO portion table"
+        },
+        {
+          "unit": "media",
+          "grams": 86,
+          "source": "TACO portion table"
+        },
+        {
+          "unit": "grande",
+          "grams": 120,
+          "source": "TACO portion table"
+        }
+      ]
+    },
+    {
+      "food": "banana",
+      "default_record_id": "taco:182",
+      "units": [
+        {
+          "unit": "media",
+          "grams": 86,
+          "source": "TACO portion table"
+        }
+      ]
+    },
+    {
+      "food": "maca",
+      "default_record_id": "taco:186",
+      "units": [
+        {
+          "unit": "media",
+          "grams": 130,
+          "source": "manual BR default"
+        },
+        {
+          "unit": "inteira",
+          "grams": 130,
+          "source": "manual BR default"
+        }
+      ]
+    },
+    {
+      "food": "ovo",
+      "default_record_id": "taco:488",
+      "units": [
+        {
+          "unit": "unidade",
+          "grams": 50,
+          "source": "TACO portion table"
+        },
+        {
+          "unit": "un",
+          "grams": 50,
+          "source": "TACO portion table"
+        }
+      ]
+    }
+  ]
+}

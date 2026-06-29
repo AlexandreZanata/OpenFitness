@@ -1,0 +1,4 @@
+{"phrase": "uma manga inteira", "expected_food": "manga", "expected_grams": 230, "expected_source": "manual BR default (medium whole mango)"}
+{"phrase": "manga inteira", "expected_food": "manga", "expected_grams": 230, "expected_source": "manual BR default (medium whole mango)"}
+{"phrase": "banana prata media", "expected_food": "banana prata", "expected_grams": 86, "expected_source": "TACO portion table"}
+{"phrase": "arroz 100g", "expected_food": null, "expected_grams": null, "expected_source": null}

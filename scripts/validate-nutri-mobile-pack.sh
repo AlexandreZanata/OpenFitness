@@ -89,6 +89,7 @@ PY
   tests.test_mobile_parity_golden \
   tests.test_spell_normalize \
   tests.test_synonym_resolver \
-  tests.test_ontology_resolver -v)
+  tests.test_ontology_resolver \
+  tests.test_household_portions -v)
 
 echo "PASS: NutriOffline mobile pack gate"

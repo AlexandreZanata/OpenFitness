@@ -129,4 +129,13 @@ def format_lookup_table(rows: list[tuple[PortionItem, RagHit | None]]) -> str:
     if clarify_notes:
         footer += "\n\n" + "\n\n".join(f"_{note}_" for note in clarify_notes)
 
+    portion_notes: list[str] = []
+    for item, _hit in rows:
+        if item.portion_source and item.portion_source not in portion_notes:
+            portion_notes.append(
+                f"Porção caseira: {item.portion_g}g ({item.portion_source})."
+            )
+    if portion_notes:
+        footer += "\n\n" + "\n\n".join(f"_{note}_" for note in portion_notes)
+
     return header + "\n" + "\n".join(body_lines) + footer
