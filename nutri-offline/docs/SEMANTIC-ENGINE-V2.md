@@ -318,7 +318,7 @@ Still fits mobile budget if:
 | N-09-05 | Household portions | `config/semantic/household_portions.json` + rules | 3d | ✅ |
 | N-09-06 | Resolver pipeline | `SemanticResolver` replaces direct `mobile_search` entry | 4d | ✅ |
 | N-09-07 | Pack v2 + gate | Rebuild pack; golden set includes typo/portion cases | 2d | ✅ |
-| N-09-08 | Optional intent embedder | 50 prototype vectors if regex < 90% | 3d | ⬜ |
+| N-09-08 | Optional intent embedder | 50 prototype vectors if regex < 90% | 3d | ✅ skip |
 
 **Exit criteria:**
 
@@ -326,7 +326,7 @@ Still fits mobile budget if:
 - `carne vermelha` → plausible bovine cut with source label
 - [x] `uma manga inteira` → kcal scaled to ~230g (N-09-05)
 - `pão francês` / `cacetinho` → same canonical bread row
-- p95 latency still ≤500 ms on mid-range CPU
+- p95 latency still ≤500 ms on mid-range CPU (see `logs/semantic-v2-benchmark.json`)
 - Pack still ≤200 MB
 
 ---
@@ -423,6 +423,7 @@ Phase 8 already proves regex + rules cover 95% NL parity on a curated set — **
 - Ontology Layer 3: `nutri-offline/scripts/mobile/ontology_resolver.py`
 - Semantic pipeline (layers 1–3): `nutri-offline/scripts/mobile/semantic_resolver.py`
 - Multi-surface Layer 4: `nutri-offline/scripts/mobile/semantic_surfaces.py`, `build_semantic_surfaces.py`
-- Intent prototypes: `nutri-offline/config/semantic/intent_prototypes.json`
+- Intent regex gate: `nutri-offline/scripts/mobile/intent_regex_gate.py`
+- Latency benchmark: `nutri-offline/scripts/mobile/benchmark_semantic_v2.py`
 - Household portions Layer 5: `nutri-offline/scripts/mobile/household_portions.py`
 - BR-RET-002 grounding: `nutri-offline/scripts/dataset/answers.py` → `scale_nutrient()`

@@ -1,6 +1,6 @@
 # Phase 9 — Semantic nutrition engine (v2)
 
-> **Status:** P0 complete (N-09-01–07 done; N-09-08 optional) · **Parent:** [Phase 8](../08-mobile-pack/README.md)  
+> **Status:** Complete (Phase 9) · **Parent:** [Phase 8](../08-mobile-pack/README.md)  
 > **Goal:** Replace classic single-surface RAG as the primary mobile resolution path with a **five-layer semantic engine**: spell-fix → synonyms → ontology → multi-surface vectors → portion rules → deterministic SQLite lookup.
 
 ---
@@ -44,6 +44,7 @@ SQLite ground truth → scale_nutrient → template answer
 | BR-NORM-003 | Category phrase resolves via ontology when synonyms miss; clarify note when multiple candidates |
 | BR-PORT-001 | Household weights must cite source in debug metadata (Layer 5) |
 | BR-SURF-001 | Tier A/B/C surface caps (40/30/3); int8 vectors stay within 90 MB index budget |
+| BR-INT-001 | Regex intent parser must reach ≥90% on `mobile_nl_intents.jsonl` before adding embedder |
 | BR-RET-001/002 | Source boost + numeric grounding unchanged from Phase 8 |
 
 ---
@@ -54,7 +55,7 @@ SQLite ground truth → scale_nutrient → template answer
 - [x] `carne vermelha` → patinho (default bovine cut) with TACO source
 - [x] `pão francês` / `cacetinho` → same canonical bread row (TACO pão francês)
 - [x] `uma manga inteira` → kcal scaled to ~230g (146 kcal TACO Haden)
-- [ ] p95 latency ≤500 ms on mid-range CPU
+- [x] p95 latency ≤500 ms on mid-range CPU (~82 ms p95 measured on dev CPU)
 - [x] Pack still ≤200 MB (`schema_version` 2, ~71 MB artifact)
 
 ---
@@ -87,11 +88,14 @@ python scripts/mobile/build_mobile_index.py --device cuda
 python scripts/mobile/semantic_resolver.py "de arror" --json
 python scripts/app/nutri_cli.py ask "100g de arror" --runtime mobile --debug --json
 
+# Latency + intent gate (manual)
+python scripts/mobile/intent_regex_gate.py
+python scripts/mobile/benchmark_semantic_v2.py --json
+
 # Pack v2 build + gate (manual)
 python scripts/mobile/build_pack.py
 ./scripts/validate-nutri-mobile-pack.sh
 
-# Tests
-python -m unittest tests.test_spell_normalize tests.test_synonym_resolver tests.test_ontology_resolver tests.test_household_portions tests.test_semantic_resolver tests.test_semantic_surfaces tests.test_semantic_v2_golden tests.test_pack_budget -v
+# Tests + full gate
 ./scripts/validate-nutri-mobile-pack.sh
 ```

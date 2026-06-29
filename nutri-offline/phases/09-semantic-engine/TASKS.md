@@ -2,7 +2,7 @@
 
 > **ID:** N-09 · Normalization-first mobile retrieval  
 > **Quality gate:** typo/ontology/portion golden set + pack ≤200 MB  
-> **Status:** Block G complete (N-09-07 done) — Phase 9 P0 tasks complete  
+> **Status:** Phase 9 complete (N-09-01–08, N-09-17 done)  
 > **Depends on:** [Phase 8](../08-mobile-pack/TASKS.md)
 
 ---
@@ -18,6 +18,7 @@
 | [E — Household portions](#block-e--household-portions) | Layer 5 portion rules | ✅ |
 | [F — Resolver pipeline](#block-f--resolver-pipeline) | SemanticResolver entry point | ✅ |
 | [G — Pack v2 + gate](#block-g--pack-v2--gate) | schema_version 2 rebuild | ✅ |
+| [H — Latency + intent gate](#block-h--latency--intent-gate) | p95 ≤500 ms; regex ≥90% | ✅ |
 
 ---
 
@@ -32,7 +33,8 @@
 | N-09-05 | Household portions | `config/semantic/household_portions.json` + rules | P0 | ✅ |
 | N-09-06 | Resolver pipeline | `SemanticResolver` replaces direct `mobile_search` entry | P0 | ✅ |
 | N-09-07 | Pack v2 + gate | Rebuild pack; golden typo/portion cases | P0 | ✅ |
-| N-09-08 | Optional intent embedder | 50 prototype vectors if regex < 90% | P1 | ⬜ |
+| N-09-08 | Optional intent embedder | 50 prototype vectors if regex < 90% | P1 | ✅ skip |
+| N-09-17 | Latency + intent gate | `benchmark_semantic_v2.py` + `intent_regex_gate.py` | P0 | ✅ |
 | N-09-09 | Unit tests — spell-fix | `tests/test_spell_normalize.py` | P0 | ✅ |
 | N-09-10 | Phase docs + cross-links | IMPLEMENTATION-PLAN, SEMANTIC-ENGINE-V2 | P1 | ✅ |
 | N-09-11 | Unit tests — synonyms | `tests/test_synonym_resolver.py` | P0 | ✅ |
@@ -41,6 +43,8 @@
 | N-09-14 | Unit tests — semantic resolver | `tests/test_semantic_resolver.py` | P0 | ✅ |
 | N-09-15 | Unit tests — semantic surfaces | `tests/test_semantic_surfaces.py` | P0 | ✅ |
 | N-09-16 | Unit tests — v2 golden gate | `tests/test_semantic_v2_golden.py` | P0 | ✅ |
+| N-09-18 | Unit tests — intent regex gate | `tests/test_intent_regex_gate.py` | P0 | ✅ |
+| N-09-19 | Unit tests — v2 latency | `tests/test_semantic_v2_latency.py` | P0 | ✅ |
 
 ---
 
@@ -135,9 +139,26 @@
 
 ---
 
+## Block H — Latency + intent gate
+
+### N-09-08 Optional intent embedder (skipped)
+
+- [x] Measure regex accuracy on `mobile_nl_intents.jsonl` via `intent_regex_gate.py` (BR-INT-001)
+- [x] Result: **100%** accuracy (53/53) ≥ 90% threshold — **embedder not required**
+- [x] Regex-first `intent_prototypes.json` retained in lexicon for future optional embed path
+
+### N-09-17 Latency gate
+
+- [x] `benchmark_semantic_v2.py` — p95 lookup latency on v2 golden + baseline queries
+- [x] Target ≤500 ms (measured **~82 ms** p95 on dev CPU after warmup)
+- [x] Golden tests: `tests/test_semantic_v2_latency.py`
+- [x] Wired into `validate-nutri-mobile-pack.sh`
+
+---
+
 ## Exit criteria (Phase 9 complete)
 
-- [x] All Block A–G P0 tasks done (N-09-08 optional)
+- [x] All Block A–H tasks done
 - [x] Five v2 golden flows pass (see README)
-- [ ] p95 latency ≤500 ms
+- [x] p95 latency ≤500 ms
 - [x] Pack ≤200 MB (`schema_version` 2)

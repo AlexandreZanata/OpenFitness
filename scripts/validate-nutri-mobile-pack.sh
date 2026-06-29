@@ -104,6 +104,10 @@ PY
   tests.test_semantic_resolver \
   tests.test_semantic_surfaces \
   tests.test_semantic_v2_golden \
+  tests.test_intent_regex_gate \
+  tests.test_semantic_v2_latency \
   tests.test_pack_budget -v)
+
+(cd "${NUTRI}" && python scripts/mobile/benchmark_semantic_v2.py --json)
 
 echo "PASS: NutriOffline mobile pack gate"
