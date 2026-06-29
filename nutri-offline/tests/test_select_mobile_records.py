@@ -12,7 +12,7 @@ import duckdb
 MOBILE_DIR = Path(__file__).resolve().parents[1] / "scripts" / "mobile"
 sys.path.insert(0, str(MOBILE_DIR))
 
-from _paths import FOODS_PARQUET  # noqa: E402
+from mobile_paths import FOODS_PARQUET  # noqa: E402
 from select_mobile_records import (  # noqa: E402
     DEFAULT_OFF_TIER_C_SIZE,
     MobileTierSelection,

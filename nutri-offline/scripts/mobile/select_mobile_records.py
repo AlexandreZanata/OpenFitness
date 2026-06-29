@@ -13,7 +13,7 @@ import duckdb
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from _paths import (  # noqa: E402
+from mobile_paths import (  # noqa: E402
     DEFAULT_OFF_TIER_C_SIZE,
     FOODS_PARQUET,
     LOG_DIR,

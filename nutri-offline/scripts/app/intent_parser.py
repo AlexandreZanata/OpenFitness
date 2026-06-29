@@ -3,13 +3,22 @@
 from __future__ import annotations
 
 import re
+import sys
 import unicodedata
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from intents_compare import CompareIntent
+    from intents_substitute import SubstituteIntent
 
 
 class IntentKind(str, Enum):
     LOOKUP = "lookup"
+    COMPARE = "compare"
+    SUBSTITUTE = "substitute"
     REASONING = "reasoning"
 
 
@@ -25,6 +34,9 @@ class ParsedIntent:
     kind: IntentKind
     items: list[PortionItem]
     raw: str
+    compare: CompareIntent | None = None
+    substitute: SubstituteIntent | None = None
+    highlight_field: str | None = None
 
 
 REASONING_PATTERN = re.compile(
@@ -37,6 +49,11 @@ REASONING_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
+COACHING_PATTERN = re.compile(
+    r"\b(me ajude|emagrecer|diet[ao]|plano alimentar|coaching)\b",
+    re.IGNORECASE,
+)
+
 PORTION_PATTERN = re.compile(
     r"(\d+(?:[.,]\d+)?)\s*(g|gramas?|ml|un(?:idade)?s?)\b",
     re.IGNORECASE,
@@ -45,6 +62,80 @@ PORTION_PATTERN = re.compile(
 SOURCE_HINT_PATTERN = re.compile(r"\b(taco|tbca|fdc|off)\b", re.IGNORECASE)
 
 ITEM_SPLIT_PATTERN = re.compile(r"[,|]")
+
+NL_CALORIES_PATTERN = re.compile(
+    r"quantas?\s+calorias\s+(?:tem\s+)?(?:(?P<portion>\d+(?:[.,]\d+)?)\s*(?:g|gramas?)\s+(?:de\s+)?)?(?P<food>.+?)\??$",
+    re.IGNORECASE,
+)
+NL_CALORIES_ALT_PATTERN = re.compile(
+    r"calorias\s+(?:de\s+)?(?P<food>.+?)\s+(?P<portion>\d+(?:[.,]\d+)?)\s*(?:g|gramas?)\??$",
+    re.IGNORECASE,
+)
+NL_MACRO_PATTERN = re.compile(
+    r"quanto\s+de\s+(?P<macro>prote[ií]na|fibra|carboidratos?|gordura)\s+(?:tem\s+)?"
+    r"(?:(?P<portion1>\d+(?:[.,]\d+)?)\s*(?:g|gramas?)\s+(?:de\s+)?)?(?P<food1>.+?)\??$",
+    re.IGNORECASE,
+)
+NL_MACRO_ALT_PATTERN = re.compile(
+    r"quanto\s+de\s+(?P<macro>prote[ií]na|fibra|carboidratos?|gordura)\s+(?:tem\s+)?"
+    r"(?P<food2>.+?)\s+(?P<portion2>\d+(?:[.,]\d+)?)\s*(?:g|gramas?)\??$",
+    re.IGNORECASE,
+)
+
+MACRO_FIELD_MAP = {
+    "proteina": "protein",
+    "proteína": "protein",
+    "fibra": "fiber",
+    "carboidrato": "carb",
+    "carboidratos": "carb",
+    "gordura": "fat",
+}
+
+
+def _mobile_intent_modules():
+    mobile_dir = Path(__file__).resolve().parents[1] / "mobile"
+    if str(mobile_dir) not in sys.path:
+        sys.path.insert(0, str(mobile_dir))
+    from intents_compare import parse_compare  # noqa: E402
+    from intents_substitute import parse_substitute  # noqa: E402
+
+    return parse_compare, parse_substitute
+
+
+def _parse_nl_lookup(raw: str) -> tuple[list[PortionItem], str | None]:
+    match = NL_CALORIES_PATTERN.search(raw)
+    if match:
+        food = match.group("food").strip(" ?.:,")
+        portion_raw = match.group("portion")
+        portion_g = 100
+        if portion_raw:
+            portion_g = max(1, int(round(float(portion_raw.replace(",", ".")))))
+        return [PortionItem(food=food, portion_g=portion_g)], None
+
+    alt = NL_CALORIES_ALT_PATTERN.search(raw)
+    if alt:
+        food = alt.group("food").strip(" ?.:,")
+        portion_g = max(1, int(round(float(alt.group("portion").replace(",", ".")))))
+        return [PortionItem(food=food, portion_g=portion_g)], None
+
+    macro_alt = NL_MACRO_ALT_PATTERN.search(raw)
+    if macro_alt:
+        food = macro_alt.group("food2").strip(" ?.:,")
+        macro = macro_alt.group("macro").lower()
+        portion_g = max(1, int(round(float(macro_alt.group("portion2").replace(",", ".")))))
+        return [PortionItem(food=food, portion_g=portion_g)], MACRO_FIELD_MAP.get(macro, macro)
+
+    macro_match = NL_MACRO_PATTERN.search(raw)
+    if macro_match:
+        food = macro_match.group("food1").strip(" ?.:,")
+        macro = macro_match.group("macro").lower()
+        portion_raw = macro_match.group("portion1")
+        portion_g = 100
+        if portion_raw:
+            portion_g = max(1, int(round(float(portion_raw.replace(",", ".")))))
+        return [PortionItem(food=food, portion_g=portion_g)], MACRO_FIELD_MAP.get(macro, macro)
+
+    return [], None
 
 
 def _normalize_text(text: str) -> str:
@@ -86,9 +177,11 @@ def _parse_segment(segment: str) -> PortionItem | None:
     return PortionItem(food=food, portion_g=portion_g, source_hint=source_hint)
 
 
-def _looks_like_lookup(text: str, items: list[PortionItem]) -> bool:
+def _looks_like_lookup(text: str, items: list[PortionItem], *, nl_parsed: bool = False) -> bool:
     if not items:
         return False
+    if nl_parsed:
+        return True
     if "?" in text:
         return False
     if REASONING_PATTERN.search(text):
@@ -99,10 +192,42 @@ def _looks_like_lookup(text: str, items: list[PortionItem]) -> bool:
 
 
 def parse_intent(text: str) -> ParsedIntent:
-    """Parse user input into lookup items or reasoning intent."""
+    """Parse user input into lookup, compare, substitute, or reasoning intent."""
     raw = _normalize_text(text)
     if not raw:
         return ParsedIntent(kind=IntentKind.REASONING, items=[], raw=raw)
+
+    if COACHING_PATTERN.search(raw) and not NL_CALORIES_PATTERN.search(raw):
+        return ParsedIntent(kind=IntentKind.REASONING, items=[], raw=raw)
+
+    parse_compare, parse_substitute = _mobile_intent_modules()
+
+    compare = parse_compare(raw)
+    if compare is not None:
+        return ParsedIntent(
+            kind=IntentKind.COMPARE,
+            items=[],
+            raw=raw,
+            compare=compare,
+        )
+
+    substitute = parse_substitute(raw)
+    if substitute is not None:
+        return ParsedIntent(
+            kind=IntentKind.SUBSTITUTE,
+            items=[],
+            raw=raw,
+            substitute=substitute,
+        )
+
+    nl_items, highlight = _parse_nl_lookup(raw)
+    if nl_items:
+        return ParsedIntent(
+            kind=IntentKind.LOOKUP,
+            items=nl_items,
+            raw=raw,
+            highlight_field=highlight,
+        )
 
     segments = [part.strip() for part in ITEM_SPLIT_PATTERN.split(raw) if part.strip()]
     if not segments:
@@ -114,5 +239,9 @@ def parse_intent(text: str) -> ParsedIntent:
         if item is not None:
             items.append(item)
 
-    kind = IntentKind.LOOKUP if _looks_like_lookup(raw, items) else IntentKind.REASONING
+    kind = (
+        IntentKind.LOOKUP
+        if _looks_like_lookup(raw, items)
+        else IntentKind.REASONING
+    )
     return ParsedIntent(kind=kind, items=items, raw=raw)

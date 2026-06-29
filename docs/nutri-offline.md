@@ -71,14 +71,16 @@ python scripts/app/nutri_cli.py ask "Quantas calorias tem banana prata?"
 # RAG V2 benchmarks (optional)
 # cd nutri-offline && python scripts/app/benchmark_v2.py --skip-llm
 # cd nutri-offline && python scripts/rag/embedder_benchmark.py --device cpu
-# Mobile pack ≤200 MB (Phase 8 — in progress)
-cd nutri-offline && source venv/bin/activate
+# Mobile pack ≤200 MB (Phase 8)
+cd nutri-offline && source venv/bin/activate && export HF_HOME="$(pwd)/models/base"
 python scripts/mobile/select_mobile_records.py
-python scripts/mobile/spike_sqlite_vec.py
-# python scripts/mobile/build_mobile_index.py --device cuda
-# python scripts/mobile/export_embedder_onnx.py
-# python scripts/mobile/build_pack.py
+python scripts/mobile/build_mobile_index.py --device cuda
+python scripts/mobile/build_mobile_lexicon.py
+python scripts/mobile/export_embedder_onnx.py
+python scripts/mobile/build_pack.py
 ./scripts/validate-nutri-mobile-pack.sh
+python scripts/mobile/benchmark_mobile_parity.py
+python scripts/app/nutri_cli.py ask "arroz 100g" --runtime mobile
 ```
 
 Run gate scripts from the **repository root** (they `cd` into `nutri-offline/` automatically).

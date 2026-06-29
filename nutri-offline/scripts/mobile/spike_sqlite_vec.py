@@ -22,7 +22,7 @@ import sqlite_vec
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from _paths import LOG_DIR, MOBILE_EMBED_DIM, SPIKE_REPORT  # noqa: E402
+from mobile_paths import LOG_DIR, MOBILE_EMBED_DIM, SPIKE_REPORT  # noqa: E402
 
 
 def _connect(db_path: str) -> sqlite3.Connection:

@@ -60,13 +60,21 @@ class IntentParserTest(unittest.TestCase):
         self.assertEqual(intent.items[0].portion_g, 170)
         self.assertIn("vigor", intent.items[0].food.lower())
 
-    def test_full_sentence_is_reasoning(self) -> None:
+    def test_full_sentence_calories_is_lookup(self) -> None:
         intent = parse_intent("Quantas calorias tem 100g de arroz branco cozido?")
-        self.assertEqual(intent.kind, IntentKind.REASONING)
+        self.assertEqual(intent.kind, IntentKind.LOOKUP)
+        self.assertEqual(len(intent.items), 1)
+        self.assertEqual(intent.items[0].portion_g, 100)
+        self.assertIn("arroz", intent.items[0].food.lower())
 
-    def test_comparison_is_reasoning(self) -> None:
+    def test_comparison_is_compare(self) -> None:
         intent = parse_intent("Qual tem mais proteína: frango ou ovo?")
-        self.assertEqual(intent.kind, IntentKind.REASONING)
+        self.assertEqual(intent.kind, IntentKind.COMPARE)
+        self.assertIsNotNone(intent.compare)
+        assert intent.compare is not None
+        self.assertIn("frango", intent.compare.food_a.lower())
+        self.assertIn("ovo", intent.compare.food_b.lower())
+        self.assertEqual(intent.compare.field, "protein")
 
 
 if __name__ == "__main__":

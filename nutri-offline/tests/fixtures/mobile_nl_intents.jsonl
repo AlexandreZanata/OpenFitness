@@ -1,0 +1,53 @@
+{"utterance": "Quantas calorias tem 100g de arroz branco cozido?", "expected_kind": "lookup", "expected_food": "arroz branco cozido", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de banana?", "expected_kind": "lookup", "expected_food": "banana", "expected_portion_g": 100}
+{"utterance": "calorias arroz 100g", "expected_kind": "lookup", "expected_food": "arroz", "expected_portion_g": 100}
+{"utterance": "calorias de feijão 80g", "expected_kind": "lookup", "expected_food": "feijão", "expected_portion_g": 80}
+{"utterance": "Quanto de proteína tem 100g de frango grelhado?", "expected_kind": "lookup", "expected_food": "frango grelhado", "expected_portion_g": 100, "highlight_field": "protein"}
+{"utterance": "Quanto de fibra tem feijão 80g?", "expected_kind": "lookup", "expected_food": "feijão", "expected_portion_g": 80, "highlight_field": "fiber"}
+{"utterance": "Quantas calorias tem 170g de iogurte vigor?", "expected_kind": "lookup", "expected_food": "iogurte vigor", "expected_portion_g": 170}
+{"utterance": "Quantas calorias tem 100g de ovo cozido?", "expected_kind": "lookup", "expected_food": "ovo cozido", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de batata cozida?", "expected_kind": "lookup", "expected_food": "batata cozida", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de macarrão cozido?", "expected_kind": "lookup", "expected_food": "macarrão cozido", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de leite integral?", "expected_kind": "lookup", "expected_food": "leite integral", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de pão francês?", "expected_kind": "lookup", "expected_food": "pão francês", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de maçã?", "expected_kind": "lookup", "expected_food": "maçã", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de carne bovina grelhada?", "expected_kind": "lookup", "expected_food": "carne bovina grelhada", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de peixe grelhado?", "expected_kind": "lookup", "expected_food": "peixe grelhado", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de queijo minas?", "expected_kind": "lookup", "expected_food": "queijo minas", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de aveia?", "expected_kind": "lookup", "expected_food": "aveia", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de lentilha cozida?", "expected_kind": "lookup", "expected_food": "lentilha cozida", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de mandioca cozida?", "expected_kind": "lookup", "expected_food": "mandioca cozida", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de melancia?", "expected_kind": "lookup", "expected_food": "melancia", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de laranja?", "expected_kind": "lookup", "expected_food": "laranja", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de mamão?", "expected_kind": "lookup", "expected_food": "mamão", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de abacate?", "expected_kind": "lookup", "expected_food": "abacate", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de morango?", "expected_kind": "lookup", "expected_food": "morango", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de uva?", "expected_kind": "lookup", "expected_food": "uva", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de pera?", "expected_kind": "lookup", "expected_food": "pera", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de manga?", "expected_kind": "lookup", "expected_food": "manga", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de abacaxi?", "expected_kind": "lookup", "expected_food": "abacaxi", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de cenoura crua?", "expected_kind": "lookup", "expected_food": "cenoura crua", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de tomate?", "expected_kind": "lookup", "expected_food": "tomate", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de alface?", "expected_kind": "lookup", "expected_food": "alface", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de brócolis cozido?", "expected_kind": "lookup", "expected_food": "brócolis cozido", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de couve?", "expected_kind": "lookup", "expected_food": "couve", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de espinafre?", "expected_kind": "lookup", "expected_food": "espinafre", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de batata doce cozida?", "expected_kind": "lookup", "expected_food": "batata doce cozida", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de inhame cozido?", "expected_kind": "lookup", "expected_food": "inhame cozido", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de milho cozido?", "expected_kind": "lookup", "expected_food": "milho cozido", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de farinha de trigo?", "expected_kind": "lookup", "expected_food": "farinha de trigo", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de azeite?", "expected_kind": "lookup", "expected_food": "azeite", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de manteiga?", "expected_kind": "lookup", "expected_food": "manteiga", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de amendoim?", "expected_kind": "lookup", "expected_food": "amendoim", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de castanha de caju?", "expected_kind": "lookup", "expected_food": "castanha de caju", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de sardinha enlatada?", "expected_kind": "lookup", "expected_food": "sardinha enlatada", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de atum enlatado?", "expected_kind": "lookup", "expected_food": "atum enlatado", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de presunto?", "expected_kind": "lookup", "expected_food": "presunto", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de mortadela?", "expected_kind": "lookup", "expected_food": "mortadela", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de salsicha?", "expected_kind": "lookup", "expected_food": "salsicha", "expected_portion_g": 100}
+{"utterance": "Quantas calorias tem 100g de linguiça?", "expected_kind": "lookup", "expected_food": "linguiça", "expected_portion_g": 100}
+{"utterance": "Qual tem mais proteína: frango ou ovo?", "expected_kind": "compare", "field": "protein"}
+{"utterance": "Frango ou ovo — qual tem mais calorias?", "expected_kind": "compare", "field": "kcal"}
+{"utterance": "Existe opção mais leve que arroz?", "expected_kind": "substitute", "optimize": "kcal"}
+{"utterance": "arroz com menos carboidrato", "expected_kind": "substitute", "optimize": "carb"}
+{"utterance": "me ajude a emagrecer com dieta completa", "expected_kind": "reasoning"}

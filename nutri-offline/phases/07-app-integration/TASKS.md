@@ -40,7 +40,7 @@
 | N-07-07 | Startup orchestration | `scripts/app/start_offline.sh` | P1 | ✅ |
 | N-07-08 | Android integration guide | `docs/android-integration.md` | P1 | ✅ |
 | N-07-09 | OpenFitness use case draft | `docs/UC-nutri-query.md` | P2 | ✅ |
-| N-07-10 | Mobile runtime adapter | `scripts/mobile/mobile_assistant.py` | P1 | ⬜ [Phase 8](../08-mobile-pack/TASKS.md) N-08-16 |
+| N-07-10 | Mobile runtime adapter | `scripts/mobile/mobile_assistant.py` | P1 | ✅ |
 
 ---
 
