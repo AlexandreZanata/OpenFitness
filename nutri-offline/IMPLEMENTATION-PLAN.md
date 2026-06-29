@@ -47,8 +47,9 @@ User question → local embedding → vector DB (top-k)
 | **7** | [App integration](phases/07-app-integration/README.md) | 2–3 weeks | Phases 3, 6 |
 | **8** | [Mobile pack ≤200 MB](phases/08-mobile-pack/README.md) | 4–6 weeks | Phases 3, 7, RAG V2 |
 | **9** | [Semantic engine v2](phases/09-semantic-engine/README.md) | 3–4 weeks | Phase 8 |
+| **10** | [Mobile QA benchmark B20](phases/10-mobile-qa/README.md) | 3–4 days | Phase 9 |
 
-**Total estimate:** 8–14 weeks part-time (Phases 0–7 desktop + Phases 8–9 mobile).
+**Total estimate:** 8–14 weeks part-time (Phases 0–7 desktop + Phases 8–10 mobile).
 
 ---
 

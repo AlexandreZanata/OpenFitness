@@ -112,13 +112,23 @@ def _household_portion_resolver():
     return HouseholdPortionResolver.from_json()
 
 
-def _apply_household_portions(items: list[PortionItem]) -> list[PortionItem]:
+def _apply_household_portions(
+    items: list[PortionItem],
+    *,
+    source_phrases: list[str] | None = None,
+) -> list[PortionItem]:
     if not items:
         return items
     resolver = _household_portion_resolver()
     resolved_items: list[PortionItem] = []
-    for item in items:
-        match = resolver.resolve(item.food)
+    for index, item in enumerate(items):
+        source_phrase = item.food
+        if source_phrases is not None and index < len(source_phrases):
+            source_phrase = source_phrases[index]
+        if PORTION_PATTERN.search(source_phrase):
+            resolved_items.append(item)
+            continue
+        match = resolver.resolve(source_phrase)
         if match is None:
             resolved_items.append(item)
             continue
@@ -253,9 +263,10 @@ def parse_intent(text: str) -> ParsedIntent:
 
     nl_items, highlight = _parse_nl_lookup(raw)
     if nl_items:
+        nl_sources = [nl_items[0].food]
         return ParsedIntent(
             kind=IntentKind.LOOKUP,
-            items=_apply_household_portions(nl_items),
+            items=_apply_household_portions(nl_items, source_phrases=nl_sources),
             raw=raw,
             highlight_field=highlight,
         )
@@ -265,12 +276,14 @@ def parse_intent(text: str) -> ParsedIntent:
         segments = [raw]
 
     items: list[PortionItem] = []
+    segment_sources: list[str] = []
     for segment in segments:
         item = _parse_segment(segment)
         if item is not None:
             items.append(item)
+            segment_sources.append(segment)
 
-    items = _apply_household_portions(items)
+    items = _apply_household_portions(items, source_phrases=segment_sources)
 
     kind = (
         IntentKind.LOOKUP

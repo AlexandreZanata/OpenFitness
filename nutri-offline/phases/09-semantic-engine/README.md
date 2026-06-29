@@ -43,6 +43,7 @@ SQLite ground truth → scale_nutrient → template answer
 | BR-NORM-002 | Colloquial phrase resolves via synonym map before vector search; default candidate when ambiguous |
 | BR-NORM-003 | Category phrase resolves via ontology when synonyms miss; clarify note when multiple candidates |
 | BR-PORT-001 | Household weights must cite source in debug metadata (Layer 5) |
+| BR-PORT-002 | Article-only / bare-food phrases apply `default_unit`; explicit `Ng` never overridden |
 | BR-SURF-001 | Tier A/B/C surface caps (40/30/3); int8 vectors stay within 90 MB index budget |
 | BR-INT-001 | Regex intent parser must reach ≥90% on `mobile_nl_intents.jsonl` before adding embedder |
 | BR-RET-001/002 | Source boost + numeric grounding unchanged from Phase 8 |

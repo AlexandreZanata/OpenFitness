@@ -1,4 +1,4 @@
-"""Unit tests for household portion resolution (N-09-05, BR-PORT-001)."""
+"""Unit tests for household portion resolution (N-09-05, BR-PORT-001/002)."""
 
 from __future__ import annotations
 
@@ -64,6 +64,40 @@ class IntentParserHouseholdTest(unittest.TestCase):
         self.assertEqual(intent.kind, IntentKind.LOOKUP)
         self.assertEqual(intent.items[0].portion_g, 230)
         self.assertEqual(intent.items[0].food, "manga")
+
+    def test_cacetinho_nl_query(self) -> None:
+        intent = parse_intent("Quantas calorias tem um cacetinho?")
+        self.assertEqual(intent.kind, IntentKind.LOOKUP)
+        self.assertEqual(intent.items[0].food, "pao frances")
+        self.assertEqual(intent.items[0].portion_g, 50)
+        self.assertIsNotNone(intent.items[0].portion_source)
+
+    def test_banana_article_only_nl_query(self) -> None:
+        intent = parse_intent("Quantas calorias tem uma banana?")
+        self.assertEqual(intent.kind, IntentKind.LOOKUP)
+        self.assertEqual(intent.items[0].food, "banana")
+        self.assertEqual(intent.items[0].portion_g, 86)
+        self.assertIsNotNone(intent.items[0].portion_source)
+
+    def test_ovo_article_only_nl_query(self) -> None:
+        intent = parse_intent("Quantas calorias tem um ovo?")
+        self.assertEqual(intent.kind, IntentKind.LOOKUP)
+        self.assertEqual(intent.items[0].food, "ovo")
+        self.assertEqual(intent.items[0].portion_g, 50)
+
+    def test_multi_item_banana_implicit_portion(self) -> None:
+        intent = parse_intent("arroz 100g, banana, feijão 80g")
+        self.assertEqual(intent.kind, IntentKind.LOOKUP)
+        self.assertEqual(len(intent.items), 3)
+        banana = next(item for item in intent.items if item.food == "banana")
+        self.assertEqual(banana.portion_g, 86)
+        arroz = next(item for item in intent.items if "arroz" in item.food)
+        self.assertEqual(arroz.portion_g, 100)
+
+    def test_explicit_gram_portion_not_overridden(self) -> None:
+        intent = parse_intent("100g banana")
+        self.assertEqual(intent.kind, IntentKind.LOOKUP)
+        self.assertEqual(intent.items[0].portion_g, 100)
 
 
 if __name__ == "__main__":

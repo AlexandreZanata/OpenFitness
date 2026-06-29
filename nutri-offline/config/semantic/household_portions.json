@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Household portion weights for mobile NL queries (N-09-05, BR-PORT-001)",
+  "version": 2,
+  "description": "Household portion weights for mobile NL queries (N-09-05, BR-PORT-001/002)",
   "entries": [
     {
       "food": "manga",
@@ -42,6 +42,7 @@
     {
       "food": "banana",
       "default_record_id": "taco:182",
+      "default_unit": "media",
       "units": [
         {
           "unit": "media",
@@ -69,6 +70,7 @@
     {
       "food": "ovo",
       "default_record_id": "taco:488",
+      "default_unit": "un",
       "units": [
         {
           "unit": "unidade",
@@ -79,6 +81,19 @@
           "unit": "un",
           "grams": 50,
           "source": "TACO portion table"
+        }
+      ]
+    },
+    {
+      "food": "pao frances",
+      "aliases": ["cacetinho", "pao de sal"],
+      "default_record_id": "taco:53",
+      "default_unit": "un",
+      "units": [
+        {
+          "unit": "un",
+          "grams": 50,
+          "source": "manual BR default (French roll)"
         }
       ]
     }

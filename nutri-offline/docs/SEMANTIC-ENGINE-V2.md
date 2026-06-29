@@ -226,6 +226,20 @@ Extend existing `PORTION_PATTERN` + NL patterns in `intent_parser.py`; **never**
 
 **Business rule BR-PORT-001:** household weights must cite source (`TACO portion table` / `manual BR default`) in debug metadata.
 
+**Business rule BR-PORT-002:** article-only (`um|uma|1 <food>`) or bare-food phrases (no explicit `Ng`) apply the entry `default_unit` from `household_portions.json`; explicit gram portions in the source phrase are never overridden. Aliases (e.g. `cacetinho` → `pao frances`) share the same default unit table.
+
+Example pipeline:
+
+```
+"Quantas calorias tem uma banana?"
+  → NL extract food: "uma banana"
+  → default_unit: media → portion_g = 86
+  → lookup(taco:182, 86g) → ~84 kcal
+
+"100g banana"
+  → PORTION_PATTERN present → keep 100g (no household override)
+```
+
 ---
 
 ## Enriched food record (build-time schema)

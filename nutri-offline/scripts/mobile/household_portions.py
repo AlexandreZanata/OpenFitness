@@ -2,6 +2,9 @@
 
 Business rule BR-PORT-001: household gram weights must come from the portion table
 and cite their source in portion metadata — never invent grams at runtime.
+
+Business rule BR-PORT-002: when a phrase is article-only (``um|uma|1 <food>``) or a
+bare food name with no explicit gram portion, apply the entry ``default_unit`` grams.
 """
 
 from __future__ import annotations
@@ -36,46 +39,89 @@ class HouseholdPortionMatch:
 class HouseholdPortionResolver:
     def __init__(self, *, entries: list[dict]) -> None:
         self._entries = entries
-        self._foods_by_length = sorted(
-            ((normalize_phrase_key(entry["food"]), entry) for entry in entries),
-            key=lambda item: len(item[0]),
-            reverse=True,
-        )
+        indexed: list[tuple[str, dict]] = []
+        for entry in entries:
+            keys = [normalize_phrase_key(entry["food"])]
+            for alias in entry.get("aliases", []):
+                keys.append(normalize_phrase_key(str(alias)))
+            for key in keys:
+                indexed.append((key, entry))
+        self._foods_by_length = sorted(indexed, key=lambda item: len(item[0]), reverse=True)
 
     @classmethod
     def from_json(cls, path: Path = HOUSEHOLD_PORTIONS_JSON) -> HouseholdPortionResolver:
         payload = json.loads(path.read_text(encoding="utf-8"))
         return cls(entries=payload["entries"])
 
+    def _unit_entries(self, entry: dict) -> list[dict]:
+        return sorted(
+            entry["units"],
+            key=lambda item: len(normalize_phrase_key(item["unit"])),
+            reverse=True,
+        )
+
+    def _match_from_unit(self, entry: dict, unit_entry: dict) -> HouseholdPortionMatch:
+        return HouseholdPortionMatch(
+            food=str(entry["food"]),
+            unit=str(unit_entry["unit"]),
+            grams=int(unit_entry["grams"]),
+            source=str(unit_entry["source"]),
+            default_record_id=entry.get("default_record_id"),
+        )
+
+    def _find_unit(self, entry: dict, unit_name: str) -> dict | None:
+        unit_key = normalize_phrase_key(unit_name)
+        for unit_entry in entry["units"]:
+            if normalize_phrase_key(unit_entry["unit"]) == unit_key:
+                return unit_entry
+        return None
+
+    def _resolve_explicit_unit(self, key: str) -> HouseholdPortionMatch | None:
+        for food_key, entry in self._foods_by_length:
+            if food_key not in key:
+                continue
+            for unit_entry in self._unit_entries(entry):
+                unit_key = normalize_phrase_key(unit_entry["unit"])
+                if unit_key and unit_key in key:
+                    return self._match_from_unit(entry, unit_entry)
+        return None
+
+    def _resolve_default_unit(self, key: str) -> HouseholdPortionMatch | None:
+        for food_key, entry in self._foods_by_length:
+            default_unit = entry.get("default_unit")
+            if not default_unit or key != food_key:
+                continue
+            unit_entry = self._find_unit(entry, str(default_unit))
+            if unit_entry is None:
+                continue
+            return self._match_from_unit(entry, unit_entry)
+        return None
+
     def resolve(self, phrase: str) -> HouseholdPortionMatch | None:
         key = normalize_phrase_key(phrase)
         if not key:
             return None
-        key = ARTICLE_PATTERN.sub("", key).strip()
-        if not key:
+
+        explicit = self._resolve_explicit_unit(key)
+        if explicit is not None:
+            return explicit
+
+        stripped = ARTICLE_PATTERN.sub("", key).strip()
+        if not stripped:
             return None
 
-        for food_key, entry in self._foods_by_length:
-            if food_key not in key:
-                continue
-            units = sorted(entry["units"], key=lambda item: len(normalize_phrase_key(item["unit"])), reverse=True)
-            for unit_entry in units:
-                unit_key = normalize_phrase_key(unit_entry["unit"])
-                if unit_key and unit_key in key:
-                    return HouseholdPortionMatch(
-                        food=str(entry["food"]),
-                        unit=str(unit_entry["unit"]),
-                        grams=int(unit_entry["grams"]),
-                        source=str(unit_entry["source"]),
-                        default_record_id=entry.get("default_record_id"),
-                    )
-        return None
+        explicit_stripped = self._resolve_explicit_unit(stripped)
+        if explicit_stripped is not None:
+            return explicit_stripped
 
-    def apply_to_food(self, food: str, *, portion_g: int):
+        return self._resolve_default_unit(stripped)
+
+    def apply_to_food(self, food: str, *, portion_g: int, source_phrase: str | None = None):
         """Return an updated PortionItem when a household unit is detected."""
         from intent_parser import PortionItem  # noqa: E402
 
-        match = self.resolve(food)
+        phrase = source_phrase if source_phrase is not None else food
+        match = self.resolve(phrase)
         if match is None:
             return None
         return PortionItem(
