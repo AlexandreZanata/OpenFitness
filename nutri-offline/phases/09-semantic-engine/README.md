@@ -1,6 +1,6 @@
 # Phase 9 — Semantic nutrition engine (v2)
 
-> **Status:** In progress (N-09-01–03, N-09-05 done) · **Parent:** [Phase 8](../08-mobile-pack/README.md)  
+> **Status:** In progress (N-09-01–03, N-09-05–06 done) · **Parent:** [Phase 8](../08-mobile-pack/README.md)  
 > **Goal:** Replace classic single-surface RAG as the primary mobile resolution path with a **five-layer semantic engine**: spell-fix → synonyms → ontology → multi-surface vectors → portion rules → deterministic SQLite lookup.
 
 ---
@@ -29,7 +29,7 @@ Layer 4 — multi-surface vectors (N-09-04)
 Layer 5 — household portions (N-09-05) ✅
         │
         ▼
-SemanticResolver pipeline (N-09-06)
+SemanticResolver pipeline (N-09-06) ✅ — layers 1–3 before vector search
         │
         ▼
 SQLite ground truth → scale_nutrient → template answer
@@ -77,7 +77,11 @@ python scripts/mobile/ontology_resolver.py "carne bovina"
 python scripts/mobile/household_portions.py "uma manga inteira"
 python scripts/app/nutri_cli.py ask "Quantas calorias tem uma manga inteira?" --runtime mobile
 
+# Semantic pipeline — layers 1–3 (manual)
+python scripts/mobile/semantic_resolver.py "de arror" --json
+python scripts/app/nutri_cli.py ask "100g de arror" --runtime mobile --debug --json
+
 # Tests
-python -m unittest tests.test_spell_normalize tests.test_synonym_resolver tests.test_ontology_resolver tests.test_household_portions -v
+python -m unittest tests.test_spell_normalize tests.test_synonym_resolver tests.test_ontology_resolver tests.test_household_portions tests.test_semantic_resolver -v
 ./scripts/validate-nutri-mobile-pack.sh
 ```

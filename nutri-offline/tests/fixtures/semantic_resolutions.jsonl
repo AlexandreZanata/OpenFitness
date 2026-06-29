@@ -1,0 +1,4 @@
+{"food": "arror", "expected_normalized": "arroz", "expected_primary_layer": "synonym"}
+{"food": "cacetinho", "expected_normalized": "cacetinho", "expected_primary_layer": "synonym"}
+{"food": "carne bovina", "expected_normalized": "carne bovina", "expected_primary_layer": "ontology"}
+{"food": "patinho", "expected_normalized": "patinho", "expected_primary_layer": null}

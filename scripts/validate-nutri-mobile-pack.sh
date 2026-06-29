@@ -90,6 +90,7 @@ PY
   tests.test_spell_normalize \
   tests.test_synonym_resolver \
   tests.test_ontology_resolver \
-  tests.test_household_portions -v)
+  tests.test_household_portions \
+  tests.test_semantic_resolver -v)
 
 echo "PASS: NutriOffline mobile pack gate"

@@ -96,13 +96,26 @@ class MobileNutriAssistant:
 
         if intent.kind == IntentKind.LOOKUP and intent.items:
             lookup_result = self._lookup.execute(intent, top_k=top_k)
+            debug_info: dict = {}
+            if debug:
+                debug_info["items"] = len(intent.items)
+                if self.searcher.last_resolution is not None:
+                    debug_info["semantic"] = self.searcher.last_resolution.to_debug_dict()
+                debug_info["portions"] = [
+                    {
+                        "food": item.food,
+                        "portion_g": item.portion_g,
+                        "portion_source": item.portion_source,
+                    }
+                    for item in intent.items
+                ]
             return MobileNutriResponse(
                 answer=lookup_result.answer,
                 sources=self._sources_from_hits(lookup_result.hits),
                 model="mobile-lookup",
                 latency_ms=round((time.perf_counter() - started) * 1000, 1),
                 mode="lookup",
-                debug={"items": len(intent.items)} if debug else {},
+                debug=debug_info,
             )
 
         elapsed = round((time.perf_counter() - started) * 1000, 1)

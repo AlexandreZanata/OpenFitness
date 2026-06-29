@@ -19,6 +19,7 @@ from mobile_paths import FOOD_ONTOLOGY_JSON, LEXICON_DB, SYNONYMS_DB, VECTORS_DB
 from mobile_embedder import MobileEmbedder  # noqa: E402
 from mobile_sqlite import connect  # noqa: E402
 from ontology_resolver import OntologyResolver  # noqa: E402
+from semantic_resolver import SemanticResolver  # noqa: E402
 from spell_normalize import SpellNormalizer  # noqa: E402
 from synonym_resolver import SynonymResolver  # noqa: E402
 
@@ -48,6 +49,7 @@ class MobileSearcher:
         spell_normalizer: SpellNormalizer | None = None,
         synonym_resolver: SynonymResolver | None = None,
         ontology_resolver: OntologyResolver | None = None,
+        semantic_resolver: SemanticResolver | None = None,
     ) -> None:
         if not vectors_db.is_file():
             raise FileNotFoundError(f"vectors.db not found: {vectors_db}")
@@ -63,20 +65,24 @@ class MobileSearcher:
         self._ontology_resolver = ontology_resolver
         if self._ontology_resolver is None and FOOD_ONTOLOGY_JSON.is_file():
             self._ontology_resolver = OntologyResolver.from_json(FOOD_ONTOLOGY_JSON)
+        self._semantic = semantic_resolver or SemanticResolver(
+            spell_normalizer=self._spell_normalizer,
+            synonym_resolver=self._synonym_resolver,
+            ontology_resolver=self._ontology_resolver,
+        )
+        self._last_resolution = None
+
+    @property
+    def last_resolution(self):
+        return self._last_resolution
 
     def normalize_food_query(self, food: str) -> tuple[str, tuple[dict[str, str], ...]]:
-        if self._spell_normalizer is None:
-            return food, ()
-        result = self._spell_normalizer.normalize_food(food)
-        debug = tuple(
-            {
-                "original": item.original,
-                "corrected": item.corrected,
-                "edit_distance": str(item.edit_distance),
-            }
-            for item in result.corrections
+        resolution = self._semantic.resolve(food)
+        self._last_resolution = resolution
+        spell_debug = tuple(
+            layer for layer in resolution.layers if layer.get("layer") == "spell"
         )
-        return result.text, debug
+        return resolution.normalized, spell_debug
 
     def _synonym_hits(self, food: str) -> list[MobileHit]:
         if self._synonym_resolver is None:
@@ -140,7 +146,9 @@ class MobileSearcher:
 
     def food_for_overlap(self, food: str) -> str:
         """Return a canonical food label for token-overlap checks after normalization."""
-        normalized, _ = self.normalize_food_query(food)
+        resolution = self._semantic.resolve(food)
+        self._last_resolution = resolution
+        normalized = resolution.normalized
         synonym_hits = self._synonym_hits(normalized)
         if synonym_hits:
             return synonym_hits[0].name

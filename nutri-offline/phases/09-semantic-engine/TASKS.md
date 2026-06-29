@@ -2,7 +2,7 @@
 
 > **ID:** N-09 · Normalization-first mobile retrieval  
 > **Quality gate:** typo/ontology/portion golden set + pack ≤200 MB  
-> **Status:** Block E complete (N-09-05 done)  
+> **Status:** Block F complete (N-09-06 done)  
 > **Depends on:** [Phase 8](../08-mobile-pack/TASKS.md)
 
 ---
@@ -16,7 +16,7 @@
 | [C — Ontology](#block-c--ontology) | Layer 3 food hierarchy | ✅ |
 | [D — Multi-surface index](#block-d--multi-surface-index) | Layer 4 semantic surfaces | ⬜ |
 | [E — Household portions](#block-e--household-portions) | Layer 5 portion rules | ✅ |
-| [F — Resolver pipeline](#block-f--resolver-pipeline) | SemanticResolver entry point | ⬜ |
+| [F — Resolver pipeline](#block-f--resolver-pipeline) | SemanticResolver entry point | ✅ |
 | [G — Pack v2 + gate](#block-g--pack-v2--gate) | schema_version 2 rebuild | ⬜ |
 
 ---
@@ -30,7 +30,7 @@
 | N-09-03 | Ontology | `config/semantic/food_ontology.json` + resolver | P0 | ✅ |
 | N-09-04 | Multi-surface builder | `build_semantic_surfaces.py` → ~24k rows | P0 | ⬜ |
 | N-09-05 | Household portions | `config/semantic/household_portions.json` + rules | P0 | ✅ |
-| N-09-06 | Resolver pipeline | `SemanticResolver` replaces direct `mobile_search` entry | P0 | ⬜ |
+| N-09-06 | Resolver pipeline | `SemanticResolver` replaces direct `mobile_search` entry | P0 | ✅ |
 | N-09-07 | Pack v2 + gate | Rebuild pack; golden typo/portion cases | P0 | ⬜ |
 | N-09-08 | Optional intent embedder | 50 prototype vectors if regex < 90% | P1 | ⬜ |
 | N-09-09 | Unit tests — spell-fix | `tests/test_spell_normalize.py` | P0 | ✅ |
@@ -38,6 +38,7 @@
 | N-09-11 | Unit tests — synonyms | `tests/test_synonym_resolver.py` | P0 | ✅ |
 | N-09-12 | Unit tests — ontology | `tests/test_ontology_resolver.py` | P0 | ✅ |
 | N-09-13 | Unit tests — household portions | `tests/test_household_portions.py` | P0 | ✅ |
+| N-09-14 | Unit tests — semantic resolver | `tests/test_semantic_resolver.py` | P0 | ✅ |
 
 ---
 
@@ -109,9 +110,11 @@
 
 ### N-09-06 SemanticResolver
 
-- [ ] Orchestrate layers 1–5 before vector search
-- [ ] Replace direct `mobile_search` entry in `MobileNutriAssistant`
-- [ ] Debug metadata: corrections, ontology path, portion source
+- [x] `semantic_resolver.py` orchestrates layers 1–3 (spell → synonym → ontology)
+- [x] Wired into `MobileSearcher.normalize_food_query()` and `search()`; exposes `last_resolution`
+- [x] `MobileNutriAssistant` debug payload: `semantic` + `portions` when `--debug`
+- [x] Golden fixture: `tests/fixtures/semantic_resolutions.jsonl`
+- [x] Manual validation: `semantic_resolver.py --json` and `nutri_cli.py ask … --debug --json`
 
 ---
 
