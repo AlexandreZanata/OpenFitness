@@ -95,6 +95,11 @@ def retrieve_item(
     min_score: float = MIN_LOOKUP_SCORE,
 ) -> RagHit | None:
     """Retrieve the best food record for a single parsed item (BR-RET-003)."""
+    food_for_overlap = item.food
+    normalize_lookup_food = getattr(pipeline, "normalize_lookup_food", None)
+    if callable(normalize_lookup_food):
+        food_for_overlap = normalize_lookup_food(item.food)
+
     hits = pipeline.search_for_lookup(
         item.food,
         top_k=top_k,
@@ -103,7 +108,7 @@ def retrieve_item(
     )
     return _select_best_hit(
         hits,
-        food=item.food,
+        food=food_for_overlap,
         source_hint=item.source_hint,
         min_score=min_score,
         require_overlap=not _prefer_branded(item),

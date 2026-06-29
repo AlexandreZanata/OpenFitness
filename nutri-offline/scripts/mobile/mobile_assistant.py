@@ -37,6 +37,10 @@ class MobileRagAdapter:
     def __init__(self, searcher: MobileSearcher) -> None:
         self._searcher = searcher
 
+    def normalize_lookup_food(self, food: str) -> str:
+        normalized, _debug = self._searcher.normalize_food_query(food)
+        return normalized
+
     def search_for_lookup(self, food: str, *, top_k: int = 5, source_hint=None, prefer_branded=False):
         hits = self._searcher.search(
             food,

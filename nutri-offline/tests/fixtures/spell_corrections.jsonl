@@ -1,0 +1,7 @@
+{"input": "arror", "expected": "arroz", "rule": "BR-NORM-001"}
+{"input": "frangu", "expected": "frango", "rule": "BR-NORM-001"}
+{"input": "banan", "expected": "banana", "rule": "BR-NORM-001"}
+{"input": "manga", "expected": "manga", "rule": "BR-NORM-001"}
+{"input": "arroz", "expected": "arroz", "rule": "BR-NORM-001"}
+{"input": "de arror", "expected": "arroz", "rule": "BR-NORM-001"}
+{"input": "pao frances", "expected": "pao frances", "rule": "BR-NORM-001"}

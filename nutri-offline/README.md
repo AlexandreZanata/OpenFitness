@@ -30,7 +30,7 @@ See [docs/nutri-offline.md](../docs/nutri-offline.md) for the full phase workflo
 
 ```
 nutri-offline/
-├── IMPLEMENTATION-PLAN.md   # Master roadmap (phases 0–8)
+├── IMPLEMENTATION-PLAN.md   # Master roadmap (phases 0–9)
 ├── ENVIRONMENT.md           # Pinned stack and reproduce steps
 ├── phases/                  # Per-phase README + TASKS
 ├── scripts/                 # Pipeline code
@@ -55,6 +55,7 @@ nutri-offline/
 | 6 — GGUF inference | [phases/06-gguf-inference/TASKS.md](phases/06-gguf-inference/TASKS.md) |
 | 7 — App integration | [phases/07-app-integration/TASKS.md](phases/07-app-integration/TASKS.md) |
 | 8 — Mobile pack ≤200 MB | [phases/08-mobile-pack/TASKS.md](phases/08-mobile-pack/TASKS.md) |
+| 9 — Semantic engine v2 | [phases/09-semantic-engine/TASKS.md](phases/09-semantic-engine/TASKS.md) |
 
 ## Hardware baseline
 

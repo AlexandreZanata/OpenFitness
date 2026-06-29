@@ -18,6 +18,7 @@ from rerank import apply_source_boost, keyword_match_bonus, preparation_bonus  #
 from mobile_paths import LEXICON_DB, VECTORS_DB  # noqa: E402
 from mobile_embedder import MobileEmbedder  # noqa: E402
 from mobile_sqlite import connect  # noqa: E402
+from spell_normalize import SpellNormalizer  # noqa: E402
 
 
 def _normalize_lookup_key(text: str) -> str:
@@ -42,12 +43,30 @@ class MobileSearcher:
         vectors_db: Path = VECTORS_DB,
         lexicon_db: Path = LEXICON_DB,
         embedder: MobileEmbedder | None = None,
+        spell_normalizer: SpellNormalizer | None = None,
     ) -> None:
         if not vectors_db.is_file():
             raise FileNotFoundError(f"vectors.db not found: {vectors_db}")
         self._vectors_db = vectors_db
         self._lexicon_db = lexicon_db if lexicon_db.is_file() else None
         self._embedder = embedder or MobileEmbedder()
+        self._spell_normalizer = spell_normalizer
+        if self._spell_normalizer is None and self._lexicon_db is not None:
+            self._spell_normalizer = SpellNormalizer.from_lexicon_db(self._lexicon_db)
+
+    def normalize_food_query(self, food: str) -> tuple[str, tuple[dict[str, str], ...]]:
+        if self._spell_normalizer is None:
+            return food, ()
+        result = self._spell_normalizer.normalize_food(food)
+        debug = tuple(
+            {
+                "original": item.original,
+                "corrected": item.corrected,
+                "edit_distance": str(item.edit_distance),
+            }
+            for item in result.corrections
+        )
+        return result.text, debug
 
     def lookup_search_query(self, food: str) -> str:
         if self._lexicon_db is None:
@@ -249,6 +268,7 @@ class MobileSearcher:
         source_hint: str | None = None,
         prefer_branded: bool = False,
     ) -> list[MobileHit]:
+        food, _spell_debug = self.normalize_food_query(food)
         query = self.lookup_search_query(food)
         vector = self._embedder.encode([query])[0]
         groups: list[list[MobileHit]] = []

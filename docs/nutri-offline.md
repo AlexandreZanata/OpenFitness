@@ -64,7 +64,9 @@ cd nutri-offline && bash scripts/production/setup_production.sh
 # Offline assistant (Phase 7 + RAG V2 lookup)
 bash scripts/app/start_chat.sh          # llama-server + chat UI at http://127.0.0.1:8090/
 python scripts/app/nutri_cli.py ask "arroz 100g"    # lookup path (~90 ms, no LLM)
-python scripts/app/nutri_cli.py ask "Quantas calorias tem banana prata?"
+python scripts/app/nutri_cli.py ask "100g de arror" --runtime mobile   # spell-fix → TACO arroz
+python scripts/mobile/spell_normalize.py "de arror"                    # Layer 1 only
+python scripts/app/test_mobile_chat_api.py --runtime mobile   # 20 NL API queries
 ./scripts/validate-nutri-app.sh
 ./scripts/validate-nutri-rag-v2.sh   # RAG V2 alias + hybrid + cache + benchmark gate
 
@@ -90,12 +92,14 @@ Run gate scripts from the **repository root** (they `cd` into `nutri-offline/` a
 | Document | Purpose |
 |----------|---------|
 | [nutri-offline/README.md](../nutri-offline/README.md) | Project entry point |
-| [nutri-offline/IMPLEMENTATION-PLAN.md](../nutri-offline/IMPLEMENTATION-PLAN.md) | Master roadmap (phases 0–8) |
+| [nutri-offline/IMPLEMENTATION-PLAN.md](../nutri-offline/IMPLEMENTATION-PLAN.md) | Master roadmap (phases 0–9) |
 | [nutri-offline/ENVIRONMENT.md](../nutri-offline/ENVIRONMENT.md) | Pinned versions and reproduce steps |
 | [nutri-offline/phases/](../nutri-offline/phases/) | Per-phase README + TASKS checklists |
 | [nutri-offline/docs/README-RAG-V2.md](../nutri-offline/docs/README-RAG-V2.md) | RAG V2 — speed, accuracy, shorthand UX |
 | [nutri-offline/docs/MOBILE-CAPABILITY-MATRIX.md](../nutri-offline/docs/MOBILE-CAPABILITY-MATRIX.md) | Desktop parity at ≤200 MB |
 | [nutri-offline/phases/08-mobile-pack/](../nutri-offline/phases/08-mobile-pack/) | Mobile pack tasks |
+| [nutri-offline/phases/09-semantic-engine/](../nutri-offline/phases/09-semantic-engine/) | Semantic engine v2 (normalization-first) |
+| [nutri-offline/docs/SEMANTIC-ENGINE-V2.md](../nutri-offline/docs/SEMANTIC-ENGINE-V2.md) | Semantic engine design |
 | [nutri-offline/docs/UC-nutri-query.md](../nutri-offline/docs/UC-nutri-query.md) | Use case draft |
 | [nutri-offline/docs/android-integration.md](../nutri-offline/docs/android-integration.md) | Android integration options |
 
