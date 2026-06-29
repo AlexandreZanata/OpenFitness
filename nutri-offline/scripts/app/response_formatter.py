@@ -119,4 +119,14 @@ def format_lookup_table(rows: list[tuple[PortionItem, RagHit | None]]) -> str:
             f"\n\n_Fontes: {joined}. Valores calculados a partir dos dados indexados._"
         )
 
+    clarify_notes: list[str] = []
+    for _, hit in rows:
+        if hit is None:
+            continue
+        note = hit.metadata.get("ontology_clarify_note")
+        if note and note not in clarify_notes:
+            clarify_notes.append(str(note))
+    if clarify_notes:
+        footer += "\n\n" + "\n\n".join(f"_{note}_" for note in clarify_notes)
+
     return header + "\n" + "\n".join(body_lines) + footer

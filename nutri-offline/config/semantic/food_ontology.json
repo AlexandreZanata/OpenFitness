@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "description": "Food ontology for mobile category disambiguation (N-09-03)",
+  "nodes": [
+    {
+      "id": "meat.bovine.red",
+      "label": "Red bovine meat (generic cut)",
+      "phrases": [
+        "carne vermelha",
+        "carne bovina",
+        "carne de vaca",
+        "carne boi"
+      ],
+      "default_record_id": "taco:377",
+      "default_label": "patinho (default lean bovine cut)",
+      "candidate_record_ids": [
+        "taco:377",
+        "taco:328",
+        "taco:326",
+        "taco:329"
+      ],
+      "clarify_when_macros_differ": true
+    },
+    {
+      "id": "meat.poultry.chicken",
+      "label": "Chicken (generic)",
+      "phrases": [
+        "frango",
+        "carne de frango",
+        "galinha"
+      ],
+      "default_record_id": "taco:410",
+      "default_label": "frango (default)",
+      "candidate_record_ids": [
+        "taco:410",
+        "taco:411",
+        "taco:412"
+      ],
+      "clarify_when_macros_differ": true
+    },
+    {
+      "id": "bread.french",
+      "label": "French bread",
+      "phrases": [
+        "pao frances",
+        "pão francês",
+        "cacetinho",
+        "pao de sal",
+        "pão de sal"
+      ],
+      "default_record_id": "taco:53",
+      "default_label": "pão francês",
+      "candidate_record_ids": ["taco:53"],
+      "clarify_when_macros_differ": false
+    }
+  ]
+}

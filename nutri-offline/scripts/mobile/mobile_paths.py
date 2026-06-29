@@ -10,6 +10,7 @@ FOODS_PARQUET = PROCESSED_DIR / "foods.parquet"
 FOOD_ALIASES_PARQUET = PROCESSED_DIR / "food_aliases.parquet"
 MOBILE_RECORD_IDS_PARQUET = PROCESSED_DIR / "mobile_record_ids.parquet"
 
+FOOD_ONTOLOGY_JSON = ROOT / "config" / "semantic" / "food_ontology.json"
 MOBILE_INDEX_DIR = ROOT / "indexes" / "nutri-mobile"
 VECTORS_DB = MOBILE_INDEX_DIR / "vectors.db"
 LEXICON_DB = MOBILE_INDEX_DIR / "lexicon.db"

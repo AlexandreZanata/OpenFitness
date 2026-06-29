@@ -77,6 +77,14 @@ class ResponseFormatterTest(unittest.TestCase):
         self.assertIn("—", not_found_row)
         self.assertNotRegex(not_found_row, r"\d+\s*kcal")
 
+    def test_ontology_clarify_note_in_footer(self) -> None:
+        hit = _hit(name="Carne, bovina, patinho, sem gordura, grelhado")
+        hit.metadata["ontology_clarify_note"] = (
+            "Nota: 'carne bovina' abrange vários alimentos da categoria."
+        )
+        text = format_lookup_table([(PortionItem(food="carne bovina", portion_g=100), hit)])
+        self.assertIn("Nota: 'carne bovina' abrange vários alimentos da categoria.", text)
+
 
 if __name__ == "__main__":
     unittest.main()

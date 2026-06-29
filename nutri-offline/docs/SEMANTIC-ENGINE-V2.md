@@ -1,6 +1,6 @@
 # NutriOffline — Semantic nutrition engine (v2 proposal)
 
-> **Status:** Phase 9 in progress (N-09-01, N-09-02 ✅) · **Author:** product/architecture review  
+> **Status:** Phase 9 in progress (N-09-01–03 ✅) · **Author:** product/architecture review  
 > **Context:** Phase 8 mobile pack works (≤200 MB, ~37 MB artifact) but retrieval quality gaps come from **normalization**, not model size.  
 > **Recommendation:** Do **not** invest further in classic RAG as the primary mechanism. Invest in a **specialized semantic engine** with structured lookup at the end.
 
@@ -147,9 +147,11 @@ Meat
 When user says `carne vermelha`:
 
 1. Walk ontology → candidate set (all bovine cuts in pack)
-2. If multiple macros differ → ask **one** clarify question OR pick default (e.g. `patinho` as generic lean cut) with explicit label in answer
+2. If multiple macros differ → ask **one** clarify question OR pick default (e.g. `patinho`) with explicit label in answer
 
-Storage: `ontology.json` or sqlite `category_parent` edges (~50–100 KB).
+Storage: `config/semantic/food_ontology.json` (~50–100 KB).
+
+**Business rule BR-NORM-003:** category phrases resolve through the ontology when the synonym layer has no exact match; ambiguous groups attach a clarify note to the lookup footer.
 
 ---
 
@@ -311,7 +313,7 @@ Still fits mobile budget if:
 |----|-------|-------------|------|
 | N-09-01 | Spell-fix lexicon | `scripts/mobile/spell_normalize.py` + tests | 2d | ✅ |
 | N-09-02 | Synonym graph v2 | Expand `food_aliases` + `synonyms.db` | 3d | ✅ |
-| N-09-03 | Ontology | `data/semantic/food_ontology.json` + resolver | 3d | ⬜ |
+| N-09-03 | Ontology | `config/semantic/food_ontology.json` + resolver | 3d | ✅ |
 | N-09-04 | Multi-surface builder | `build_semantic_surfaces.py` → 24k rows | 5d | ⬜ |
 | N-09-05 | Household portions | `data/semantic/household_portions.json` + rules | 3d | ⬜ |
 | N-09-06 | Resolver pipeline | `SemanticResolver` replaces direct `mobile_search` entry | 4d | ⬜ |
@@ -418,4 +420,5 @@ Phase 8 already proves regex + rules cover 95% NL parity on a curated set — **
 - Aliases desktop: `nutri-offline/scripts/rag/build_food_aliases.py`
 - Spell-fix Layer 1: `nutri-offline/scripts/mobile/spell_normalize.py`
 - Synonym Layer 2: `nutri-offline/scripts/mobile/synonym_resolver.py`
+- Ontology Layer 3: `nutri-offline/scripts/mobile/ontology_resolver.py`
 - BR-RET-002 grounding: `nutri-offline/scripts/dataset/answers.py` → `scale_nutrient()`

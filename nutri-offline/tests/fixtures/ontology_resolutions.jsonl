@@ -1,0 +1,4 @@
+{"phrase": "carne bovina", "expected_node": "meat.bovine.red", "expected_record_id": "taco:377", "expect_clarify": true}
+{"phrase": "carne vermelha", "expected_node": "meat.bovine.red", "expected_record_id": "taco:377", "expect_clarify": true}
+{"phrase": "frango", "expected_node": "meat.poultry.chicken", "expected_record_id": "taco:410", "expect_clarify": true}
+{"phrase": "banana", "expected_node": null, "expected_record_id": null, "expect_clarify": false}

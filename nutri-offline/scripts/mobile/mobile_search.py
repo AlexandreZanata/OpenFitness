@@ -15,9 +15,10 @@ sys.path.insert(0, str(RAG_DIR))
 
 from rerank import apply_source_boost, keyword_match_bonus, preparation_bonus  # noqa: E402
 
-from mobile_paths import LEXICON_DB, SYNONYMS_DB, VECTORS_DB  # noqa: E402
+from mobile_paths import FOOD_ONTOLOGY_JSON, LEXICON_DB, SYNONYMS_DB, VECTORS_DB  # noqa: E402
 from mobile_embedder import MobileEmbedder  # noqa: E402
 from mobile_sqlite import connect  # noqa: E402
+from ontology_resolver import OntologyResolver  # noqa: E402
 from spell_normalize import SpellNormalizer  # noqa: E402
 from synonym_resolver import SynonymResolver  # noqa: E402
 
@@ -46,6 +47,7 @@ class MobileSearcher:
         embedder: MobileEmbedder | None = None,
         spell_normalizer: SpellNormalizer | None = None,
         synonym_resolver: SynonymResolver | None = None,
+        ontology_resolver: OntologyResolver | None = None,
     ) -> None:
         if not vectors_db.is_file():
             raise FileNotFoundError(f"vectors.db not found: {vectors_db}")
@@ -58,6 +60,9 @@ class MobileSearcher:
         self._synonym_resolver = synonym_resolver
         if self._synonym_resolver is None and SYNONYMS_DB.is_file():
             self._synonym_resolver = SynonymResolver.from_db(SYNONYMS_DB)
+        self._ontology_resolver = ontology_resolver
+        if self._ontology_resolver is None and FOOD_ONTOLOGY_JSON.is_file():
+            self._ontology_resolver = OntologyResolver.from_json(FOOD_ONTOLOGY_JSON)
 
     def normalize_food_query(self, food: str) -> tuple[str, tuple[dict[str, str], ...]]:
         if self._spell_normalizer is None:
@@ -101,12 +106,47 @@ class MobileSearcher:
         enriched.sort(key=lambda item: item.score, reverse=True)
         return enriched
 
+    def _ontology_hits(self, food: str) -> list[MobileHit]:
+        if self._ontology_resolver is None:
+            return []
+        result = self._ontology_resolver.resolve(food)
+        if result.match is None:
+            return []
+        record_ids = list(result.match.candidate_record_ids)
+        hits = self._fetch_by_ids(record_ids)
+        default_id = result.match.default_record_id
+        enriched: list[MobileHit] = []
+        for hit in hits:
+            score = 1.04 if hit.id == default_id else 1.01
+            metadata = dict(hit.metadata)
+            if hit.id == default_id:
+                if result.match.default_label:
+                    metadata["ontology_label"] = result.match.default_label
+                if result.clarify_note:
+                    metadata["ontology_clarify_note"] = result.clarify_note
+                metadata["ontology_node_id"] = result.match.node_id
+            enriched.append(
+                MobileHit(
+                    score=score,
+                    id=hit.id,
+                    name=hit.name,
+                    source=hit.source,
+                    metadata=metadata,
+                    match_kind="ontology",
+                )
+            )
+        enriched.sort(key=lambda item: item.score, reverse=True)
+        return enriched
+
     def food_for_overlap(self, food: str) -> str:
         """Return a canonical food label for token-overlap checks after normalization."""
         normalized, _ = self.normalize_food_query(food)
         synonym_hits = self._synonym_hits(normalized)
         if synonym_hits:
             return synonym_hits[0].name
+        ontology_hits = self._ontology_hits(normalized)
+        if ontology_hits:
+            return ontology_hits[0].name
         alias_hits = self._alias_hits(normalized)
         if alias_hits:
             return alias_hits[0].name
@@ -318,7 +358,10 @@ class MobileSearcher:
         groups: list[list[MobileHit]] = []
 
         if not prefer_branded:
-            groups.append(self._synonym_hits(food))
+            synonym_hits = self._synonym_hits(food)
+            groups.append(synonym_hits)
+            if not synonym_hits:
+                groups.append(self._ontology_hits(food))
             groups.append(self._alias_hits(food))
 
         if source_hint:

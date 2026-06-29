@@ -2,7 +2,7 @@
 
 > **ID:** N-09 · Normalization-first mobile retrieval  
 > **Quality gate:** typo/ontology/portion golden set + pack ≤200 MB  
-> **Status:** Block B complete (N-09-01, N-09-02 done)  
+> **Status:** Block C complete (N-09-03 done)  
 > **Depends on:** [Phase 8](../08-mobile-pack/TASKS.md)
 
 ---
@@ -13,7 +13,7 @@
 |-------|---------|--------|
 | [A — Spell-fix](#block-a--spell-fix) | Layer 1 orthographic correction | ✅ |
 | [B — Synonyms](#block-b--synonyms) | Layer 2 alias graph v2 | ✅ |
-| [C — Ontology](#block-c--ontology) | Layer 3 food hierarchy | ⬜ |
+| [C — Ontology](#block-c--ontology) | Layer 3 food hierarchy | ✅ |
 | [D — Multi-surface index](#block-d--multi-surface-index) | Layer 4 semantic surfaces | ⬜ |
 | [E — Household portions](#block-e--household-portions) | Layer 5 portion rules | ⬜ |
 | [F — Resolver pipeline](#block-f--resolver-pipeline) | SemanticResolver entry point | ⬜ |
@@ -27,7 +27,7 @@
 |----|------|----------------|----------|--------|
 | N-09-01 | Spell-fix lexicon | `scripts/mobile/spell_normalize.py` | P0 | ✅ |
 | N-09-02 | Synonym graph v2 | Expand `food_aliases` + `synonyms.db` | P0 | ✅ |
-| N-09-03 | Ontology | `data/semantic/food_ontology.json` + resolver | P0 | ⬜ |
+| N-09-03 | Ontology | `config/semantic/food_ontology.json` + resolver | P0 | ✅ |
 | N-09-04 | Multi-surface builder | `build_semantic_surfaces.py` → ~24k rows | P0 | ⬜ |
 | N-09-05 | Household portions | `data/semantic/household_portions.json` + rules | P0 | ⬜ |
 | N-09-06 | Resolver pipeline | `SemanticResolver` replaces direct `mobile_search` entry | P0 | ⬜ |
@@ -36,6 +36,7 @@
 | N-09-09 | Unit tests — spell-fix | `tests/test_spell_normalize.py` | P0 | ✅ |
 | N-09-10 | Phase docs + cross-links | IMPLEMENTATION-PLAN, SEMANTIC-ENGINE-V2 | P1 | ✅ |
 | N-09-11 | Unit tests — synonyms | `tests/test_synonym_resolver.py` | P0 | ✅ |
+| N-09-12 | Unit tests — ontology | `tests/test_ontology_resolver.py` | P0 | ✅ |
 
 ---
 
@@ -71,9 +72,12 @@
 
 ### N-09-03 Ontology
 
-- [ ] `data/semantic/food_ontology.json` hierarchy
-- [ ] Resolver: category phrases (`carne vermelha`) → candidate bovine cuts
-- [ ] Default policy + clarify template when macros diverge
+- [x] `config/semantic/food_ontology.json` hierarchy (bovine, poultry, bread)
+- [x] `OntologyResolver` — category phrases → candidate record IDs
+- [x] Default policy (patinho for bovine) + clarify note in lookup footer (BR-NORM-003)
+- [x] Wired into `MobileSearcher.search()` when synonym layer misses
+- [x] Golden fixture: `tests/fixtures/ontology_resolutions.jsonl`
+- [x] Manual validation: `100g carne bovina` → patinho TACO with clarify note
 
 ---
 
