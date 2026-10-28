@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Phase 11 gate — full catalog index scaffold + G-COV (N-11).
-# Exits 0 only when index scope=all and all enabled checks pass.
+# Phase 11 gate — full catalog index (N-11).
+#   smoke  — v1-safe checks (default)
+#   full   — strict gate after scope=all index build
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -22,23 +23,39 @@ cd "${NUTRI}"
 echo "=== N-11-00 prerequisites ==="
 python scripts/rag/check_full_catalog_prereqs.py
 
-echo "=== Unit tests (G-COV helpers) ==="
-python -m unittest tests.test_full_catalog_coverage -q
+echo "=== Generate / refresh fixtures ==="
+python scripts/rag/generate_retrieval_corpus.py
+python scripts/training/generate_domain_eval_v2.py
 
-echo "=== G-COV coverage report (current index) ==="
+echo "=== Unit tests ==="
+python -m unittest tests.test_full_catalog_coverage tests.test_retrieval_benchmark tests.test_eval_domain_v2 -q
+
+echo "=== G-COV coverage report ==="
 python scripts/rag/benchmark_coverage.py || true
 
 if [[ "${MODE}" == "smoke" ]]; then
-  echo "=== R-FULL-10 smoke (v1-safe; branded cases skipped until scope=all) ==="
+  echo "=== G-RET gate (current index) ==="
+  python scripts/rag/benchmark_retrieval.py --gate || true
+  echo "=== R-FULL-10 smoke ==="
   python scripts/app/test_r_full_10.py
-  echo "PASS: Phase 11 smoke gate (full catalog build still required for scope=all)"
+  echo "PASS: Phase 11 smoke gate"
   exit 0
 fi
 
 echo "=== G-COV strict (require scope=all) ==="
 python scripts/rag/benchmark_coverage.py --require-scope all
 
-echo "=== R-FULL-10 full (all 10 cases) ==="
+echo "=== G-RET strict ==="
+python scripts/rag/benchmark_retrieval.py --gate
+
+echo "=== G-PERF latency ==="
+python scripts/rag/benchmark_latency.py --gate --samples 200
+
+echo "=== G-DOM gate v2 (production RAG path) ==="
+python scripts/training/eval_domain.py --fixture gate-v2 --require-rag --skip-training-check \
+  --report-md "${NUTRI}/logs/eval-benchmark-v2-latest.md"
+
+echo "=== R-FULL-10 full ==="
 python scripts/app/test_r_full_10.py
 
 echo "PASS: NutriOffline full catalog gate (N-11)"

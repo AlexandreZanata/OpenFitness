@@ -176,6 +176,11 @@ def main() -> int:
     parser.add_argument("--batch-size", type=int, default=DEFAULT_BATCH_SIZE)
     parser.add_argument("--chunk-size", type=int, default=CHUNK_SIZE)
     parser.add_argument("--skip-aliases", action="store_true")
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Resume from checkpoint in indexes/build_checkpoint.json (G-PERF-04)",
+    )
     args = parser.parse_args()
 
     if not FOODS_PARQUET.exists():
@@ -194,18 +199,35 @@ def main() -> int:
         f"SELECT count(*) FROM read_parquet('{parquet}') WHERE {scope_sql(args.scope)}"
     ).fetchone()[0]
 
-    if INDEX_DIR.exists():
+    if INDEX_DIR.exists() and not args.resume:
         shutil.rmtree(INDEX_DIR)
     INDEX_DIR.mkdir(parents=True, exist_ok=True)
+
+    checkpoint_path = INDEX_DIR.parent / "build_checkpoint.json"
+    offset = 0
+    built = 0
+    if args.resume and checkpoint_path.is_file():
+        checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+        if checkpoint.get("scope") == args.scope and INDEX_DIR.is_dir():
+            offset = int(checkpoint.get("offset", 0))
+            built = int(checkpoint.get("built", 0))
+            print(f"Resuming from offset={offset:,} built={built:,}", flush=True)
+        else:
+            print("WARN: checkpoint scope mismatch — rebuilding from scratch", flush=True)
+            if INDEX_DIR.exists():
+                shutil.rmtree(INDEX_DIR)
+            INDEX_DIR.mkdir(parents=True, exist_ok=True)
+            offset = 0
+            built = 0
 
     device = resolve_device(args.device)
     model = load_embedder(device)
     db = lancedb.connect(str(INDEX_DIR))
     table = None
-    built = 0
+    if args.resume and built > 0 and TABLE_NAME in db.table_names():
+        table = db.open_table(TABLE_NAME)
     started = time.monotonic()
 
-    offset = 0
     while offset < total:
         chunk = fetch_chunk_v2(connection, args.scope, offset, args.chunk_size)
         if chunk.empty:
@@ -234,6 +256,31 @@ def main() -> int:
 
         built += len(records)
         offset += args.chunk_size
+        checkpoint_path.write_text(
+            json.dumps(
+                {
+                    "scope": args.scope,
+                    "offset": offset,
+                    "built": built,
+                    "total": total,
+                    "updated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        interim_meta = {
+            "schema_version": SCHEMA_VERSION_V2,
+            "embedding_model": EMBEDDING_MODEL,
+            "embedding_dim": EMBEDDING_DIM,
+            "record_count": built,
+            "scope": args.scope,
+            "build_in_progress": True,
+            "build_progress_pct": round(built / total * 100.0, 2) if total else 0.0,
+            "build_updated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        }
+        INDEX_METADATA.write_text(json.dumps(interim_meta, indent=2) + "\n", encoding="utf-8")
         message = f"Indexed v2 {built:,}/{total:,} records"
         print(message, flush=True)
         with log_path.open("a", encoding="utf-8") as handle:
@@ -284,6 +331,8 @@ def main() -> int:
         "fts_index": True,
     }
     INDEX_METADATA.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
+    if checkpoint_path.is_file():
+        checkpoint_path.unlink()
 
     print(
         f"PASS: index v2 built — {built:,} records, {index_size_mb:.1f} MB, "

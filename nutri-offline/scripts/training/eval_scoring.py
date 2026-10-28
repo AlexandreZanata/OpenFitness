@@ -45,6 +45,12 @@ PASS_THRESHOLDS = {
     "rag_fidelity_pct": 95.0,
 }
 
+PASS_THRESHOLDS_V2 = {
+    **PASS_THRESHOLDS,
+    "row_pass_pct": 96.0,
+    "hallucination_false_fact_pct": 0.0,
+}
+
 
 @dataclass(frozen=True)
 class ScoredRow:
@@ -78,10 +84,36 @@ def number_matches(answer: str, expected: float, tolerance_pct: float) -> bool:
     return any(within_tolerance(n, expected, tolerance_pct) for n in numbers)
 
 
-def score_row(row: dict[str, Any], answer: str) -> ScoredRow:
+def score_row(row: dict[str, Any], answer: str, *, sources: list[dict[str, str]] | None = None) -> ScoredRow:
     category = str(row.get("category", "format"))
     row_id = str(row["id"])
     question = str(row.get("question", ""))
+    source_ids = [str(s.get("id", "")) for s in (sources or [])]
+
+    if category in {"variant", "branded_fdc", "branded_off"} or row.get("expected_record_id"):
+        expected_id = row.get("expected_record_id")
+        forbidden = [str(x) for x in row.get("forbidden_record_ids", [])]
+        if expected_id and expected_id not in source_ids:
+            # Lookup/compare may embed id in answer text when sources empty
+            if str(expected_id) not in answer:
+                return ScoredRow(
+                    row_id,
+                    category,
+                    "FAIL",
+                    f"expected record {expected_id} not in sources",
+                    question,
+                    answer,
+                )
+        for forbidden_id in forbidden:
+            if forbidden_id in source_ids:
+                return ScoredRow(
+                    row_id,
+                    category,
+                    "FAIL",
+                    f"forbidden record {forbidden_id} retrieved",
+                    question,
+                    answer,
+                )
 
     if category == "unknown":
         if acknowledges_unknown(answer):
@@ -149,7 +181,13 @@ def row_cites_source(row: dict[str, Any], answer: str) -> bool:
     return cites_data_source(answer, str(row.get("source_label", "")))
 
 
-def aggregate_metrics(scored: list[ScoredRow], rows: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+def aggregate_metrics(
+    scored: list[ScoredRow],
+    rows: list[dict[str, Any]] | None = None,
+    *,
+    thresholds: dict[str, float] | None = None,
+) -> dict[str, Any]:
+    thresholds = thresholds or PASS_THRESHOLDS
     if not scored:
         return {
             "total": 0,
@@ -165,7 +203,7 @@ def aggregate_metrics(scored: list[ScoredRow], rows: list[dict[str, Any]] | None
     by_id = {row.id: row for row in scored}
     row_by_id = {str(r["id"]): r for r in (rows or [])}
 
-    format_rows = [r for r in scored if r.category in {"format", "numeric", "comparison", "substitution", "household"}]
+    format_rows = [r for r in scored if r.category in {"format", "numeric", "comparison", "substitution", "household", "variant", "branded_fdc", "branded_off"}]
     unknown_rows = [r for r in scored if r.category == "unknown"]
     rag_rows = [r for r in scored if r.category == "rag"]
     numeric_rows = [
@@ -196,21 +234,25 @@ def aggregate_metrics(scored: list[ScoredRow], rows: list[dict[str, Any]] | None
     rag_pct = pass_rate(rag_rows)
 
     passed = sum(1 for r in scored if r.status == "PASS")
+    row_pass_pct = passed / len(scored) * 100.0 if scored else 0.0
     gate_pass = (
-        format_pct >= PASS_THRESHOLDS["format_compliance_pct"]
-        and hallucination_pct <= PASS_THRESHOLDS["hallucination_false_fact_pct"]
-        and (not rag_rows or rag_pct >= PASS_THRESHOLDS["rag_fidelity_pct"])
+        format_pct >= thresholds["format_compliance_pct"]
+        and hallucination_pct <= thresholds["hallucination_false_fact_pct"]
+        and (not rag_rows or rag_pct >= thresholds["rag_fidelity_pct"])
     )
+    if "row_pass_pct" in thresholds:
+        gate_pass = gate_pass and row_pass_pct >= thresholds["row_pass_pct"]
 
     return {
         "total": len(scored),
         "passed": passed,
         "failed": len(scored) - passed,
+        "row_pass_pct": round(row_pass_pct, 2),
         "format_compliance_pct": round(format_pct, 2),
         "numeric_accuracy_pct": round(numeric_pct, 2),
         "hallucination_false_fact_pct": round(hallucination_pct, 2),
         "rag_fidelity_pct": round(rag_pct, 2),
-        "thresholds": PASS_THRESHOLDS,
+        "thresholds": thresholds,
         "pass": gate_pass,
         "source_labels_checked": list(SOURCE_LABELS.values()),
     }

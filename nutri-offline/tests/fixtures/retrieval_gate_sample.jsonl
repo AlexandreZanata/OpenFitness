@@ -1,0 +1,183 @@
+{"id": "TACO-taco:65", "bucket": "taco", "query": "Abóbora, cabotian, crua", "expected_id": "taco:65", "expected_source": "taco"}
+{"id": "TACO-taco:404", "bucket": "taco", "query": "Frango, inteiro, sem pele, cozido", "expected_id": "taco:404", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:234", "bucket": "taco", "query": "maracuja, suco concentrado, envasado", "expected_id": "taco:234", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:544", "bucket": "taco", "query": "quibebe", "expected_id": "taco:544", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:559", "bucket": "taco", "query": "ervilha, em vagem", "expected_id": "taco:559", "expected_source": "taco"}
+{"id": "TACO-taco:320", "bucket": "taco", "query": "Sardinha, frita", "expected_id": "taco:320", "expected_source": "taco"}
+{"id": "TACO-taco:167", "bucket": "taco", "query": "Açaí, polpa, com xarope de guaraná e glucose", "expected_id": "taco:167", "expected_source": "taco"}
+{"id": "TACO-taco:267", "bucket": "taco", "query": "Óleo, de babaçu", "expected_id": "taco:267", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:500", "bucket": "taco", "query": "doce, de abobora, cremoso", "expected_id": "taco:500", "expected_source": "taco"}
+{"id": "TACO-taco:448", "bucket": "taco", "query": "Iogurte, natural", "expected_id": "taco:448", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:243", "bucket": "taco", "query": "pera, williams, crua", "expected_id": "taco:243", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:487", "bucket": "taco", "query": "ovo, de galinha, gema, cozida/10minutos", "expected_id": "taco:487", "expected_source": "taco"}
+{"id": "TACO-taco:590", "bucket": "taco", "query": "Coco, cru", "expected_id": "taco:590", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:125", "bucket": "taco", "query": "feijao, broto, cru", "expected_id": "taco:125", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:78", "bucket": "taco", "query": "alface, crespa, crua", "expected_id": "taco:78", "expected_source": "taco"}
+{"id": "TACO-taco:155", "bucket": "taco", "query": "Serralha, crua", "expected_id": "taco:155", "expected_source": "taco"}
+{"id": "TACO-taco:159", "bucket": "taco", "query": "Tomate, molho industrializado", "expected_id": "taco:159", "expected_source": "taco"}
+{"id": "TACO-taco:194", "bucket": "taco", "query": "Figo, cru", "expected_id": "taco:194", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:348", "bucket": "taco", "query": "carne, bovina, costela, crua", "expected_id": "taco:348", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:447", "bucket": "taco", "query": "creme de leite", "expected_id": "taco:447", "expected_source": "taco"}
+{"id": "TACO-taco:192", "bucket": "taco", "query": "Cupuaçu, cru", "expected_id": "taco:192", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:238", "bucket": "taco", "query": "mexerica, rio, crua", "expected_id": "taco:238", "expected_source": "taco"}
+{"id": "TACO-taco:333", "bucket": "taco", "query": "Carne, bovina, bucho, cru", "expected_id": "taco:333", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:360", "bucket": "taco", "query": "carne, bovina, flanco, sem gordura, cru", "expected_id": "taco:360", "expected_source": "taco"}
+{"id": "TACO-taco:332", "bucket": "taco", "query": "Carne, bovina, bucho, cozido", "expected_id": "taco:332", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:445", "bucket": "taco", "query": "toucinho, frito", "expected_id": "taco:445", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:590", "bucket": "taco", "query": "coco, cru", "expected_id": "taco:590", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:532", "bucket": "taco", "query": "charuto, de repolho", "expected_id": "taco:532", "expected_source": "taco"}
+{"id": "TACO-taco:345", "bucket": "taco", "query": "Carne, bovina, contra-filé, sem gordura, cru", "expected_id": "taco:345", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:397", "bucket": "taco", "query": "frango, coxa, com pele, crua", "expected_id": "taco:397", "expected_source": "taco"}
+{"id": "TACO-taco:39", "bucket": "taco", "query": "Macarrão, instantâneo", "expected_id": "taco:39", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:70", "bucket": "taco", "query": "abobrinha, italiana, cozida", "expected_id": "taco:70", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:300", "bucket": "taco", "query": "manjuba, frita", "expected_id": "taco:300", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:591", "bucket": "taco", "query": "coco, verde, cru", "expected_id": "taco:591", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:399", "bucket": "taco", "query": "frango, coxa, sem pele, crua", "expected_id": "taco:399", "expected_source": "taco"}
+{"id": "TACO-taco:136", "bucket": "taco", "query": "Nhoque, batata, cozido", "expected_id": "taco:136", "expected_source": "taco"}
+{"id": "TACO-taco:4", "bucket": "taco", "query": "Arroz, tipo 1, cru", "expected_id": "taco:4", "expected_source": "taco"}
+{"id": "TACO-taco:422", "bucket": "taco", "query": "Lingüiça, porco, frita", "expected_id": "taco:422", "expected_source": "taco"}
+{"id": "TACO-taco:463", "bucket": "taco", "query": "Queijo, mozarela", "expected_id": "taco:463", "expected_source": "taco"}
+{"id": "TACO-NORM-taco:385", "bucket": "taco", "query": "carne, bovina, seca, crua", "expected_id": "taco:385", "expected_source": "taco"}
+{"id": "OFF-off:7895000515912", "bucket": "off", "query": "Taeq Aveia Flocos Finos", "expected_id": "off:7895000515912", "expected_source": "off"}
+{"id": "OFF-off:0936500093139", "bucket": "off", "query": "Lider LOMITOS DE ATÚN", "expected_id": "off:0936500093139", "expected_source": "off"}
+{"id": "OFF-off:7898298290035", "bucket": "off", "query": "Naiak Azeite de Pequi Extra Virgem Naiak", "expected_id": "off:7898298290035", "expected_source": "off"}
+{"id": "OFF-off:7908808000242", "bucket": "off", "query": "Whey", "expected_id": "off:7908808000242", "expected_source": "off"}
+{"id": "OFF-off:8445291887275", "bucket": "off", "query": "Nestlé Goodnes Postre Protein 10g Sabor caramelo", "expected_id": "off:8445291887275", "expected_source": "off"}
+{"id": "OFF-off:7898692300859", "bucket": "off", "query": "Plant Power Jungle endurance", "expected_id": "off:7898692300859", "expected_source": "off"}
+{"id": "OFF-off:7802900022143", "bucket": "off", "query": "Soprole Sémola Caramelo", "expected_id": "off:7802900022143", "expected_source": "off"}
+{"id": "OFF-off:7894904571949", "bucket": "off", "query": "DORIANA Margarina Cremosa Light Doriana Com Sal 500g", "expected_id": "off:7894904571949", "expected_source": "off"}
+{"id": "OFF-off:7894900850390", "bucket": "off", "query": "Charrua", "expected_id": "off:7894900850390", "expected_source": "off"}
+{"id": "OFF-off:7896024726827", "bucket": "off", "query": "PIRAQUE Biscoito Wafer Recheio Limão Piraquê Newafer Pacote 100g", "expected_id": "off:7896024726827", "expected_source": "off"}
+{"id": "OFF-off:7896022404710", "bucket": "off", "query": "Renata Cream cracker integral", "expected_id": "off:7896022404710", "expected_source": "off"}
+{"id": "OFF-off:7908336303389", "bucket": "off", "query": "Danke Cacau Riquezas da Amazônia", "expected_id": "off:7908336303389", "expected_source": "off"}
+{"id": "OFF-off:7891000261965", "bucket": "off", "query": "Nestlé Leite Em Pó Ninho Zero Lactose", "expected_id": "off:7891000261965", "expected_source": "off"}
+{"id": "OFF-off:0602883739703", "bucket": "off", "query": "Darklab Whey 100%", "expected_id": "off:0602883739703", "expected_source": "off"}
+{"id": "OFF-off:7891025122432", "bucket": "off", "query": "ACTIVIA Leite Fermentado Morango Zero Lactose Activia Shot Diário Frasco 100g", "expected_id": "off:7891025122432", "expected_source": "off"}
+{"id": "OFF-off:7898957617210", "bucket": "off", "query": "FIT FOOD Biscoito de Arroz com Chocolate Amargo", "expected_id": "off:7898957617210", "expected_source": "off"}
+{"id": "OFF-off:0736532138156", "bucket": "off", "query": "Capone Gbocchi Di Patate", "expected_id": "off:0736532138156", "expected_source": "off"}
+{"id": "OFF-off:7898911931123", "bucket": "off", "query": "JUXX Bebida Cranberry Juxx Funcionais Caixa 1l", "expected_id": "off:7898911931123", "expected_source": "off"}
+{"id": "OFF-off:7898956314981", "bucket": "off", "query": "LIO NUTRI Prático e Saudável Mountain food", "expected_id": "off:7898956314981", "expected_source": "off"}
+{"id": "OFF-off:7891031453087", "bucket": "off", "query": "KALASSI KALASSI Molho de Pimenta Sweet Chili Sauce", "expected_id": "off:7891031453087", "expected_source": "off"}
+{"id": "OFF-off:7891000412046", "bucket": "off", "query": "Kit kat triplo chocolate", "expected_id": "off:7891000412046", "expected_source": "off"}
+{"id": "OFF-off:7899970402821", "bucket": "off", "query": "HERSHEYS Chocolate Ao Leite Extracremoso Hersheys Pacote 82g", "expected_id": "off:7899970402821", "expected_source": "off"}
+{"id": "OFF-off:7898644341381", "bucket": "off", "query": "Goianinho Iogurte Com Preparado De Morango", "expected_id": "off:7898644341381", "expected_source": "off"}
+{"id": "OFF-off:7898970956013", "bucket": "off", "query": "Juçara Açaí", "expected_id": "off:7898970956013", "expected_source": "off"}
+{"id": "OFF-off:7896530722542", "bucket": "off", "query": "Chokdoce Ovo De Páscoa De Chocolate Ao leite Recheado Com Bombons", "expected_id": "off:7896530722542", "expected_source": "off"}
+{"id": "OFF-off:7898030490853", "bucket": "off", "query": "Pão x Alvorada", "expected_id": "off:7898030490853", "expected_source": "off"}
+{"id": "OFF-off:7896327510338", "bucket": "off", "query": "Chips de legumes", "expected_id": "off:7896327510338", "expected_source": "off"}
+{"id": "OFF-off:7896901200143", "bucket": "off", "query": "BROTO LEGAL Arroz Branco Tipo 1 Broto Legal Pacote 5kg", "expected_id": "off:7896901200143", "expected_source": "off"}
+{"id": "OFF-off:7898661150096", "bucket": "off", "query": "VIVA SALUTE Açúcar Demerara (1 kg) VIVA SALUTE", "expected_id": "off:7898661150096", "expected_source": "off"}
+{"id": "OFF-off:7891962053981", "bucket": "off", "query": "BAUDUCCO Bolo De Páscoa Com Gotas De Chocolate Bauducco Chocolomba Caixa 700g", "expected_id": "off:7891962053981", "expected_source": "off"}
+{"id": "OFF-off:7899970404047", "bucket": "off", "query": "Hershey's Hershey's Cookies And Cream Chocolate", "expected_id": "off:7899970404047", "expected_source": "off"}
+{"id": "OFF-off:7896504308796", "bucket": "off", "query": "Santa Clara Leite Senior 50+", "expected_id": "off:7896504308796", "expected_source": "off"}
+{"id": "OFF-off:7897213319738", "bucket": "off", "query": "Piccinini Palitos de chocolate", "expected_id": "off:7897213319738", "expected_source": "off"}
+{"id": "OFF-off:7891000253427", "bucket": "off", "query": "Nestle Nescau Achocolatado em pó", "expected_id": "off:7891000253427", "expected_source": "off"}
+{"id": "OFF-off:4802289008755", "bucket": "off", "query": "LONCO LECHE Jalea Sabor PIÑA", "expected_id": "off:4802289008755", "expected_source": "off"}
+{"id": "OFF-off:7898755180718", "bucket": "off", "query": "Bold Whey Chocolate", "expected_id": "off:7898755180718", "expected_source": "off"}
+{"id": "OFF-off:7896422000048", "bucket": "off", "query": "Batata palha", "expected_id": "off:7896422000048", "expected_source": "off"}
+{"id": "OFF-off:7896066307466", "bucket": "off", "query": "WICKBOLD Pack Minibrownie Chocolate Meio Amargo Recheio Chocolate Wickbold Do Forno Caixa 150g 5 Unidades", "expected_id": "off:7896066307466", "expected_source": "off"}
+{"id": "OFF-off:7613033088766", "bucket": "off", "query": "Nestlé YOGHURT & ZUCOSOS", "expected_id": "off:7613033088766", "expected_source": "off"}
+{"id": "OFF-off:8000430396003", "bucket": "off", "query": "Galvani Parmigiano Reggiano", "expected_id": "off:8000430396003", "expected_source": "off"}
+{"id": "FDC-F-fdc:330593", "bucket": "fdc_foundation", "query": "Niacin, Ground turkey, 93% lean, 7% fat, patties, broiled (CA2,NC1)", "expected_id": "fdc:330593", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:2000167", "bucket": "fdc_foundation", "query": "SOY MILK, UNSWEETENED, PLAIN, SHELF STABLE", "expected_id": "fdc:2000167", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:790800", "bucket": "fdc_foundation", "query": "BANANAS, RIPE", "expected_id": "fdc:790800", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:2685438", "bucket": "fdc_foundation", "query": "catfish, farm raised, raw, skin removed", "expected_id": "fdc:2685438", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:331965", "bucket": "fdc_foundation", "query": "Fatty Acids, Sauce, pasta, RAGU Old World, bottled spaghetti sauce (IN1,NY1) - NFY0904Q2", "expected_id": "fdc:331965", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:2647239", "bucket": "fdc_foundation", "query": "beef, ribeye steak, boneless", "expected_id": "fdc:2647239", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:2260262", "bucket": "fdc_foundation", "query": "Yogurt, Greek, whole milk, plain", "expected_id": "fdc:2260262", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:2257748", "bucket": "fdc_foundation", "query": "oat milk, refrigerated, unsweetened", "expected_id": "fdc:2257748", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:748492", "bucket": "fdc_foundation", "query": "Olive oil, extra virgin", "expected_id": "fdc:748492", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:2515853", "bucket": "fdc_foundation", "query": "chestnut flour", "expected_id": "fdc:2515853", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:2001466", "bucket": "fdc_foundation", "query": "SOY MILK, UNSWEETENED, PLAIN, SHELF STABLE", "expected_id": "fdc:2001466", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:2346866", "bucket": "fdc_foundation", "query": "grapes, red, seedless, fresh, raw", "expected_id": "fdc:2346866", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:2515114", "bucket": "fdc_foundation", "query": "Chicken, ground, raw", "expected_id": "fdc:2515114", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:1757004", "bucket": "fdc_foundation", "query": "TOMATOES, ROMA", "expected_id": "fdc:1757004", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:2003427", "bucket": "fdc_foundation", "query": "MUSHROOMS, WHITE BUTTON", "expected_id": "fdc:2003427", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:2001956", "bucket": "fdc_foundation", "query": "MUSHROOMS, LIONS MANE", "expected_id": "fdc:2001956", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:790417", "bucket": "fdc_foundation", "query": "BUTTER, STICK, SALTED", "expected_id": "fdc:790417", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:331443", "bucket": "fdc_foundation", "query": "Fat, Chicken, dark meat, lean only, thigh, roasted, non-enhanced (FL1,MO1,NY1) - 14B-08-04-TotalFat", "expected_id": "fdc:331443", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:325811", "bucket": "fdc_foundation", "query": "White bread, PEPPERIDGE FARMS, 16 oz package (CO) - NFY090A32", "expected_id": "fdc:325811", "expected_source": "fdc"}
+{"id": "FDC-F-fdc:1757005", "bucket": "fdc_foundation", "query": "TOMATOES, ROMA", "expected_id": "fdc:1757005", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1093807", "bucket": "fdc_branded", "query": "Sierra Nevada Cheese Co. CHEVRE BELLA CAPRA GOAT CHEESE, CHEVRE", "expected_id": "fdc:1093807", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2560922", "bucket": "fdc_branded", "query": "CHEERIOS VANILLA SPICE SWEETENED MULTIGRAIN CEREAL, VANILLA SPICE", "expected_id": "fdc:2560922", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:375774", "bucket": "fdc_branded", "query": "Meijer, Inc. MEIJER, CHURNED STYLE ICE CREAM, NEAPOLITAN", "expected_id": "fdc:375774", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1202192", "bucket": "fdc_branded", "query": "SCHNUCKS MEDIUM QUESO BLANCO DIP, MEDIUM", "expected_id": "fdc:1202192", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2652945", "bucket": "fdc_branded", "query": "PRESSED DAILY RENEWAL COLD-PRESSED JUICE BEVERAGE", "expected_id": "fdc:2652945", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1927367", "bucket": "fdc_branded", "query": "SUNKIST SUNKIST, PINK LEMONADE, LEMON, LEMON", "expected_id": "fdc:1927367", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:586907", "bucket": "fdc_branded", "query": "MOM Brands Company CAKE BATTER FLAVORED CEREAL WITH CHOCOLATE FLAVORED MARSHMALLOWS", "expected_id": "fdc:586907", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2011479", "bucket": "fdc_branded", "query": "BACK TO NATURE CRISPY WHEAT CRACKERS PLANT BASED SNACKS, CRISPY WHEAT", "expected_id": "fdc:2011479", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2334922", "bucket": "fdc_branded", "query": "BOWL & BASKET STRAWBERRY RICH & CREAMY ICE CREAM, STRAWBERRY", "expected_id": "fdc:2334922", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1532043", "bucket": "fdc_branded", "query": "PRICE CHOPPER PRICE CHOPPER, HOT COCOA DRINK MIX, SALTED CARAMEL", "expected_id": "fdc:1532043", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:544001", "bucket": "fdc_branded", "query": "Wakefern Food Corporation DICED PAPAYA IN LIGHTLY SWEETENED COCONUT WATER", "expected_id": "fdc:544001", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2455023", "bucket": "fdc_branded", "query": "FIRST STREET CHERRY FRUIT PIE, CHERRY", "expected_id": "fdc:2455023", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1189612", "bucket": "fdc_branded", "query": "REDPACK NO SALT ADDED WHOLE PEELED PLUM TOMATOES IN PUREE", "expected_id": "fdc:1189612", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2086658", "bucket": "fdc_branded", "query": "COFFEE-MATE COCONUT CREME FLAVOR COFFEE CREAMER, COCONUT CREME", "expected_id": "fdc:2086658", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2133263", "bucket": "fdc_branded", "query": "STATER BROS. MEDIUM PICANTE SAUCE, MEDIUM PICANTE", "expected_id": "fdc:2133263", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2596963", "bucket": "fdc_branded", "query": "CHICKEN OF THE SEA WILD CAUGHT SMOKED PINK WITH NATURAL WOOD SMOKE FLAVOR SALMON", "expected_id": "fdc:2596963", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2583841", "bucket": "fdc_branded", "query": "FAVORITE DAY PEPPERMINT BARK FLAVORED PEPPERMINT ICE CREAM WITH CHOCOLATE-FLAVORED CHUNKS AND CANDY CANE SWIRL, PEPPERMINT BARK", "expected_id": "fdc:2583841", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2688001", "bucket": "fdc_branded", "query": "Toast Crunch Cinnamon Toast Crunch Tres Leches Breakfast Cereal", "expected_id": "fdc:2688001", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:456327", "bucket": "fdc_branded", "query": "Wegmans Food Markets, Inc. ITALIAN CLASSIC JUMBO RAVIOLI", "expected_id": "fdc:456327", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1170101", "bucket": "fdc_branded", "query": "PEPPERIDGE FARM .75OZ MILANO 2CT POUCH", "expected_id": "fdc:1170101", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:615674", "bucket": "fdc_branded", "query": "Daily's Premium Meats LLC Deep Applewood Smoked Center Cut Bacon-Layered-Gas Flushed 1/2\" 15# MBG#539", "expected_id": "fdc:615674", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:733328", "bucket": "fdc_branded", "query": "Ross Acquisition Inc. MUG WITH DOUBLE CHOCOLATE COCOA MIX", "expected_id": "fdc:733328", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:507681", "bucket": "fdc_branded", "query": "Sierra Nevada Cheese Co. WHOLE MILK YOGURT", "expected_id": "fdc:507681", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1666389", "bucket": "fdc_branded", "query": "GIANT EAGLE OYSTER CRACKERS", "expected_id": "fdc:1666389", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2695695", "bucket": "fdc_branded", "query": "CAMPBELL'S Campbell's Condensed 25% Less Sodium Cream of Mushroom Soup, 10.5 oz Can", "expected_id": "fdc:2695695", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1135100", "bucket": "fdc_branded", "query": "The Jel Sert Company CREAM SODA ZERO SUGAR DRINK MIX, CREAM SODA", "expected_id": "fdc:1135100", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1526875", "bucket": "fdc_branded", "query": "WERTHER'S ORIGINAL WERTHER'S ORIGINAL, SOFT CARAMELS, CARAMEL APPLE", "expected_id": "fdc:1526875", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:415887", "bucket": "fdc_branded", "query": "Imaginings 3 FLIX CANDY, BAG OF BOOGERS GUMMIES, WATERMELON/GREEN APPLE/ LEMON LIME", "expected_id": "fdc:415887", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1008645", "bucket": "fdc_branded", "query": "Lamb Weston Sales, Inc.  CRISPY POTATO PUFFS", "expected_id": "fdc:1008645", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1307637", "bucket": "fdc_branded", "query": "CRISCO ALL-VEGETABLE SHORTENING", "expected_id": "fdc:1307637", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1125001", "bucket": "fdc_branded", "query": "The Kroger Co. WATER FRUIT N' PUNCHY FLAVORED WATER BEVERAGE, FRUIT N' PUNCHY", "expected_id": "fdc:1125001", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2311090", "bucket": "fdc_branded", "query": "CANDY WORKS WATERMELON RING FLAVORED CANDY, WATERMELON RING", "expected_id": "fdc:2311090", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2497332", "bucket": "fdc_branded", "query": "CATAWBA CANDY CO. CIRCUS PEANUTS CANDY, CIRCUS PEANUTS", "expected_id": "fdc:2497332", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1541135", "bucket": "fdc_branded", "query": "WALGREENS WALGREEN'S, MARVEL ULTIMATE SPIDERMAN, COCOA & MUG SET", "expected_id": "fdc:1541135", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2044307", "bucket": "fdc_branded", "query": "DEERFIELDS BAKERY DEERFIELDS BAKERY, LEMON BUTTONS COOKIES", "expected_id": "fdc:2044307", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:2653681", "bucket": "fdc_branded", "query": "BLOOM'S KOSHER PRODUCTS ANIMAL CRACKERS", "expected_id": "fdc:2653681", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:521423", "bucket": "fdc_branded", "query": "Target Stores WHIPPED CREAM CHEESE SPREAD", "expected_id": "fdc:521423", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:374932", "bucket": "fdc_branded", "query": "Sunsweet Growers, Inc. AMAZIN PRUNES", "expected_id": "fdc:374932", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1242354", "bucket": "fdc_branded", "query": "KEY INGREDIENT MARKET AUTHENTIC MEXICAN STYLE QUESO DIP", "expected_id": "fdc:1242354", "expected_source": "fdc"}
+{"id": "FDC-B-fdc:1798127", "bucket": "fdc_branded", "query": "BRANDLESS PANCAKE & WAFFLE MIX", "expected_id": "fdc:1798127", "expected_source": "fdc"}
+{"id": "ALIAS-taco:270-oleo", "bucket": "alias", "query": "oleo", "expected_id": "taco:270", "expected_source": "taco"}
+{"id": "ALIAS-taco:114-coentro, fol", "bucket": "alias", "query": "coentro, folhas desidratadas", "expected_id": "taco:114", "expected_source": "taco"}
+{"id": "ALIAS-taco:132-mandioca fri", "bucket": "alias", "query": "mandioca frita", "expected_id": "taco:132", "expected_source": "taco"}
+{"id": "ALIAS-taco:486-ovo, de gali", "bucket": "alias", "query": "ovo, de galinha, clara, cozida/10minutos", "expected_id": "taco:486", "expected_source": "taco"}
+{"id": "ALIAS-taco:537-estrogonofe ", "bucket": "alias", "query": "estrogonofe de carne", "expected_id": "taco:537", "expected_source": "taco"}
+{"id": "ALIAS-taco:2-arroz cru", "bucket": "alias", "query": "arroz cru", "expected_id": "taco:2", "expected_source": "taco"}
+{"id": "ALIAS-taco:491-achocolatado", "bucket": "alias", "query": "achocolatado, po", "expected_id": "taco:491", "expected_source": "taco"}
+{"id": "ALIAS-taco:419-linguica", "bucket": "alias", "query": "linguica", "expected_id": "taco:419", "expected_source": "taco"}
+{"id": "ALIAS-taco:420-linguica", "bucket": "alias", "query": "linguica", "expected_id": "taco:420", "expected_source": "taco"}
+{"id": "ALIAS-taco:332-carne, bovin", "bucket": "alias", "query": "carne, bovina, bucho, cozido", "expected_id": "taco:332", "expected_source": "taco"}
+{"id": "ALIAS-taco:497-chocolate, a", "bucket": "alias", "query": "chocolate, ao leite, dietetico", "expected_id": "taco:497", "expected_source": "taco"}
+{"id": "ALIAS-taco:250-tamarindo, c", "bucket": "alias", "query": "tamarindo, cru", "expected_id": "taco:250", "expected_source": "taco"}
+{"id": "ALIAS-taco:370-carne, bovin", "bucket": "alias", "query": "carne, bovina, miolo de alcatra, sem gordura, grelhado", "expected_id": "taco:370", "expected_source": "taco"}
+{"id": "ALIAS-taco:587-amendoa, tor", "bucket": "alias", "query": "amendoa, torrada, salgada", "expected_id": "taco:587", "expected_source": "taco"}
+{"id": "ALIAS-taco:304-pescada crua", "bucket": "alias", "query": "pescada crua", "expected_id": "taco:304", "expected_source": "taco"}
+{"id": "ALIAS-taco:276-abadejo, fil", "bucket": "alias", "query": "abadejo, file, congelado, grelhado", "expected_id": "taco:276", "expected_source": "taco"}
+{"id": "ALIAS-taco:380-carne, bovin", "bucket": "alias", "query": "carne, bovina, picanha, com gordura, crua", "expected_id": "taco:380", "expected_source": "taco"}
+{"id": "ALIAS-taco:423-linguica", "bucket": "alias", "query": "linguica", "expected_id": "taco:423", "expected_source": "taco"}
+{"id": "ALIAS-taco:60-pastel", "bucket": "alias", "query": "pastel", "expected_id": "taco:60", "expected_source": "taco"}
+{"id": "ALIAS-taco:534-cuscuz", "bucket": "alias", "query": "cuscuz", "expected_id": "taco:534", "expected_source": "taco"}
+{"id": "NEG-041", "bucket": "negative", "query": "superfood lunar raro 200g", "expected_id": null, "expected_source": null}
+{"id": "NEG-036", "bucket": "negative", "query": "superfood lunar raro 200g", "expected_id": null, "expected_source": null}
+{"id": "NEG-031", "bucket": "negative", "query": "superfood lunar raro 200g", "expected_id": null, "expected_source": null}
+{"id": "NEG-014", "bucket": "negative", "query": "produto inexistente nutri404", "expected_id": null, "expected_source": null}
+{"id": "NEG-020", "bucket": "negative", "query": "nutrizxyabc inventado 100g", "expected_id": null, "expected_source": null}
+{"id": "NEG-046", "bucket": "negative", "query": "superfood lunar raro 200g", "expected_id": null, "expected_source": null}
+{"id": "NEG-039", "bucket": "negative", "query": "produto inexistente nutri404", "expected_id": null, "expected_source": null}
+{"id": "NEG-032", "bucket": "negative", "query": "alimento ficticio omega999", "expected_id": null, "expected_source": null}
+{"id": "NEG-019", "bucket": "negative", "query": "produto inexistente nutri404", "expected_id": null, "expected_source": null}
+{"id": "NEG-045", "bucket": "negative", "query": "nutrizxyabc inventado 100g", "expected_id": null, "expected_source": null}
+{"id": "NEG-002", "bucket": "negative", "query": "alimento ficticio omega999", "expected_id": null, "expected_source": null}
+{"id": "NEG-017", "bucket": "negative", "query": "alimento ficticio omega999", "expected_id": null, "expected_source": null}
+{"id": "NEG-026", "bucket": "negative", "query": "superfood lunar raro 200g", "expected_id": null, "expected_source": null}
+{"id": "NEG-029", "bucket": "negative", "query": "produto inexistente nutri404", "expected_id": null, "expected_source": null}
+{"id": "NEG-007", "bucket": "negative", "query": "alimento ficticio omega999", "expected_id": null, "expected_source": null}
+{"id": "NEG-024", "bucket": "negative", "query": "produto inexistente nutri404", "expected_id": null, "expected_source": null}
+{"id": "NEG-021", "bucket": "negative", "query": "superfood lunar raro 200g", "expected_id": null, "expected_source": null}
+{"id": "NEG-022", "bucket": "negative", "query": "alimento ficticio omega999", "expected_id": null, "expected_source": null}
+{"id": "NEG-015", "bucket": "negative", "query": "nutrizxyabc inventado 100g", "expected_id": null, "expected_source": null}
+{"id": "NEG-018", "bucket": "negative", "query": "xyz carboidrato impossivel", "expected_id": null, "expected_source": null}
+{"id": "GEN-BANANA", "bucket": "generic_pt", "query": "banana 100g", "expected_id": null, "expected_source": "taco", "expect_top1_source": "taco"}
+{"id": "GEN-FEIJAO", "bucket": "generic_pt", "query": "feijão 80g", "expected_id": null, "expected_source": "taco", "expect_top1_source": "taco"}
+{"id": "GEN-ARROZ", "bucket": "generic_pt", "query": "arroz 100g", "expected_id": null, "expected_source": "taco", "expect_top1_source": "taco"}

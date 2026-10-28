@@ -7,8 +7,6 @@ __pycache__/
 
 # Heavy ML artifacts (never commit)
 data/
-!data/semantic/
-!data/semantic/**
 models/
 indexes/
 logs/

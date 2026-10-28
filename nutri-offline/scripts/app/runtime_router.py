@@ -6,6 +6,8 @@ import sys
 from pathlib import Path
 from typing import Any, Literal
 
+import os
+
 from orchestrator import NutriAssistant, NutriResponse
 
 RAG_DIR = Path(__file__).resolve().parents[1] / "rag"
@@ -82,6 +84,7 @@ class NutriRuntimeRouter:
             "llm_server": llm_ok,
             "mobile_pack": PACK_ARTIFACT.is_file(),
             "ready": rag_ok,
+            "index_scope_env": os.environ.get("NUTRI_INDEX_SCOPE"),
         }
         if index is not None:
             payload["index_scope"] = index.scope

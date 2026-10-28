@@ -17,4 +17,13 @@ HF_HOME = ROOT / "models" / "base"
 DEFAULT_ADAPTER = ADAPTERS_DIR / "nutri-qwen25-3b-v2"
 EVAL_PROMPTS = ROOT / "tests" / "fixtures" / "domain_eval_prompts.jsonl"
 EVAL_GATE_PROMPTS = ROOT / "tests" / "fixtures" / "domain_eval_gate.jsonl"
+EVAL_PROMPTS_V2 = ROOT / "tests" / "fixtures" / "domain_eval_v2_200.jsonl"
+EVAL_GATE_V2 = ROOT / "tests" / "fixtures" / "domain_eval_gate_v2.jsonl"
 COMPARISON_PROMPTS = ROOT / "tests" / "fixtures" / "domain_eval_comparison.jsonl"
+
+FIXTURE_ALIASES = {
+    "v1": EVAL_PROMPTS,
+    "v2": EVAL_PROMPTS_V2,
+    "gate": EVAL_GATE_PROMPTS,
+    "gate-v2": EVAL_GATE_V2,
+}
